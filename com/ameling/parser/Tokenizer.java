@@ -24,7 +24,7 @@ public class Tokenizer {
      * Creates a new instance with the reader
      * @param reader The reader to use
      */
-    public Tokenizer(Reader reader) {
+    public Tokenizer(final Reader reader) {
         if(reader == null)
             throw new NullPointerException();
 
@@ -43,7 +43,7 @@ public class Tokenizer {
 	 */
 	public boolean isNext(char character) {
 		skipBlanks();
-		Character c = peek();
+		final Character c = peek();
 		if(c != null && c == character) {
 			pop();
 			return true;
@@ -72,9 +72,9 @@ public class Tokenizer {
 	 * </ul>
 	 */
 	public Character pop() {
-        Character backup = character;
+        final Character backup = character;
         try {
-            int cValue = reader.read();
+            final int cValue = reader.read();
             if(cValue == -1) {
                 character = null;
             } else {
@@ -87,7 +87,7 @@ public class Tokenizer {
 	}
 	
 	/**
-	 * Sets the position to the next non-whitespace character. Also keeps track of line numbers
+	 * Sets the position to the next non-whitespace character.
 	 */
 	public void skipBlanks() {
         Character character;

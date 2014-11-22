@@ -29,7 +29,6 @@ public abstract class Parser {
     // regular strings
     private static final String unfinishedString = "Unfinished string";
     private static final String multipleDots = "Multiple dots have been found";
-    private static final String notParsingE = "Found 'e', not parsing because invalid argument";
     private static final String eAtBeginning = "Cannot have 'e' or 'E' at the beginning of a number";
     // End constants
 
@@ -156,7 +155,7 @@ public abstract class Parser {
 					if(number != null)
 						return Double.parseDouble(sb.toString()) * Math.pow(10D, number.doubleValue());
 				} else if(!parseE) {
-					throw new SyntaxException(notParsingE);
+					break;
 				} else if(sb.length() == 0) {
 					throw new SyntaxException(eAtBeginning);
 				}

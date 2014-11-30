@@ -19,10 +19,9 @@ public class Constants {
 
     public static final char CHAR_E_UPPER = 'e';
     public static final char CHAR_E_LOWER = 'E';
-    public static final char CHAR_T = 't';
-    public static final char CHAR_F = 'f';
+    public static final char CHAR_T_LOWER = 't';
+    public static final char CHAR_F_LOWER = 'f';
 
-    public static final char CHAR_BACKSLASH = '\\';
     public static final char CHAR_DOT = '.';
     public static final char CHAR_COMMA = ',';
     public static final char CHAR_COLON = ':';
@@ -30,11 +29,18 @@ public class Constants {
     public static final char CHAR_QUOTE_SINGLE = '\'';
     public static final char CHAR_QUOTE_DOUBLE = '"';
 
-    public static final char CHAR_DASH = '-';
     public static final char CHAR_PLUS = '+';
+    public static final char CHAR_SUBTRACT = '-';
+    public static final char CHAR_MULTIPLY = '*';
+    public static final char CHAR_SLASH_FORWARD = '/';
+    public static final char CHAR_SLASH_BACK = '\\';
+
+    // All used regular expression
+    public static final String REGEX_WORD = "\\w";
 
     // All formats to be used in Exceptions
     public static final String FORMAT_EXPECTED_CHAR = "Expected '%s'";
+    public static final String FORMAT_UNEXPECTED_TOKEN = "Unexpected token '%s'";
     public static final String FORMAT_EXPECTED_VALUE = "Key '%s' is not a %s";
     public static final String FORMAT_EXPECTED_EXISTING_KEY = "Key '%s' does not exist in %s!";
 

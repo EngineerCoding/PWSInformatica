@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * * A JSON array to parse a JSON String. The syntax for a JSON string is as follows:<br/>
+ * A JSON array to parse a JSON String. The syntax for a JSON string is as follows:<br/>
  * For information on what JSON is, please visit <a href="http://json.org/">The Official site of JSON</a>
  *
  * @author Wesley A
@@ -272,7 +272,7 @@ public final class JSONArray extends JSONParser {
      *
      * @param key   The key to set the value to
      * @param value The value to set the key to
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      * @throws JSONException             when the value is null
      */
     private JSONArray set(final int key, final Object value) {
@@ -293,7 +293,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      * @throws JSONException             when the value is null
      */
     public JSONArray set(final int key, final String value) {
@@ -306,8 +306,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final boolean value) {
         return set(key, (Boolean) value);
@@ -319,7 +318,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      * @throws JSONException             when the value is null
      */
     public JSONArray set(final int key, final JSONObject value) {
@@ -332,7 +331,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      * @throws JSONException             when the value is null
      */
     public JSONArray set(final int key, final JSONArray value) {
@@ -345,8 +344,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final long value) {
         return set(key, (Long) value);
@@ -358,8 +356,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final int value) {
         return set(key, (Integer) value);
@@ -371,8 +368,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final short value) {
         return set(key, (Short) value);
@@ -384,8 +380,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final byte value) {
         return set(key, (Byte) value);
@@ -397,7 +392,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final double value) {
         return set(key, (Double) value);
@@ -409,8 +404,7 @@ public final class JSONArray extends JSONParser {
      * @param key   The key to set the value to
      * @param value The value to set the key to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray set(final int key, final float value) {
         return set(key, (Float) value);
@@ -421,8 +415,7 @@ public final class JSONArray extends JSONParser {
      *
      * @param key The key to set the value to
      * @return this
-     * @throws IndexOutOfBoundsException when the index < 0 || index >= {@link #storage}.size()
-     * @throws JSONException             when the value is null
+     * @throws IndexOutOfBoundsException when the index <code>{@link #storage}.size() < 0 || index >= {@link #storage}.size()</code>
      */
     public JSONArray setNull(final int key) {
         return set(key, JSONParser.NULL);
@@ -458,7 +451,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final boolean value) {
         return add((Boolean) value);
@@ -491,7 +483,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final long value) {
         return add((Long) value);
@@ -502,7 +493,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final int value) {
         return add((Integer) value);
@@ -513,7 +503,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final short value) {
         return add((Short) value);
@@ -524,7 +513,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final byte value) {
         return add((Byte) value);
@@ -535,7 +523,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final double value) {
         return add((Double) value);
@@ -546,7 +533,6 @@ public final class JSONArray extends JSONParser {
      *
      * @param value The value to add
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray add(final float value) {
         return add((Float) value);
@@ -556,7 +542,6 @@ public final class JSONArray extends JSONParser {
      * Adds {@link JSONParser#NULL} to {@link #storage}
      *
      * @return this
-     * @throws JSONException when the value is null
      */
     public JSONArray addNull() {
         return add(JSONParser.NULL);

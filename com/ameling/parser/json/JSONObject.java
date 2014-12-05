@@ -1,6 +1,5 @@
 package com.ameling.parser.json;
 
-import com.ameling.parser.Constants;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.Tokenizer;
 
@@ -9,6 +8,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ameling.parser.Constants.*;
+
 /**
  * A JSON object to parse a JSON String. The syntax for a JSON string is as follows:<br/>
  * For information on what JSON is, please visit <a href="http://json.org/">The Official site of JSON</a>
@@ -16,6 +17,10 @@ import java.util.Map;
  * @author Wesley A
  */
 public final class JSONObject extends JSONParser {
+
+    // All constants used within this class only
+    private static final String STRING_KEY = "key";
+    private static final String STRING_VALUE = "value";
 
     /**
      * A {@link Map} to store keys with a value
@@ -59,17 +64,17 @@ public final class JSONObject extends JSONParser {
     public JSONObject(final Tokenizer tokenizer) {
         super(tokenizer);
 
-        if (tokenizer.isNext(Constants.CHAR_JSON_OBJECT_START)) {
+        if (tokenizer.isNext(CHAR_JSON_OBJECT_START)) {
             do {
                 parseKeyValue();
-            } while (tokenizer.isNext(Constants.CHAR_COMMA));
+            } while (tokenizer.isNext(CHAR_COMMA));
 
-            if (tokenizer.isNext(Constants.CHAR_JSON_OBJECT_END))
+            if (tokenizer.isNext(CHAR_JSON_OBJECT_END))
                 return;
-            throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.CHAR_JSON_OBJECT_END);
+            throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_END);
         }
 
-        throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.CHAR_JSON_OBJECT_START);
+        throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_START);
     }
 
     /**
@@ -80,18 +85,18 @@ public final class JSONObject extends JSONParser {
     private void parseKeyValue() {
         final String key = parseString();
         if (key != null) {
-            if (tokenizer.isNext(Constants.CHAR_COLON)) {
+            if (tokenizer.isNext(CHAR_COLON)) {
                 final Object obj = parseValue();
                 if (obj != null) {
                     storage.size();
                     storage.put(key, obj);
                     return;
                 }
-                throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.STRING_VALUE);
+                throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_VALUE);
             }
-            throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.CHAR_COLON);
+            throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_COLON);
         }
-        throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.STRING_KEY);
+        throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_KEY);
     }
 
     /**
@@ -104,7 +109,7 @@ public final class JSONObject extends JSONParser {
     public boolean has(final String key) {
         if (storage.containsKey(key))
             return true;
-        throw new JSONException(Constants.FORMAT_EXPECTED_EXISTING_KEY, key, Constants.TYPE_JSON_OBJECT);
+        throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_OBJECT);
     }
 
     /**
@@ -153,7 +158,7 @@ public final class JSONObject extends JSONParser {
     public String getString(final String key) {
         if (getType(key) == Type.String)
             return (String) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, key, Constants.TYPE_STRING);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, key, TYPE_STRING);
     }
 
     /**
@@ -167,7 +172,7 @@ public final class JSONObject extends JSONParser {
     private Number getNumber(final String key, final String type) {
         if (getType(key) == Type.Number)
             return (Number) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, key, type);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, key, type);
     }
 
     /**
@@ -178,7 +183,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public long getLong(final String key) {
-        return getNumber(key, Constants.TYPE_LONG).longValue();
+        return getNumber(key, TYPE_LONG).longValue();
     }
 
     /**
@@ -189,7 +194,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public int getInt(final String key) {
-        return getNumber(key, Constants.TYPE_INT).intValue();
+        return getNumber(key, TYPE_INT).intValue();
     }
 
     /**
@@ -200,7 +205,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public short getShort(final String key) {
-        return getNumber(key, Constants.TYPE_SHORT).shortValue();
+        return getNumber(key, TYPE_SHORT).shortValue();
     }
 
     /**
@@ -211,7 +216,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public byte getByte(final String key) {
-        return getNumber(key, Constants.TYPE_BYTE).byteValue();
+        return getNumber(key, TYPE_BYTE).byteValue();
     }
 
     /**
@@ -222,7 +227,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public double getDouble(final String key) {
-        return getNumber(key, Constants.TYPE_DOUBLE).doubleValue();
+        return getNumber(key, TYPE_DOUBLE).doubleValue();
     }
 
     /**
@@ -233,7 +238,7 @@ public final class JSONObject extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public float getFloat(final String key) {
-        return getNumber(key, Constants.TYPE_FLOAT).floatValue();
+        return getNumber(key, TYPE_FLOAT).floatValue();
     }
 
     /**
@@ -246,7 +251,7 @@ public final class JSONObject extends JSONParser {
     public boolean getBoolean(final String key) {
         if (getType(key) == Type.Boolean)
             return (Boolean) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_BOOLEAN);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_BOOLEAN);
     }
 
     /**
@@ -259,7 +264,7 @@ public final class JSONObject extends JSONParser {
     public JSONObject getJSONObject(final String key) {
         if (getType(key) == Type.JSONObject)
             return (JSONObject) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_JSON_OBJECT);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_JSON_OBJECT);
     }
 
     /**
@@ -272,7 +277,7 @@ public final class JSONObject extends JSONParser {
     public JSONArray getJSONArray(final String key) {
         if (getType(key) == Type.JSONArray)
             return (JSONArray) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_JSON_ARRAY);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_JSON_ARRAY);
     }
 
     /**
@@ -303,7 +308,7 @@ public final class JSONObject extends JSONParser {
             storage.put(key, value);
             return this;
         }
-        throw new JSONException(Constants.EXCEPTION_VALUE_KEY_NULL);
+        throw new JSONException(EXCEPTION_VALUE_KEY_NULL);
     }
 
     /**

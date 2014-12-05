@@ -5,7 +5,7 @@ package com.ameling.parser;
  *
  * @author Wesley A
  */
-public class Constants {
+public final class Constants {
     // Not intended as object
     private Constants() {}
 
@@ -14,37 +14,16 @@ public class Constants {
     public static final char CHAR_JSON_OBJECT_END = '}';
     public static final char CHAR_JSON_ARRAY_START = '[';
     public static final char CHAR_JSON_ARRAY_END = ']';
-    public static final char CHAR_BRACKET_OPEN = '(';
-    public static final char CHAR_BRACKET_CLOSE = ')';
 
-    public static final char CHAR_E_UPPER = 'e';
-    public static final char CHAR_E_LOWER = 'E';
-    public static final char CHAR_T_LOWER = 't';
-    public static final char CHAR_F_LOWER = 'f';
-
-    public static final char CHAR_DOT = '.';
-    public static final char CHAR_COMMA = ',';
-    public static final char CHAR_COLON = ':';
-
-    public static final char CHAR_QUOTE_SINGLE = '\'';
     public static final char CHAR_QUOTE_DOUBLE = '"';
-
+    public static final char CHAR_COLON = ':';
+    public static final char CHAR_COMMA = ',';
     public static final char CHAR_PLUS = '+';
-    public static final char CHAR_SUBTRACT = '-';
-    public static final char CHAR_MULTIPLY = '*';
-    public static final char CHAR_SLASH_FORWARD = '/';
-    public static final char CHAR_SLASH_BACK = '\\';
-
-    // All used regular expression
-    public static final String REGEX_WORD = "\\w";
 
     // All formats to be used in Exceptions
     public static final String FORMAT_EXPECTED_CHAR = "Expected '%s'";
-    public static final String FORMAT_UNEXPECTED_TOKEN = "Unexpected token '%s'";
     public static final String FORMAT_EXPECTED_VALUE = "Key '%s' is not a %s";
     public static final String FORMAT_EXPECTED_EXISTING_KEY = "Key '%s' does not exist in %s!";
-
-    //public static final String FORMAT_UNEXPECTED_CHAR = "Unexpected char '%s'";
 
     // All non-format Exceptions
     public static final String EXCEPTION_VALUE_KEY_NULL = "Value or key is null!";
@@ -60,9 +39,4 @@ public class Constants {
     public static final String TYPE_STRING = "string";
     public static final String TYPE_JSON_OBJECT = "JSONObject";
     public static final String TYPE_JSON_ARRAY = "JSONArray";
-    public static final String TYPE_NULL = "null";
-
-    // Other Strings
-    public static final String STRING_KEY = "key";
-    public static final String STRING_VALUE = "value";
 }

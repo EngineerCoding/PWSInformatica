@@ -8,7 +8,7 @@ import java.io.Writer;
 
 /**
  * This class is used to write to a {@link Writer} object. Then you can call
- *
+ * TODO: CONSTANTS STATIC IMPORT
  * @author Wesley A
  */
 public class JSONWriter {
@@ -87,7 +87,7 @@ public class JSONWriter {
         for (int i = 0; i < keys.length; i++) {
             markLineEnd();
             writeString(keys[i]);
-            writer.write(Constants.CHAR_COLON + (bIndent ? " " : ""));
+            writer.write(Constants.CHAR_COLON + (bIndent ? " " : "")); // TODO: add constants for string
             writeValue(parser.get(keys[i]), i != keys.length - 1);
         }
 

@@ -1,5 +1,6 @@
 package com.ameling.parser;
 
+import static com.ameling.parser.Constants.CHAR_QUOTE_DOUBLE;
 
 /**
  * This class is the base class of any parser. At least, any parsers which needs basic parsing method, because this class has methods to parse:
@@ -16,14 +17,20 @@ package com.ameling.parser;
  */
 public abstract class Parser {
 
-    // starts constants
-    // unshared exception formats:
+    // All constants used within this class only
+    private static final char CHAR_DOT = '.';
+    private static final char CHAR_E_LOWER = 'e';
+    private static final char CHAR_E_UPPER = 'E';
+    private static final char CHAR_F = 'f';
+    private static final char CHAR_QUOTE_SINGLE = '\'';
+    private static final char CHAR_SLASH_BACK = '\\';
+    private static final char CHAR_SUBTRACT = '-';
+    private static final char CHAR_T = 't';
+
+    private static final String EXCEPTION_MULTIPLE_DOTS = "Multiple dots have been found";
+    private static final String EXCEPTION_UNFINISHED_STRING = "Unfinished string";
     private static final String FORMAT_PARSE_BOOLEAN = "Tried to parse to '%s', got %s";
 
-    // unshared exceptions
-    private static final String EXCEPTION_UNFINISHED_STRING = "Unfinished string";
-    private static final String EXCEPTION_MULTIPLE_DOTS = "Multiple dots have been found";
-    // End constants
 
     /**
      * The tokenizer that is used for this object
@@ -58,11 +65,11 @@ public abstract class Parser {
 
         Character character = tokenizer.peek();
         if (character != null) {
-            if (character == Constants.CHAR_QUOTE_SINGLE || character == Constants.CHAR_QUOTE_DOUBLE) // check for a string
+            if (character == CHAR_QUOTE_SINGLE || character == CHAR_QUOTE_DOUBLE) // check for a string
                 return parseString();
-            else if (Character.isDigit(character) || character == Constants.CHAR_SUBTRACT || character == Constants.CHAR_PLUS) // check for a number
+            else if (Character.isDigit(character) || character == CHAR_SUBTRACT || character == Constants.CHAR_PLUS) // check for a number
                 return parseNumber(true);
-            else if (character == Constants.CHAR_T_LOWER || character == Constants.CHAR_F_LOWER) // check for boolean
+            else if (character == CHAR_T || character == CHAR_F) // check for boolean
                 return parseBoolean();
         }
         return null; // no standard value has been detected
@@ -79,8 +86,8 @@ public abstract class Parser {
         Character character = tokenizer.peek();
 
         // Check if the string starts with a single quote or double quote
-        final boolean singleQuote = character == Constants.CHAR_QUOTE_SINGLE;
-        final boolean doubleQuote = character == Constants.CHAR_QUOTE_DOUBLE;
+        final boolean singleQuote = character == CHAR_QUOTE_SINGLE;
+        final boolean doubleQuote = character == CHAR_QUOTE_DOUBLE;
 
         if (singleQuote || doubleQuote) { // Only continue when some sort of quote has been found
             tokenizer.pop();
@@ -92,12 +99,12 @@ public abstract class Parser {
                     backslash = false;
                     builder.append(tokenizer.pop());
                 } else {
-                    if (character == (singleQuote ? Constants.CHAR_QUOTE_SINGLE : Constants.CHAR_QUOTE_DOUBLE)) {
+                    if (character == (singleQuote ? CHAR_QUOTE_SINGLE : CHAR_QUOTE_DOUBLE)) {
                         // when  the next character is not ignored, and it is the matching quote which opened the string, return the built string but
                         // first get rid of the quote, we have no use for that.
                         tokenizer.pop();
                         return builder.toString();
-                    } else if (character == Constants.CHAR_SLASH_BACK) {
+                    } else if (character == CHAR_SLASH_BACK) {
                         // A backslash has been found, set to boolean value to true to ignore the next character
                         backslash = true;
                         builder.append(tokenizer.pop()); // append the backslash, it is part of the string
@@ -121,7 +128,7 @@ public abstract class Parser {
      * @return {@link Number} object when it successfully parsed or null when it failed
      * @throws SyntaxException when a syntax error occurred
      */
-    protected final Number parseNumber(boolean parseE) throws SyntaxException {
+    protected final Double parseNumber(boolean parseE) throws SyntaxException {
         tokenizer.skipBlanks();
 
         Character character;
@@ -132,7 +139,7 @@ public abstract class Parser {
             if (Character.isDigit(character)) {
                 // The next character is a digit, simply append
                 builder.append(tokenizer.pop());
-            } else if (character == Constants.CHAR_SUBTRACT || character == Constants.CHAR_PLUS) {
+            } else if (character == CHAR_SUBTRACT || character == Constants.CHAR_PLUS) {
                 // when a '+' or '-' is the character, it will check if the builder has any digits yet.
                 // When it hasn't got any digits, it is a unary minus or plus, when it already has digits, it could be an operator.
                 // We will stop this loop because it is treated as an unknown character
@@ -141,7 +148,7 @@ public abstract class Parser {
                 } else {
                     break;
                 }
-            } else if (character == Constants.CHAR_DOT) {
+            } else if (character == CHAR_DOT) {
                 // The next character is a dot, check if it has been parsed yet. When it hasn't been parsed, just append it, otherwise notify the user
                 if (!parsedDot) {
                     parsedDot = true;
@@ -149,7 +156,7 @@ public abstract class Parser {
                 } else {
                     throw new SyntaxException(EXCEPTION_MULTIPLE_DOTS);
                 }
-            } else if ((character == Constants.CHAR_E_LOWER || character == Constants.CHAR_E_UPPER)) {
+            } else if ((character == CHAR_E_LOWER || character == CHAR_E_UPPER)) {
                 // When we are allowed to parse e, and the builder has digits then parse a new number which does not have e, and multiply it with the original number
                 if (parseE && builder.length() != 0) {
                     tokenizer.pop();
@@ -183,8 +190,8 @@ public abstract class Parser {
         Character character = tokenizer.peek();
 
         // When the next character is 't' or 'f' it tries to parse 'true' or 'false'
-        if (character != null && (character == Constants.CHAR_T_LOWER || character == Constants.CHAR_F_LOWER)) {
-            final boolean parseTrue = character == Constants.CHAR_T_LOWER; // determine whether it is true or false to parse
+        if (character != null && (character == CHAR_T || character == CHAR_F)) {
+            final boolean parseTrue = character == CHAR_T; // determine whether it is true or false to parse
             final StringBuilder builder = new StringBuilder();
 
             // when we are parsing 'true' we need 4 characters, 5 for 'false'

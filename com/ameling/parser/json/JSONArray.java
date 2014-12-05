@@ -1,6 +1,5 @@
 package com.ameling.parser.json;
 
-import com.ameling.parser.Constants;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.Tokenizer;
 
@@ -8,6 +7,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ameling.parser.Constants.*;
 
 /**
  * A JSON array to parse a JSON String. The syntax for a JSON string is as follows:<br/>
@@ -59,7 +60,7 @@ public final class JSONArray extends JSONParser {
     public JSONArray(final Tokenizer tokenizer) {
         super(tokenizer);
 
-        if (tokenizer.isNext(Constants.CHAR_JSON_ARRAY_START)) {
+        if (tokenizer.isNext(CHAR_JSON_ARRAY_START)) {
             do {
                 final Object object = parseValue();
                 if (object != null) {
@@ -67,14 +68,14 @@ public final class JSONArray extends JSONParser {
                 } else {
                     break;
                 }
-            } while (tokenizer.isNext(Constants.CHAR_COMMA));
+            } while (tokenizer.isNext(CHAR_COMMA));
 
-            if (tokenizer.isNext(Constants.CHAR_JSON_ARRAY_END))
+            if (tokenizer.isNext(CHAR_JSON_ARRAY_END))
                 return;
 
-            throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.CHAR_JSON_ARRAY_END);
+            throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_END);
         }
-        throw new SyntaxException(Constants.FORMAT_EXPECTED_CHAR, Constants.CHAR_JSON_ARRAY_START);
+        throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_START);
     }
 
     /**
@@ -87,7 +88,7 @@ public final class JSONArray extends JSONParser {
     public boolean has(final int key) {
         if (key >= 0 && key < storage.size())
             return true;
-        throw new JSONException(Constants.FORMAT_EXPECTED_EXISTING_KEY, key, Constants.TYPE_JSON_ARRAY);
+        throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_ARRAY);
     }
 
     /**
@@ -136,7 +137,7 @@ public final class JSONArray extends JSONParser {
     public String getString(final int key) {
         if (getType(key) == Type.String)
             return (String) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, key, Constants.TYPE_STRING);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, key, TYPE_STRING);
     }
 
     /**
@@ -150,7 +151,7 @@ public final class JSONArray extends JSONParser {
     private Number getNumber(final int key, final String type) {
         if (getType(key) == Type.Number)
             return (Number) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, key, type);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, key, type);
     }
 
     /**
@@ -161,7 +162,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public long getLong(final int key) {
-        return getNumber(key, Constants.TYPE_LONG).longValue();
+        return getNumber(key, TYPE_LONG).longValue();
     }
 
     /**
@@ -172,7 +173,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public int getInt(final int key) {
-        return getNumber(key, Constants.TYPE_INT).intValue();
+        return getNumber(key, TYPE_INT).intValue();
     }
 
     /**
@@ -183,7 +184,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public short getShort(final int key) {
-        return getNumber(key, Constants.TYPE_SHORT).shortValue();
+        return getNumber(key, TYPE_SHORT).shortValue();
     }
 
     /**
@@ -194,7 +195,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public byte getByte(final int key) {
-        return getNumber(key, Constants.TYPE_BYTE).byteValue();
+        return getNumber(key, TYPE_BYTE).byteValue();
     }
 
     /**
@@ -205,7 +206,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public double getDouble(final int key) {
-        return getNumber(key, Constants.TYPE_DOUBLE).doubleValue();
+        return getNumber(key, TYPE_DOUBLE).doubleValue();
     }
 
     /**
@@ -216,7 +217,7 @@ public final class JSONArray extends JSONParser {
      * @throws JSONException when the key is not in the {@link #storage}
      */
     public float getFloat(final int key) {
-        return getNumber(key, Constants.TYPE_FLOAT).floatValue();
+        return getNumber(key, TYPE_FLOAT).floatValue();
     }
 
     /**
@@ -229,7 +230,7 @@ public final class JSONArray extends JSONParser {
     public boolean getBoolean(final int key) {
         if (getType(key) == Type.Boolean)
             return (Boolean) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_BOOLEAN);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_BOOLEAN);
     }
 
     /**
@@ -242,7 +243,7 @@ public final class JSONArray extends JSONParser {
     public JSONObject getJSONObject(final int key) {
         if (getType(key) == Type.JSONObject)
             return (JSONObject) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_JSON_OBJECT);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_JSON_OBJECT);
     }
 
     /**
@@ -255,7 +256,7 @@ public final class JSONArray extends JSONParser {
     public JSONArray getJSONArray(final int key) {
         if (getType(key) == Type.JSONArray)
             return (JSONArray) get(key);
-        throw new JSONException(Constants.FORMAT_EXPECTED_VALUE, Constants.TYPE_JSON_ARRAY);
+        throw new JSONException(FORMAT_EXPECTED_VALUE, TYPE_JSON_ARRAY);
     }
 
     /**
@@ -284,7 +285,7 @@ public final class JSONArray extends JSONParser {
                 throw new IndexOutOfBoundsException();
             }
         }
-        throw new JSONException(Constants.EXCEPTION_VALUE_KEY_NULL);
+        throw new JSONException(EXCEPTION_VALUE_KEY_NULL);
     }
 
     /**
@@ -433,7 +434,7 @@ public final class JSONArray extends JSONParser {
             storage.add(value);
             return this;
         }
-        throw new JSONException(Constants.EXCEPTION_VALUE_KEY_NULL);
+        throw new JSONException(EXCEPTION_VALUE_KEY_NULL);
     }
 
     /**

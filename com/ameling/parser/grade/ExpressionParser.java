@@ -18,6 +18,7 @@ public final class ExpressionParser extends Parser {
     private static final char CHAR_BRACKET_CLOSE = ')';
     private static final char CHAR_BRACKET_OPEN = '(';
     private static final char CHAR_MULTIPLY = '*';
+    private static final char CHAR_SLASH_FORWARD = '/';
     private static final String REGEX_VARIABLE_STARTING = "[a-zA-Z_]";
     private static final String REGEX_VARIABLE_REST = "\\w";
 
@@ -84,7 +85,7 @@ public final class ExpressionParser extends Parser {
             if (asteriskUsed)
                 tokenizer.skipBlanks();
 
-            // No brackets, so maybe a variable (eg. SE1
+            // No brackets, so maybe a variable (eg. SE1)
             final StringBuilder builder = new StringBuilder();
             Character character = tokenizer.peek();
             if (character != null && character.toString().matches(REGEX_VARIABLE_STARTING)) {
@@ -120,14 +121,11 @@ public final class ExpressionParser extends Parser {
     protected void divide(final int n) {
         if (n != 0) {
             if (expressions.length != 0) {
-                for (final ExpressionParser expression : expressions) {
-                    System.out.println("Dividing " + expression.variable + " with " + n);
+                for (final ExpressionParser expression : expressions)
                     expression.weighting.divide(n);
-                }
                 //countFractions();
             } else {
                 weighting.divide(n);
-                System.out.println("Dividing this");
             }
         }
 

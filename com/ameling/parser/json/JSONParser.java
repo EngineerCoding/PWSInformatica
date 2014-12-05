@@ -1,12 +1,14 @@
 package com.ameling.parser.json;
 
-import com.ameling.parser.Constants;
 import com.ameling.parser.Parser;
 import com.ameling.parser.Tokenizer;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+
+import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_START;
+import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_START;
 
 /**
  * The main super class of both {@link JSONObject} and {@link JSONParser}. As an user this class is useless to you since this handles all
@@ -15,6 +17,10 @@ import java.io.StringWriter;
  * @author Wesley A
  */
 public abstract class JSONParser extends Parser {
+
+    // All constants which are just used within this class
+    private static final String TYPE_NULL = "null";
+
 
     /**
      * An enumeration which contains types of all the values, used by {@link JSONParser#getType(Object)}
@@ -67,26 +73,14 @@ public abstract class JSONParser extends Parser {
         /**
          * Only reachable in {@link JSONParser} where the only Null object is stored
          */
-        private Null() {
-        }
-
-        /**
-         * Makes sure to not get more instances of Null. Always throws CloneNotSupportedException
-         *
-         * @return nothing, as it cant return
-         * @throws CloneNotSupportedException
-         */
-        @Override
-        public Object clone() throws CloneNotSupportedException {
-            throw new CloneNotSupportedException();
-        }
+        private Null() {}
 
         /**
          * Makes sure to return null (called by {@link JSONWriter}
          */
         @Override
         public String toString() {
-            return Constants.TYPE_NULL;
+            return TYPE_NULL;
         }
     }
 
@@ -113,9 +107,9 @@ public abstract class JSONParser extends Parser {
         if (obj == null) {
             Character character = tokenizer.peek();
             if (character != null) {
-                if (character == Constants.CHAR_JSON_ARRAY_START)
+                if (character == CHAR_JSON_ARRAY_START)
                     return new JSONArray(tokenizer);
-                if (character == Constants.CHAR_JSON_OBJECT_START)
+                if (character == CHAR_JSON_OBJECT_START)
                     return new JSONObject(tokenizer);
 
                 return parseNull();
@@ -132,12 +126,12 @@ public abstract class JSONParser extends Parser {
      */
     private Null parseNull() {
         tokenizer.skipBlanks();
-        if (tokenizer.peek() == Constants.TYPE_NULL.charAt(0)) {
+        if (tokenizer.peek() == TYPE_NULL.charAt(0)) {
             final StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < Constants.TYPE_NULL.length() && tokenizer.peek() != null; i++)
+            for (int i = 0; i < TYPE_NULL.length() && tokenizer.peek() != null; i++)
                 sb.append(tokenizer.pop());
 
-            return (Constants.TYPE_NULL.equals(sb.toString()) ? NULL : null);
+            return (TYPE_NULL.equals(sb.toString()) ? NULL : null);
         }
         return null;
     }
@@ -229,9 +223,9 @@ public abstract class JSONParser extends Parser {
 
         final Character character = tokenizer.peek();
         if (character != null) {
-            if (character == Constants.CHAR_JSON_ARRAY_START)
+            if (character == CHAR_JSON_ARRAY_START)
                 return new JSONArray(tokenizer);
-            if (character == Constants.CHAR_JSON_OBJECT_START)
+            if (character == CHAR_JSON_OBJECT_START)
                 return new JSONObject(tokenizer);
         }
         return null;

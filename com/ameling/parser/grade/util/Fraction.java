@@ -5,7 +5,7 @@ package com.ameling.parser.grade.util;
  *
  * @author Wesley A
  */
-public final class Fraction {
+public final class Fraction implements Cloneable {
 
     /**
      * The numerator of this fraction
@@ -22,10 +22,12 @@ public final class Fraction {
             throw new ArithmeticException("Cannot divide by 0");
         this.numerator = numerator;
         this.denominator = denominator;
+        makeSmallest();
     }
 
     /**
      * Returns the numerator, this is done through this method because it is not a final variable
+     *
      * @return The numerator of this fraction
      */
     public int getNumerator() {
@@ -34,6 +36,7 @@ public final class Fraction {
 
     /**
      * Returns the numerator, this is done through this method because it is not a final variable
+     *
      * @return The denominator of this fraction
      */
     public int getDenominator() {
@@ -42,6 +45,7 @@ public final class Fraction {
 
     /**
      * Multiplies this fraction with given number. Only multiplies with the numerator
+     *
      * @param n The value to multiply with
      */
     public void multiply(final int n) {
@@ -51,28 +55,28 @@ public final class Fraction {
 
     /**
      * Divides this fraction with given number.
+     *
      * @param n The value to divide with
      * @throws java.lang.ArithmeticException when n = 0
      */
     public void divide(final int n) {
         if (n == 0)
             throw new ArithmeticException("Cannot divide by 0");
-        System.out.printf("%d/%d\n", numerator, denominator);
         denominator *= n;
-        System.out.println("divided");
-        System.out.printf("%d/%d\n", numerator, denominator);
-        //makeSmallest();
+        makeSmallest();
     }
 
     /**
      * Adds this fraction with the given fraction
+     *
      * @param fraction The fraction to add with
      */
-    public void add(final Fraction fraction) {
+    public void add(Fraction fraction) {
         if (fraction.denominator == denominator) {
             numerator += fraction.numerator;
             makeSmallest();
         } else {
+            fraction = fraction.clone();
             final int backup_denominator = denominator;
 
             numerator *= fraction.denominator;
@@ -81,7 +85,6 @@ public final class Fraction {
             fraction.denominator *= backup_denominator;
 
             add(fraction);
-            fraction.makeSmallest();
         }
     }
 
@@ -92,6 +95,7 @@ public final class Fraction {
         if (denominator % numerator == 0 && numerator != 1) {
             denominator /= numerator;
             numerator = 1;
+            return this;
         }
 
         makeSmallest_loop();
@@ -113,5 +117,8 @@ public final class Fraction {
         }
     }
 
-
+    @Override
+    public Fraction clone() {
+        return new Fraction(numerator, denominator);
+    }
 }

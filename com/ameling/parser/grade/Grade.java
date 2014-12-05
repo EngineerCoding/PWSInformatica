@@ -1,17 +1,18 @@
 package com.ameling.parser.grade;
 
 /**
- * Holds a grade and the value of it. This is based on weighting, and this is the object the 
+ * Holds a grade and the value of it. This is based on weighting, and this is the object the
  * parser will parse into.
+ *
  * @author Wesley A
  */
 public final class Grade {
 
-	/**
-	 * The name of this grade
-	 */
+    /**
+     * The name of this grade
+     */
     public final String name;
-    
+
     /**
      * The weighting of this grade
      */
@@ -19,7 +20,8 @@ public final class Grade {
 
     /**
      * Creates a new grade with the name and weighting
-     * @param name The name of this grade
+     *
+     * @param name      The name of this grade
      * @param weighting The weigthing of this grade
      */
     public Grade(final String name, final int weighting) {
@@ -31,7 +33,7 @@ public final class Grade {
      * This value is used {@link Calculator}
      */
     protected double value;
-    
+
     /**
      * A boolean flag whether it is set or not. Used in {@link #reset}, {@link #set(double)} and {@link Calculator}
      */
@@ -39,11 +41,12 @@ public final class Grade {
 
     /**
      * Sets the grade value to this value.
+     *
      * @param grade The value to set to
      */
     public void setGrade(final double grade) {
         value = grade;
-        if(!isSet)
+        if (!isSet)
             isSet = true;
     }
 

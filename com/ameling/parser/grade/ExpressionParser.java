@@ -10,7 +10,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ameling.parser.Constants.*;
+import static com.ameling.parser.Constants.CHAR_PLUS;
+import static com.ameling.parser.Constants.FORMAT_EXPECTED_CHAR;
 
 public final class ExpressionParser extends Parser {
 
@@ -19,12 +20,13 @@ public final class ExpressionParser extends Parser {
     private static final char CHAR_BRACKET_OPEN = '(';
     private static final char CHAR_MULTIPLY = '*';
     private static final char CHAR_SLASH_FORWARD = '/';
+    private static final String EXCEPTION_NEED_VARIABLE = "A variable is needed here!";
     private static final String REGEX_VARIABLE_STARTING = "[a-zA-Z_]";
     private static final String REGEX_VARIABLE_REST = "\\w";
 
     /**
-     * The fraction which goes for a temporary weighting. When all Expression have the same denominator, this can be turned into a {@link com.ameling.parser.grade.Grade} object
-     * via {@link #} TODO: Add JD
+     * The fraction which goes for a temporary weighting. When all Expression have the same denominator, this is turned into a {@link Grade} object
+     * in {@link #getCalculator}
      */
     private Fraction weighting = new Fraction(1, 1);
 
@@ -36,7 +38,12 @@ public final class ExpressionParser extends Parser {
     /**
      * Sub expressions
      */
-    public final ExpressionParser[] expressions;
+    private final ExpressionParser[] subExpressions;
+
+    /**
+     * The {@link Calculator} where all this parsing is about
+     */
+    public final Calculator gradeCalculator;
 
     /**
      * Creates a new instance of ExpressionParser and parses the expression.<br/>
@@ -77,9 +84,12 @@ public final class ExpressionParser extends Parser {
 
             if (!tokenizer.isNext(CHAR_BRACKET_CLOSE))
                 throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_BRACKET_CLOSE);
+
+            if (multiplier == null)
+                multiplier = parseNumber(false);
         }
 
-        this.expressions = (expressions.size() == 0 ? new ExpressionParser[0] : expressions.toArray(new ExpressionParser[expressions.size()]));
+        this.subExpressions = (expressions.size() == 0 ? new ExpressionParser[0] : expressions.toArray(new ExpressionParser[expressions.size()]));
 
         if (expressions.size() == 0) {
             if (asteriskUsed)
@@ -94,23 +104,23 @@ public final class ExpressionParser extends Parser {
                     builder.append(tokenizer.pop());
             }
 
-            if(builder.length() == 0)
-                ; // TODO: throw exception, need variable
+            if (builder.length() == 0)
+                throw new SyntaxException(EXCEPTION_NEED_VARIABLE);
             this.variable = builder.toString();
         } else {
             this.variable = null;
-            if (multiplier == null)
-                multiplier = parseNumber(false);
-
-            if (multiplier != null) // Recheck because it can exist after previous check
-                multiply(multiplier.intValue());
-
-            if (tokenizer.isNext(CHAR_SLASH_FORWARD)) {// divide char
-                final Double divider = parseNumber(false);
-                if (divider != null)
-                    divide(divider.intValue());
-            }
         }
+
+        if (multiplier != null)
+            multiply(multiplier.intValue());
+
+        if (tokenizer.isNext(CHAR_SLASH_FORWARD)) {// divide char
+            final Double divider = parseNumber(false);
+            if (divider != null)
+                divide(divider.intValue());
+        }
+
+        gradeCalculator = getCalculator();
     }
 
     /**
@@ -118,19 +128,15 @@ public final class ExpressionParser extends Parser {
      *
      * @param n The value to divide with
      */
-    protected void divide(final int n) {
+    private void divide(final int n) {
         if (n != 0) {
-            if (expressions.length != 0) {
-                for (final ExpressionParser expression : expressions)
-                    expression.weighting.divide(n);
-                //countFractions();
+            if (subExpressions.length != 0) {
+                for (final ExpressionParser expression : subExpressions)
+                    expression.divide(n);
+                countFractions();
             } else {
                 weighting.divide(n);
             }
-        }
-
-        for (final ExpressionParser expression : expressions) {
-            System.out.println(expression.toString());
         }
     }
 
@@ -139,11 +145,11 @@ public final class ExpressionParser extends Parser {
      *
      * @param n The value to multiply with
      */
-    protected void multiply(final int n) {
+    private void multiply(final int n) {
         if (n != 0) {
-            if (expressions.length != 0) {
-                for (final ExpressionParser expression : expressions)
-                    expression.weighting.multiply(n);
+            if (subExpressions.length != 0) {
+                for (final ExpressionParser expression : subExpressions)
+                    expression.multiply(n);
                 countFractions();
             } else {
                 weighting.multiply(n);
@@ -153,19 +159,63 @@ public final class ExpressionParser extends Parser {
 
     /**
      * Counts all fractions of sub-expressions if they are present.
-     */ //TODO: fix this method!@E!@RE!
+     */
     private void countFractions() {
-        if (expressions.length != 0) {
-            final Fraction start = expressions[0].weighting;
-            for (int i = 1; i < expressions.length; i++)
-                start.add(expressions[i].weighting);
+        if (subExpressions.length != 0) {
+            final Fraction start = subExpressions[0].weighting.clone();
+            for (int i = 1; i < subExpressions.length; i++)
+                start.add(subExpressions[i].weighting);
             weighting = start.makeSmallest();
         }
     }
 
-    @Override
-    public String toString() {
-        return variable + ":" + weighting.getNumerator() + " " + weighting.getDenominator();
+    /**
+     * Creates a {@link Calculator} for this parser object.
+     * @return The {@link Calculator} for this parser object
+     */
+    private Calculator getCalculator() {
+        final ExpressionParser[] gradeExpressions = findGradeExpressions(subExpressions);
+        final List<Integer> denominators = new ArrayList<Integer>();
+
+        // collect the denominators
+        for (final ExpressionParser grade : gradeExpressions) {
+            if(!denominators.contains(grade.weighting.getDenominator()))
+                denominators.add(grade.weighting.getDenominator());
+        }
+
+        final Grade[] grades = new Grade[gradeExpressions.length];
+
+        for (int i = 0; i < gradeExpressions.length; i++) {
+            final int denominator_backup = gradeExpressions[i].weighting.getDenominator();
+            for (final Integer denominator : denominators) {
+                if (denominator != denominator_backup) {
+                    gradeExpressions[i].weighting.multiply(denominator);
+                    gradeExpressions[i].weighting.divide(denominator);
+                }
+            }
+            grades[i] = new Grade(gradeExpressions[i].variable, gradeExpressions[i].weighting.getNumerator());
+        }
+
+        return new Calculator(grades);
     }
 
+    /**
+     * Finds all the expressions which represent a grade (the variable field is not null)
+     * @param subs The list to look through, used for recursion
+     * @return An array with expressions which represent a grade
+     */
+    private ExpressionParser[] findGradeExpressions(final ExpressionParser[] subs) {
+        final List<ExpressionParser> grades = new ArrayList<ExpressionParser>();
+        for (final ExpressionParser expression : subs) {
+            final int lengthSubExpression = expression.subExpressions.length;
+
+            if (lengthSubExpression == 0) {
+                grades.add(expression);
+            } else {
+                for (final ExpressionParser exp : (lengthSubExpression == 1 ? findGradeExpressions(expression.subExpressions) : expression.subExpressions))
+                    grades.add(exp);
+            }
+        }
+        return grades.toArray(new ExpressionParser[grades.size()]);
+    }
 }

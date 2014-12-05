@@ -171,6 +171,7 @@ public final class ExpressionParser extends Parser {
 
     /**
      * Creates a {@link Calculator} for this parser object.
+     *
      * @return The {@link Calculator} for this parser object
      */
     private Calculator getCalculator() {
@@ -179,7 +180,7 @@ public final class ExpressionParser extends Parser {
 
         // collect the denominators
         for (final ExpressionParser grade : gradeExpressions) {
-            if(!denominators.contains(grade.weighting.getDenominator()))
+            if (!denominators.contains(grade.weighting.getDenominator()))
                 denominators.add(grade.weighting.getDenominator());
         }
 
@@ -201,6 +202,7 @@ public final class ExpressionParser extends Parser {
 
     /**
      * Finds all the expressions which represent a grade (the variable field is not null)
+     *
      * @param subs The list to look through, used for recursion
      * @return An array with expressions which represent a grade
      */

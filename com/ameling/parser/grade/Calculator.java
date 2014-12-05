@@ -81,6 +81,7 @@ public final class Calculator {
 
     /**
      * Gets the {@link Grade} object in {@link #grades} by name
+     *
      * @param name The name of the grade
      * @return The {@link Grade} object corresponding with the name
      */

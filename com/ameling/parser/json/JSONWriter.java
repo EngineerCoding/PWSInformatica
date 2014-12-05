@@ -6,12 +6,26 @@ import com.ameling.parser.json.JSONParser.Type;
 import java.io.IOException;
 import java.io.Writer;
 
+import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_START;
+import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_END;
+import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_START;
+import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_END;
+import static com.ameling.parser.Constants.CHAR_COLON;
+import static com.ameling.parser.Constants.CHAR_COMMA;
+
 /**
  * This class is used to write to a {@link Writer} object. Then you can call
- * TODO: CONSTANTS STATIC IMPORT
+ *
  * @author Wesley A
  */
 public class JSONWriter {
+
+    // All constants used within this class only
+    private static final char CHAR_TAB = '\t';
+    private static final String STRING_EMPTY = "";
+    private static final String STRING_SPACE = " ";
+    private static final String STRING_WRITER_NULL = "Writer is null";
+
 
     /**
      * {@link Writer} to be used for this class
@@ -21,7 +35,7 @@ public class JSONWriter {
     /**
      * Boolean whether to decide if we should add indentation and line-ends
      */
-    private final boolean bIndent;
+    private final boolean indent;
 
     /**
      * Current indentation level
@@ -40,14 +54,14 @@ public class JSONWriter {
     /**
      * Creates a new instance of this class
      *
-     * @param writer  - The writer to use in this object
-     * @param bIndent - True to indent and add line-ends or false to have plain text
+     * @param writer - The writer to use in this object
+     * @param indent - True to indent and add line-ends or false to have plain text
      */
-    public JSONWriter(final Writer writer, final boolean bIndent) {
+    public JSONWriter(final Writer writer, final boolean indent) {
         this.writer = writer;
-        this.bIndent = bIndent;
+        this.indent = indent;
         if (writer == null)
-            throw new NullPointerException("Writer is null");
+            throw new NullPointerException(STRING_WRITER_NULL);
     }
 
     /**
@@ -57,7 +71,7 @@ public class JSONWriter {
      * @throws IOException when the writer throws one
      */
     public synchronized void append(final JSONArray parser) throws IOException {
-        writer.write('[');
+        writer.write(CHAR_JSON_ARRAY_START);
 
         tabs += 1;
         int maxIndex = parser.getSize();
@@ -69,7 +83,7 @@ public class JSONWriter {
         tabs -= 1;
         if (maxIndex != 0)
             markLineEnd();
-        writer.write(']');
+        writer.write(CHAR_JSON_ARRAY_END);
         writer.flush();
     }
 
@@ -80,36 +94,36 @@ public class JSONWriter {
      * @throws IOException when the {@link #writer} throws one
      */
     public synchronized void append(final JSONObject parser) throws IOException {
-        writer.write(Constants.CHAR_JSON_OBJECT_START);
+        writer.write(CHAR_JSON_OBJECT_START);
 
         tabs += 1;
         String[] keys = parser.getKeys();
         for (int i = 0; i < keys.length; i++) {
             markLineEnd();
             writeString(keys[i]);
-            writer.write(Constants.CHAR_COLON + (bIndent ? " " : "")); // TODO: add constants for string
+            writer.write(CHAR_COLON + (indent ? STRING_SPACE : STRING_EMPTY));
             writeValue(parser.get(keys[i]), i != keys.length - 1);
         }
 
         tabs -= 1;
         //if(keys.length != 0)
         markLineEnd();
-        writer.write(Constants.CHAR_JSON_OBJECT_END);
+        writer.write(CHAR_JSON_OBJECT_END);
         writer.flush();
     }
 
     /**
      * Marks the line end using {@link System#lineSeparator()} and indents afterwards.<br/>
-     * This only happens when {@link #bIndent} is set to true
+     * This only happens when {@link #indent} is set to true
      *
      * @throws IOException when the {@link #writer} throws one
      */
     private void markLineEnd() throws IOException {
-        if (bIndent) {
+        if (indent) {
             writer.write(System.lineSeparator());
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < tabs; i++)
-                sb.append('\t');
+                sb.append(CHAR_TAB);
             writer.write(sb.toString());
         }
     }
@@ -135,7 +149,7 @@ public class JSONWriter {
             }
 
             if (hasNext)
-                writer.write(',');
+                writer.write(CHAR_COMMA);
         }
     }
 

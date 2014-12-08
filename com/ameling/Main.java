@@ -1,7 +1,7 @@
 package com.ameling;
 
 import com.ameling.parser.grade.Calculator;
-import com.ameling.parser.grade.ExpressionParser;
+import com.ameling.parser.grade.ExpressionCalculator;
 import com.ameling.parser.grade.Grade;
 
 public class Main {
@@ -20,13 +20,13 @@ public class Main {
         System.out.println(calc.calculateGrade("SE3", 8)); // 7.2
         System.out.println(calc.calculateAverage()); // 8.4
 
-        final Calculator _calc = new ExpressionParser("(SE1 + SE2 + SE3 + SE4)/4").gradeCalculator;
+        final Calculator _calc = new ExpressionCalculator("(SE1 + SE2 + SE3 + SE4)/4");
         System.out.println("TEST: EXPRESSION GRADES");
-        _calc.getGrade("SE1").setGrade(9.1); // 7.2
-        _calc.getGrade("SE2").setGrade(7.7); // 8.4
+        _calc.getGrade("SE1").setGrade(9.1);
+        _calc.getGrade("SE2").setGrade(7.7);
 
-        System.out.println(_calc.calculateGrade("SE3", 8));
-        System.out.println(_calc.calculateAverage());
+        System.out.println(_calc.calculateGrade("SE3", 8)); // 7.2
+        System.out.println(_calc.calculateAverage()); // 8.4
 
     }
 }

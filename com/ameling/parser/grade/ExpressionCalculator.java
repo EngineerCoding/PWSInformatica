@@ -180,7 +180,7 @@ public class ExpressionCalculator extends Calculator {
      *
      * @param tokenizer The tokenizer which is the input of characters
      */
-    protected ExpressionCalculator(final Tokenizer tokenizer) {
+    public ExpressionCalculator(final Tokenizer tokenizer) {
         super(getGrades(tokenizer));
     }
 

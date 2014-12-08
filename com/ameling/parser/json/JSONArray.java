@@ -16,7 +16,7 @@ import static com.ameling.parser.Constants.*;
  *
  * @author Wesley A
  */
-public final class JSONArray extends JSONParser {
+public class JSONArray extends JSONParser {
 
     /**
      * A {@link List} to store keys with a value

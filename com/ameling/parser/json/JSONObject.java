@@ -16,7 +16,7 @@ import static com.ameling.parser.Constants.*;
  *
  * @author Wesley A
  */
-public final class JSONObject extends JSONParser {
+public class JSONObject extends JSONParser {
 
     // All constants used within this class only
     private static final String STRING_KEY = "key";

@@ -206,7 +206,7 @@ public final class ExpressionParser extends Parser {
      * @param subs The list to look through, used for recursion
      * @return An array with expressions which represent a grade
      */
-    private ExpressionParser[] findGradeExpressions(final ExpressionParser[] subs) {
+    private static ExpressionParser[] findGradeExpressions(final ExpressionParser[] subs) {
         final List<ExpressionParser> grades = new ArrayList<ExpressionParser>();
         for (final ExpressionParser expression : subs) {
             final int lengthSubExpression = expression.subExpressions.length;

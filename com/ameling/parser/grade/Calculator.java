@@ -5,22 +5,25 @@ import com.ameling.parser.SyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+
 /**
  * This is the core of the app which calculates the grades. The weighting of all the grades is
  * used to calculate the average. This all is based on {@link Grade} objects.
  *
  * @author Wesley A
  */
-public final class Calculator {
+public class Calculator {
 
     // Constants which are used within this class only
     private static final String FORMAT_INVALID_GRADE = "Invalid grade name '%s'";
     private static final String STRING_UNKNOWN = "unknown";
 
     /**
-     * The grades this object uses and knows
+     * The grades this object uses and knows. This is an immutable list
      */
-    public final Grade[] grades;
+    public final List<Grade> grades;
 
     /**
      * Creates a new object using the given grades
@@ -28,7 +31,7 @@ public final class Calculator {
      * @param grades Thee grades to use
      */
     public Calculator(final Grade[] grades) {
-        this.grades = grades;
+        this.grades = unmodifiableList(asList(grades));
     }
 
     /**
@@ -59,7 +62,7 @@ public final class Calculator {
      */
     public double calculateGrade(final Grade grade, double average) {
         if (grade != null) {
-            List<Grade> setGrades = new ArrayList<Grade>();
+            final List<Grade> setGrades = new ArrayList<Grade>();
             int totalWeighting = grade.weighting;
 
             for (final Grade _grade : grades) {

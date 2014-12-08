@@ -6,7 +6,7 @@ package com.ameling.parser.grade;
  *
  * @author Wesley A
  */
-public final class Grade {
+public class Grade {
 
     /**
      * The name of this grade

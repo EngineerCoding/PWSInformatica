@@ -2,6 +2,7 @@ package com.ameling.parser;
 
 /**
  * This class is here for pure efficiency, it holds all String and char constants to optimize the code, especially in parsers and also for exception throwing <br/>
+ * This class is final because this is useless to inherit in the first place. Also it has a private constructor because this is just a holder class.
  *
  * @author Wesley A
  */

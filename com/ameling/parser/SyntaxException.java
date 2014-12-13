@@ -31,7 +31,7 @@ public class SyntaxException extends RuntimeException {
      * @throws NullPointerException     If the format is null
      * @throws IllegalArgumentException When the format does not match the objects
      */
-    public SyntaxException(final String format, final Object ... objects) {
+    public SyntaxException(final String format, final Object... objects) {
         if (format != null) {
             message = String.format(format, objects);
             return;

@@ -118,6 +118,15 @@ public final class Fraction implements Cloneable {
     }
 
     @Override
+    public boolean equals(final Object other) {
+        if (other != null && other instanceof Fraction) {
+            final Fraction fraction = (Fraction) other;
+            return fraction.numerator == numerator && fraction.denominator == denominator;
+        }
+        return false;
+    }
+
+    @Override
     public Fraction clone() {
         return new Fraction(numerator, denominator);
     }

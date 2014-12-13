@@ -22,6 +22,9 @@ import static com.ameling.parser.Constants.FORMAT_EXPECTED_CHAR;
  */
 public class ExpressionCalculator extends Calculator {
 
+    private static final Fraction FRACTION_1 = new Fraction(1, 1);
+    private static final String EXCEPTION_INVALID_EXPRESSION = "This is an invalid average expression!";
+
     /**
      * This class actually is the parsing part of {@link ExpressionCalculator}.
      *
@@ -42,7 +45,7 @@ public class ExpressionCalculator extends Calculator {
         /**
          * The fraction which goes for a temporary weighting. When all Expression have the same denominator, this is turned into a {@link Grade} object
          */
-        private Fraction weighting = new Fraction(1, 1);
+        private Fraction weighting = FRACTION_1.clone();
 
         /**
          * The variable, such as SE1
@@ -56,6 +59,7 @@ public class ExpressionCalculator extends Calculator {
 
         /**
          * Pares an expression with a {@link Tokenizer}
+         *
          * @param tokenizer The tokenizer which letters an expressio
          */
         private Expression(final Tokenizer tokenizer) {
@@ -186,32 +190,39 @@ public class ExpressionCalculator extends Calculator {
 
     /**
      * Collects the grades of a given expression
+     *
      * @param tokenizer The {@link Tokenizer} which letters an expression
      * @return The grades associated with the expression
+     * @throws SyntaxException When the total weighting is not 1
      */
     private static Grade[] getGrades(final Tokenizer tokenizer) {
-        final Expression[] gradeExpressions = findGradeExpressions(new Expression(tokenizer).subExpressions);
-        final List<Integer> denominators = new ArrayList<Integer>();
+        final Expression parentExpression = new Expression(tokenizer);
+        if (parentExpression.weighting.equals(FRACTION_1)) {
+            final Expression[] gradeExpressions = findGradeExpressions(parentExpression.subExpressions);
+            final List<Integer> denominators = new ArrayList<Integer>();
 
-        // collect the denominators
-        for (final Expression grade : gradeExpressions) {
-            if (!denominators.contains(grade.weighting.getDenominator()))
-                denominators.add(grade.weighting.getDenominator());
-        }
-
-        final Grade[] grades = new Grade[gradeExpressions.length];
-
-        for (int i = 0; i < gradeExpressions.length; i++) {
-            final int denominator_backup = gradeExpressions[i].weighting.getDenominator();
-            for (final Integer denominator : denominators) {
-                if (denominator != denominator_backup) {
-                    gradeExpressions[i].weighting.multiply(denominator);
-                    gradeExpressions[i].weighting.divide(denominator);
-                }
+            // collect the denominators
+            for (final Expression grade : gradeExpressions) {
+                if (!denominators.contains(grade.weighting.getDenominator()))
+                    denominators.add(grade.weighting.getDenominator());
             }
-            grades[i] = new Grade(gradeExpressions[i].variable, gradeExpressions[i].weighting.getNumerator());
+
+            final Grade[] grades = new Grade[gradeExpressions.length];
+
+            for (int i = 0; i < gradeExpressions.length; i++) {
+                final int denominator_backup = gradeExpressions[i].weighting.getDenominator();
+                for (final Integer denominator : denominators) {
+                    if (denominator != denominator_backup) {
+                        gradeExpressions[i].weighting.multiply(denominator);
+                        gradeExpressions[i].weighting.divide(denominator);
+                    }
+                }
+                grades[i] = new Grade(gradeExpressions[i].variable, gradeExpressions[i].weighting.getNumerator());
+            }
+            return grades;
         }
-        return grades;
+
+        throw new SyntaxException(EXCEPTION_INVALID_EXPRESSION);
     }
 
     /**

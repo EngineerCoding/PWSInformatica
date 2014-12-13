@@ -5,9 +5,9 @@ import static com.ameling.parser.Constants.CHAR_QUOTE_DOUBLE;
 /**
  * This class is the base class of any parser. At least, any parsers which needs basic parsing method, because this class has methods to parse:
  * <ul>
- *     <li>Strings</li>
- *     <li>Numbers</li>
- *     <li>Booleans</li>
+ * <li>Strings</li>
+ * <li>Numbers</li>
+ * <li>Booleans</li>
  * </ul>
  * Also it contains a method to parse all of those values, but the beauty of it is that it can be overridden to add your own values. You do not have to necessarily call the super method,
  * but it is advised.<br/>

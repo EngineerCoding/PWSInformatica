@@ -8,7 +8,8 @@ package com.ameling.parser;
  */
 public final class Constants {
     // Not intended as object
-    private Constants() {}
+    private Constants() {
+    }
 
     // All used chars
     public static final char CHAR_JSON_OBJECT_START = '{';

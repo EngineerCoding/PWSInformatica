@@ -73,7 +73,8 @@ public abstract class JSONParser extends Parser {
         /**
          * Only reachable in {@link JSONParser} where the only Null object is stored
          */
-        private Null() {}
+        private Null() {
+        }
 
         /**
          * Makes sure to return null (called by {@link JSONWriter}
@@ -212,9 +213,9 @@ public abstract class JSONParser extends Parser {
      * @param reader The output of a reader to parse
      * @return A corresponding object:
      * <ul>
-     *      <li>{@link JSONObject} when the string starts with '{'</li>
-     *      <li>{@link JSONArray} when the string starts with '['</li>
-     *      <li>Null when it starts with neither of these</li>
+     * <li>{@link JSONObject} when the string starts with '{'</li>
+     * <li>{@link JSONArray} when the string starts with '['</li>
+     * <li>Null when it starts with neither of these</li>
      * </ul>
      */
     public static JSONParser parseJSON(final Reader reader) {

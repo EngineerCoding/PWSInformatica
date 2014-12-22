@@ -57,14 +57,17 @@ public class Calculator {
 	 * @param grade   The grade to calculate the value of
 	 * @param average The average to achieve
 	 * @return the grade's value
+	 * @throws SyntaxException when grade is null
 	 * @see Grade#setGrade(double)
 	 * @see Grade#reset()
 	 */
 	public double calculateGrade (final Grade grade, double average) {
 		if (grade != null) {
+			// Firstly we want to collect all grades which have a value set, along with their weighting in the average grade
 			final List<Grade> setGrades = new ArrayList<Grade>();
 			int totalWeighting = grade.weighting;
 
+			// Loop through all grades, add the grade when it is set to the list of setGrades and add the total weighting
 			for (final Grade _grade : grades) {
 				if (_grade.isSet) {
 					setGrades.add(_grade);
@@ -72,10 +75,13 @@ public class Calculator {
 				}
 			}
 
+			// multiply the average we want, with the total weighting of set numbers
 			average *= totalWeighting;
 			for (final Grade _grade : setGrades) {
+				// Now we subtract the total value with the total of a set grade (which is its value multiplied with its weighting)
 				average -= (_grade.weighting * _grade.value);
 			}
+			// By dividing the leaving amount by its weighting, we get the value of the grade which it should be to achieve the average
 			return average / grade.weighting;
 		}
 

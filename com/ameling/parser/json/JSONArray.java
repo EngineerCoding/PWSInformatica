@@ -60,22 +60,22 @@ public class JSONArray extends JSON {
 	public JSONArray (final Tokenizer tokenizer) {
 		super(tokenizer);
 
-		if (tokenizer.isNext(CHAR_JSON_ARRAY_START)) {
-			do {
-				final Object object = parseValue();
+		if (tokenizer.isNext(CHAR_JSON_ARRAY_START)) { // find the starting character
+				do {
+				final Object object = parseValue(); // Add the value
 				if (object != null) {
 					storage.add(object);
 				} else {
 					break;
 				}
-			} while (tokenizer.isNext(CHAR_COMMA));
+			} while (tokenizer.isNext(CHAR_COMMA)); // If the next character is a comma, then we need to get another value
 
-			if (tokenizer.isNext(CHAR_JSON_ARRAY_END))
-				return;
-
-			throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_END);
+			// throw an error if the next character is not the ending char
+			if (!tokenizer.isNext(CHAR_JSON_ARRAY_END))
+				throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_END);
+		} else {
+			throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_START);
 		}
-		throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_ARRAY_START);
 	}
 
 	/**

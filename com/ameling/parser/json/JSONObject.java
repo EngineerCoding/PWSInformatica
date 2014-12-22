@@ -64,39 +64,34 @@ public class JSONObject extends JSON {
 	public JSONObject (final Tokenizer tokenizer) {
 		super(tokenizer);
 
-		if (tokenizer.isNext(CHAR_JSON_OBJECT_START)) {
+		if (tokenizer.isNext(CHAR_JSON_OBJECT_START)) { // Find the starting character
 			do {
-				parseKeyValue();
-			} while (tokenizer.isNext(CHAR_COMMA));
-
-			if (tokenizer.isNext(CHAR_JSON_OBJECT_END))
-				return;
-			throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_END);
-		}
-
-		throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_START);
-	}
-
-	/**
-	 * Parses the next key with a value, automatically adds to the storage{@link #storage}
-	 *
-	 * @throws SyntaxException when a syntax error has occurred in the JSON string
-	 */
-	private void parseKeyValue () {
-		final String key = parseString();
-		if (key != null) {
-			if (tokenizer.isNext(CHAR_COLON)) {
-				final Object obj = parseValue();
-				if (obj != null) {
-					storage.size();
-					storage.put(key, obj);
-					return;
+				// Parse a value
+				final String key = parseString(); // We need a key to continue
+				if (key != null) {
+					if (tokenizer.isNext(CHAR_COLON)) { // The colon to separate the key from the value (standard JSON)
+						final Object obj = parseValue(); // Add the key
+						if (obj != null) {
+							storage.size();
+							storage.put(key, obj);
+						} else {
+							throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_VALUE);
+						}
+					} else {
+						throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_COLON);
+					}
+				} else {
+					throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_KEY);
 				}
-				throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_VALUE);
-			}
-			throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_COLON);
+
+			} while (tokenizer.isNext(CHAR_COMMA)); // If the next character is a comma, then we need to get another value
+
+			// throw an error if the next character is not the ending char
+			if (!tokenizer.isNext(CHAR_JSON_OBJECT_END))
+				throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_END);
+		} else {
+			throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_JSON_OBJECT_START);
 		}
-		throw new SyntaxException(FORMAT_EXPECTED_CHAR, STRING_KEY);
 	}
 
 	/**

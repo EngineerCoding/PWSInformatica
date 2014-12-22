@@ -16,7 +16,11 @@ import static com.ameling.parser.Constants.FORMAT_EXPECTED_CHAR;
 
 /**
  * A {@link Calculator} object which is first parses an expression. All formulas of the PTA of Scala Molenwatering will work with this,
- * which is the primary goal.
+ * which is the primary goal.<br/>
+ * When an expression is given, it always looks like this:
+ * <pre>(SE1 + SE2)/2</pre>
+ * The names do not have to be the same, nor the denominator. For each variable (i.e. SE1) a {@link Fraction} is calculated. When of all the Fractions of these variables are added
+ * all up together, and it is not a total of 1 (the static field {@link #FRACTION_1} it will throw a {@link SyntaxException}
  *
  * @author Wesley A
  */
@@ -26,7 +30,7 @@ public class ExpressionCalculator extends Calculator {
 	private static final String EXCEPTION_INVALID_EXPRESSION = "This is an invalid average expression!";
 
 	/**
-	 * This class actually is the parsing part of {@link ExpressionCalculator}.
+	 * This class actually is the parsing part of {@link ExpressionCalculator}. How this is done, please refer to {@link ExpressionCalculator}
 	 *
 	 * @author Wesley A
 	 * @see ExpressionCalculator
@@ -43,7 +47,8 @@ public class ExpressionCalculator extends Calculator {
 		private static final String REGEX_VARIABLE_REST = "\\w";
 
 		/**
-		 * The fraction which goes for a temporary weighting. When all Expression have the same denominator, this is turned into a {@link Grade} object
+		 * The fraction which goes for a temporary weighting. When all Expression's have the same denominator, this is turned into a {@link Grade} object<br/>
+		 * This starts as the value of {@link #FRACTION_1}
 		 */
 		private Fraction weighting = FRACTION_1.clone();
 
@@ -58,31 +63,59 @@ public class ExpressionCalculator extends Calculator {
 		private final Expression[] subExpressions;
 
 		/**
-		 * Pares an expression with a {@link Tokenizer}
+		 * Pares an expression with a {@link Tokenizer}. An Expression looks like the following:
+		 * <pre>[NUMBER] Expression </pre>
 		 *
-		 * @param tokenizer The tokenizer which letters an expressio
+		 * @param tokenizer The tokenizer which letters an expression
 		 */
 		private Expression (final Tokenizer tokenizer) {
-			super(tokenizer);
-			Double multiplier = parseNumber(false);
-			boolean asteriskUsed = tokenizer.isNext(CHAR_MULTIPLY);
+			super(tokenizer); // required for the parent class, Parser
 
+			Double multiplier = parseNumber(false); // Parse a possible number, without e10 etc.
+
+			// Check if an asterisk is used, also when a number comes next, multiply the multiplier with it
+			// When an asterisk has been found, but no number, then this boolean is set to true
+			boolean asteriskUsed = false;
+			while (tokenizer.isNext(CHAR_MULTIPLY)) {
+				final Double number = parseNumber(false);
+				if (number != null) {
+					if (multiplier == null)
+						multiplier = number;
+					else
+						multiplier *= number;
+				} else {
+					asteriskUsed = true;
+				}
+			}
+
+			// Collection of sub expressions
 			final List<Expression> expressions = new ArrayList<Expression>();
 			if (tokenizer.isNext(CHAR_BRACKET_OPEN)) {
+				// A bracket has been found, so we parse Expressions while we found plus operators
 				do {
 					expressions.add(new Expression(tokenizer));
 				} while (tokenizer.isNext(CHAR_PLUS));
 
+				// The last bracket has not been found, so throw an exception
 				if (!tokenizer.isNext(CHAR_BRACKET_CLOSE))
 					throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_BRACKET_CLOSE);
 
-				if (multiplier == null)
-					multiplier = parseNumber(false);
+				// A number can be right next to the last bracket, so try to parse it and set or multiply with the multiplier
+				final Double number = parseNumber(false);
+				if (number != null) {
+					if (multiplier == null)
+						multiplier = number;
+					else
+						multiplier *= number;
+				}
 			}
 
+			// Set the found expressions in a proper immutable list (arrays are mutable)
 			this.subExpressions = (expressions.size() == 0 ? new Expression[0] : expressions.toArray(new Expression[expressions.size()]));
 
 			if (expressions.size() == 0) {
+				// No sub expression so it must be a variable name
+
 				if (asteriskUsed)
 					tokenizer.skipBlanks();
 
@@ -102,9 +135,11 @@ public class ExpressionCalculator extends Calculator {
 				this.variable = null;
 			}
 
+			// multiply all sub expressions with the multiplier, if available
 			if (multiplier != null)
 				multiply(multiplier.intValue());
 
+			// Check for a division, also divide all the sub expressions with that number
 			if (tokenizer.isNext(CHAR_SLASH_FORWARD)) {// divide char
 				final Double divider = parseNumber(false);
 				if (divider != null)
@@ -121,7 +156,7 @@ public class ExpressionCalculator extends Calculator {
 			if (n != 0) {
 				if (subExpressions.length != 0) {
 					for (final Expression expression : subExpressions)
-						expression.divide(n);
+						expression.divide(n); // The sub expression can contain sub expressions too, so call the method instead of direct division like in the else clause
 					countFractions();
 				} else {
 					weighting.divide(n);
@@ -138,7 +173,7 @@ public class ExpressionCalculator extends Calculator {
 			if (n != 0) {
 				if (subExpressions.length != 0) {
 					for (final Expression expression : subExpressions)
-						expression.multiply(n);
+						expression.multiply(n); // The sub expression can contain sub expressions too, so call the method instead of direct multiplication like in the else clause
 					countFractions();
 				} else {
 					weighting.multiply(n);
@@ -197,19 +232,24 @@ public class ExpressionCalculator extends Calculator {
 	 */
 	private static Grade[] getGrades (final Tokenizer tokenizer) {
 		final Expression parentExpression = new Expression(tokenizer);
+
+		// If the parentExpression is not the Fraction 1/1, then the expression is not valid for an average
 		if (parentExpression.weighting.equals(FRACTION_1)) {
-			final Expression[] gradeExpressions = findGradeExpressions(parentExpression.subExpressions);
+			final Expression[] gradeExpressions = findGradeExpressions(parentExpression.subExpressions); // find all expressions which have a variable
 			final List<Integer> denominators = new ArrayList<Integer>();
 
-			// collect the denominators
+			// collect the denominators of Expression.weighting
 			for (final Expression grade : gradeExpressions) {
 				if (!denominators.contains(grade.weighting.getDenominator()))
 					denominators.add(grade.weighting.getDenominator());
 			}
 
+			// Create an empty array of Grade objects
 			final Grade[] grades = new Grade[gradeExpressions.length];
 
+			// Fill the grades array
 			for (int i = 0; i < gradeExpressions.length; i++) {
+				// Multiply the denominator of this Grade with all other denominators except it's own (all grade objects must have the same denominator)
 				final int denominator_backup = gradeExpressions[i].weighting.getDenominator();
 				for (final Integer denominator : denominators) {
 					if (denominator != denominator_backup) {
@@ -217,6 +257,7 @@ public class ExpressionCalculator extends Calculator {
 						gradeExpressions[i].weighting.divide(denominator);
 					}
 				}
+				// Create the Grade object for the given expression
 				grades[i] = new Grade(gradeExpressions[i].variable, gradeExpressions[i].weighting.getNumerator());
 			}
 			return grades;
@@ -226,7 +267,7 @@ public class ExpressionCalculator extends Calculator {
 	}
 
 	/**
-	 * Finds all the expressions which represent a grade (the variable field is not null)
+	 * Finds all the expressions which represent a grade ({@link Expression#variable} is not null)
 	 *
 	 * @param subs The list to look through, used for recursion
 	 * @return An array with expressions which represent a grade
@@ -235,10 +276,11 @@ public class ExpressionCalculator extends Calculator {
 		final List<Expression> grades = new ArrayList<Expression>();
 		for (final Expression expression : subs) {
 			final int lengthSubExpression = expression.subExpressions.length;
-
+			// if it has no sub expressions, then it is a variable!
 			if (lengthSubExpression == 0) {
 				grades.add(expression);
 			} else {
+				// recurse into this method to dig down each sub expression
 				grades.addAll(Arrays.asList((lengthSubExpression == 1 ? findGradeExpressions(expression.subExpressions) : expression.subExpressions)));
 			}
 		}

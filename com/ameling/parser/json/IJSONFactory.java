@@ -2,7 +2,7 @@ package com.ameling.parser.json;
 
 /**
  * This factory is intended to be used by users. In the future it can be expected that this interface actually has a function in this package, but for now it is just a nice
- * place to create JSON objects and your wished objects. It is recommended to make an implementation of this a singleton class.
+ * place to create JSON objects and your wished objects. It is recommended to make an implementation of this in a singleton class.
  *
  * @author Wesley A
  */

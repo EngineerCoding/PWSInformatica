@@ -12,7 +12,7 @@ import com.ameling.parser.json.JSONObject;
  */
 public class Grade {
 
-	protected static class JSONFactory implements IJSONFactory<Grade> {
+	public static class JSONFactory implements IJSONFactory<Grade> {
 
 		private JSONFactory () {}
 

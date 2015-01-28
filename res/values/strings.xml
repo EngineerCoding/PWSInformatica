@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grade Manager</string>
+    <string name="school_PTA">Scala Molenwateringen Spijkenisse PTA</string>
+    <string name="choice_PTA">PTA formules invullen</string>
+
+    <color name="main_theme">#2ECCFA</color>
+    <color name="secondary_theme">#0174DF</color>
+</resources>

@@ -41,7 +41,7 @@ public abstract class Format {
 	 * All formats associated with a version
 	 */
 	protected static enum Version {
-		V1_0(1, new FormatV1_0());
+		V1_0(0, FormatV1_0.instance);
 
 		private final int format_version;
 		public Format format;
@@ -57,12 +57,15 @@ public abstract class Format {
 					return version.format;
 			return null;
 		}
+
+		protected static int getLatestFormat() {
+			return values().length - 1;
+		}
 	}
 
 	/* end static */
 
 	/**
-	 * /**
 	 * Creates a new instance of format with a new version. Each version represents a different format, when the version is not known then it will use the latest version if
 	 * available. All versions can be found in {@link Format.Version}
 	 */

@@ -13,7 +13,7 @@ public class GradeManager extends Activity {
 		super.onCreate(bundle);
 		setContentView(R.layout.main);
 
-		fileManager = new FileManager(this);
+		fileManager = FileManager.getInstance(this);
 
 
 	}

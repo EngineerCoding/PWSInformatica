@@ -118,6 +118,14 @@ public class JSONWriter {
 	}
 
 	/**
+	 * Closes the original writer
+	 * @throws IOException if an error occurs closing this writer
+	 */
+	public void close() throws IOException {
+		writer.close();
+	}
+
+	/**
 	 * Marks the line end using {@code System.getProperty("line.separator")}and indents afterwards.<br/>
 	 * This only happens when {@link #indent} is set to true
 	 *

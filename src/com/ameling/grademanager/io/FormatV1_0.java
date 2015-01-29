@@ -1,5 +1,6 @@
 package com.ameling.grademanager.io;
 
+import com.ameling.parser.grade.Calculator;
 import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONObject;
@@ -16,27 +17,40 @@ public class FormatV1_0 extends Format {
 	private static final String KEY_VALUE = "value";
 	private static final String KEY_WEIGHTING = "weighting";
 
+	/**
+	 * Singleton instance of this class
+	 */
+	public static final Format instance = new FormatV1_0();
 
-	protected FormatV1_0() {}
+	private FormatV1_0() {}
 
 	@Override
 	public Subject decode(final JSONObject readObject) {
-		return null;
+		final JSONArray gradeArray = readObject.getJSONArray(KEY_GRADES);
+		final Grade[] grades = new Grade[gradeArray.getSize()];
+		for (int i = 0; i < grades.length; i++) {
+			final JSONObject jsonGrade = gradeArray.getJSONObject(i);
+			grades[i] = new Grade(jsonGrade.getString(KEY_GRADENAME), jsonGrade.getInt(KEY_WEIGHTING));
+			if (jsonGrade.has(KEY_VALUE))
+				grades[i].setGrade(jsonGrade.getDouble(KEY_VALUE));
+		}
+
+		return new Subject(readObject.getString(KEY_SUBJECT), new Calculator(grades));
 	}
 
 	@Override
 	public JSONObject encode(final Subject subject) {
-		final JSONArray gradeArray = new JSONArray(); // Array for all the grades
+		final JSONArray gradeArray = new JSONArray();
 		for (final String gradeName : subject.getGradeNames()) {
-			final JSONObject gradeObject = new JSONObject();
-			gradeObject.set(KEY_GRADENAME, gradeName);
+			final JSONObject jsonGrade = new JSONObject();
+			jsonGrade.set(KEY_GRADENAME, gradeName);
 
 			final Grade grade = subject.calculator.getGrade(gradeName);
-			gradeObject.set(KEY_WEIGHTING, grade.weighting);
+			jsonGrade.set(KEY_WEIGHTING, grade.weighting);
 			if (grade.hasValue())
-				gradeObject.set(KEY_VALUE, 0);
+				jsonGrade.set(KEY_VALUE, 0);
 
-			gradeArray.add(gradeObject);
+			gradeArray.add(jsonGrade);
 		}
 
 		final JSONObject subjectObject = new JSONObject();

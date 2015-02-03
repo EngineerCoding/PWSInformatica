@@ -235,7 +235,7 @@ public class ExpressionCalculator extends Calculator {
 
 		// If the parentExpression is not the Fraction 1/1, then the expression is not valid for an average
 		if (parentExpression.weighting.equals(FRACTION_1)) {
-			final Expression[] gradeExpressions = findGradeExpressions(parentExpression.subExpressions); // find all expressions which have a variable
+			final Expression[] gradeExpressions = findGradeExpressions(new Expression[]{ parentExpression }); // find all expressions which have a variable
 			final List<Integer> denominators = new ArrayList<Integer>();
 
 			// collect the denominators of Expression.weighting

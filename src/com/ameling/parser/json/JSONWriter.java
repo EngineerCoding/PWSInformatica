@@ -119,9 +119,10 @@ public class JSONWriter {
 
 	/**
 	 * Closes the original writer
+	 *
 	 * @throws IOException if an error occurs closing this writer
 	 */
-	public void close() throws IOException {
+	public void close () throws IOException {
 		writer.close();
 	}
 

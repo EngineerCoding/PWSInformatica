@@ -61,7 +61,7 @@ public class JSONArray extends JSON {
 		super(tokenizer);
 
 		if (tokenizer.isNext(CHAR_JSON_ARRAY_START)) { // find the starting character
-				do {
+			do {
 				final Object object = parseValue(); // Add the value
 				if (object != null) {
 					storage.add(object);

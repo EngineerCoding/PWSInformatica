@@ -13,21 +13,21 @@ public abstract class Format {
 	/**
 	 * A holder class which gets given at the main activity to expose all those subjects
 	 */
-	public static final class Subject {
+	public static class Subject {
 
 		public final String name;
 		public final Calculator calculator;
 
 		private String[] names = null;
 
-		public Subject(final String name, final Calculator calculator) {
+		public Subject (final String name, final Calculator calculator) {
 			if (name == null || name.length() == 0 || calculator == null)
 				throw new NullPointerException();
 			this.name = name;
 			this.calculator = calculator;
 		}
 
-		public String[] getGradeNames() {
+		public String[] getGradeNames () {
 			if (names == null) {
 				names = new String[calculator.grades.size()];
 				for (int i = 0; i < names.length; i++)
@@ -46,19 +46,19 @@ public abstract class Format {
 		private final int format_version;
 		public Format format;
 
-		private Version(final int format_version, final Format format) {
+		private Version (final int format_version, final Format format) {
 			this.format_version = format_version;
 			this.format = format;
 		}
 
-		protected static Format getFormat(int format_version) {
+		protected static Format getFormat (int format_version) {
 			for (final Version version : values())
 				if (format_version == version.format_version)
 					return version.format;
 			return null;
 		}
 
-		protected static int getLatestFormat() {
+		protected static int getLatestFormat () {
 			return values().length - 1;
 		}
 	}
@@ -69,7 +69,7 @@ public abstract class Format {
 	 * Creates a new instance of format with a new version. Each version represents a different format, when the version is not known then it will use the latest version if
 	 * available. All versions can be found in {@link Format.Version}
 	 */
-	protected Format() {
+	protected Format () {
 
 	}
 
@@ -79,7 +79,7 @@ public abstract class Format {
 	 * @param readObject The read object of the subject array, this is standard in all versions
 	 * @return an associated {@link Subject} object
 	 */
-	public abstract Subject decode(final JSONObject readObject);
+	public abstract Subject decode (final JSONObject readObject);
 
 	/**
 	 * Encodes a {@link Subject} to an associate {@link JSONObject}
@@ -87,6 +87,6 @@ public abstract class Format {
 	 * @param subject The {@link Subject} to convert
 	 * @return An associated {@link JSONObject}
 	 */
-	public abstract JSONObject encode(final Subject subject);
+	public abstract JSONObject encode (final Subject subject);
 
 }

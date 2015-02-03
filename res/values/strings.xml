@@ -3,7 +3,31 @@
     <string name="app_name">Grade Manager</string>
     <string name="school_PTA">Scala Molenwateringen Spijkenisse PTA</string>
     <string name="choice_PTA">PTA formules invullen</string>
+    <string name="action_add_subject">Add subject</string>
+    <string name="action_settings">Settings</string>
+    <string name="subject_name">Subject name:</string>
+    <string name="grades">Grades:</string>
+    <string name="formula">Formula:</string>
+    <string name="select_integrated_school">Select formula from integrated school</string>
+    <string name="finish_button">Finish creating subject</string>
 
-    <color name="main_theme">#2ECCFA</color>
-    <color name="secondary_theme">#0174DF</color>
+    <string-array name="subjects">
+        <item>Physics</item>
+        <item>Chemistry</item>
+        <item>Mathematics</item>
+        <item>Dutch</item>
+        <item>English</item>
+        <item>German</item>
+        <item>French</item>
+        <item>Spanish</item>
+        <item>History</item>
+        <item>Geography</item>
+        <item>Music</item>
+        <item>Biology</item>
+        <item>Science</item>
+        <item>ICT</item>
+        <item>Art</item>
+        <item>Religion</item>
+        <item>Computer Science</item>
+    </string-array>
 </resources>

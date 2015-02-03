@@ -22,10 +22,10 @@ public class FormatV1_0 extends Format {
 	 */
 	public static final Format instance = new FormatV1_0();
 
-	private FormatV1_0() {}
+	private FormatV1_0 () {}
 
 	@Override
-	public Subject decode(final JSONObject readObject) {
+	public Subject decode (final JSONObject readObject) {
 		final JSONArray gradeArray = readObject.getJSONArray(KEY_GRADES);
 		final Grade[] grades = new Grade[gradeArray.getSize()];
 		for (int i = 0; i < grades.length; i++) {
@@ -39,7 +39,7 @@ public class FormatV1_0 extends Format {
 	}
 
 	@Override
-	public JSONObject encode(final Subject subject) {
+	public JSONObject encode (final Subject subject) {
 		final JSONArray gradeArray = new JSONArray();
 		for (final String gradeName : subject.getGradeNames()) {
 			final JSONObject jsonGrade = new JSONObject();

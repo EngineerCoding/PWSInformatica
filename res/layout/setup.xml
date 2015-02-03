@@ -1,35 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:background="@color/main_theme"
-              android:id="@+id/layout"
-        >
-    <ImageView android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_gravity="center_horizontal"
-               android:src="@drawable/emblem"
-               android:background="@color/main_theme"
-            />
-    <Button
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10px"
-            android:text="@string/school_PTA"
-            android:textSize="30sp"
-            android:background="@color/secondary_theme"
-            android:id="@+id/school_PTA"
-            />
-    <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10px"
-            android:layout_marginTop="20dip"
-            android:text="@string/choice_PTA"
-            android:textSize="30sp"
-            android:background="@color/secondary_theme"
-            android:id="@+id/choice_PTA"
-            />
-</LinearLayout>
+            android:padding="10dip"
+            android:background="@android:color/white">
+        <LinearLayout
+                android:focusable="true" android:focusableInTouchMode="true"
+                android:layout_width="0px" android:layout_height="0px"/>
 
+        <LinearLayout android:orientation="vertical"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_alignParentTop="true"
+                      android:padding="10dip"
+                      android:background="@drawable/border_average_grade">
+            <LinearLayout android:orientation="horizontal"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content">
+                <TextView style="@style/medium_text"
+                          android:paddingRight="10dip"
+                          android:text="@string/subject_name"/>
+                <EditText style="@style/medium_text"
+                          android:cursorVisible="true"
+                          android:background="@android:drawable/editbox_background"
+                          android:layout_width="fill_parent"
+                          android:singleLine="true"
+                          android:inputType="text"
+                          android:id="@+id/new_subject_name"/>
+            </LinearLayout>
+            <LinearLayout android:orientation="horizontal"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content">
+                <TextView style="@style/medium_text"
+                          android:paddingRight="10dip"
+                          android:text="@string/formula"/>
+                <EditText style="@style/medium_text"
+                          android:layout_width="fill_parent"
+                          android:singleLine="true"
+                          android:inputType="text"
+                          android:imeOptions="actionSend"
+                          android:cursorVisible="true"
+                          android:textCursorDrawable="@null"
+                          android:background="@android:drawable/editbox_background"
+                          android:id="@+id/subject_formula"/>
+            </LinearLayout>
+            <Button style="@style/medium_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:layout_gravity="right"
+                    android:text="@string/select_integrated_school"
+                    android:onClick="selectFromIntegratedSchool"
+                    />
+        </LinearLayout>
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="fill_parent"
+                     android:background="@drawable/border_average_grade"
+                     android:padding="10dip"
+                     android:layout_marginTop="5dip">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="377dip" android:orientation="vertical">
+                <FrameLayout android:layout_width="fill_parent"
+                             android:layout_height="wrap_content">
+                    <TextView style="@style/medium_text"
+                              android:text="Grade names"
+                              android:layout_gravity="left"/>
+                    <TextView style="@style/medium_text"
+                              android:text="Value"
+                              android:paddingRight="3dip"
+                              android:layout_gravity="right"/>
+                </FrameLayout>
+                <ListView android:layout_width="match_parent"
+                          android:layout_height="282dp"
+                          android:layout_gravity="top"
+                          android:transcriptMode="alwaysScroll"
+                          android:id="@+id/grade_list"/>
+            </LinearLayout>
+
+            <Button style="@style/medium_text"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:onClick="finishSetup"
+                    android:text="@string/finish_button"
+                    />
+        </FrameLayout>
+    </LinearLayout>
+</ScrollView>

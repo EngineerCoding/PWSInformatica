@@ -52,6 +52,7 @@ public class Grade {
 
 	/**
 	 * Returns if the {@link #value} field is set through {@link #setGrade(double)}
+	 *
 	 * @return If this object has a grade value
 	 */
 	public boolean hasValue () {

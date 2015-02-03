@@ -38,7 +38,7 @@ public final class FileManager {
 	 * @return an instance of FileManager
 	 * @throws NullPointerException when the given context is null
 	 */
-	public static FileManager getInstance(final Context context) throws NullPointerException {
+	public static FileManager getInstance (final Context context) throws NullPointerException {
 		if (instance == null)
 			instance = new FileManager(context);
 		return instance;
@@ -52,7 +52,7 @@ public final class FileManager {
 	/**
 	 * The format which is used for the file IO
 	 */
-	private final Format format;
+	public final Format format;
 
 	/**
 	 * The format version of {@link #format}
@@ -66,7 +66,7 @@ public final class FileManager {
 	 * @return an instance of FileManager
 	 * @throws NullPointerException when the given context is null
 	 */
-	private FileManager(final Context context) throws NullPointerException {
+	private FileManager (final Context context) throws NullPointerException {
 		if (context == null)
 			throw new NullPointerException();
 		this.context = context;
@@ -80,7 +80,7 @@ public final class FileManager {
 	 * @return an array of {@link Format.Subject} when there is a file or null when there is no file
 	 * @see Format#decode(JSONObject)
 	 */
-	public Format.Subject[] getSubjects() {
+	public List<Format.Subject> getSubjects () {
 		try {
 			// Read the file and turn it into a JSONObject
 			final JSONObject mainObject = new JSONObject(new InputStreamReader(context.openFileInput(FILE_NAME)));
@@ -92,7 +92,7 @@ public final class FileManager {
 				for (int i = 0; i < jsonSubjects.getSize(); i++)
 					subjects.add(format.decode(jsonSubjects.getJSONObject(i)));
 
-				return subjects.toArray(new Format.Subject[subjects.size()]);
+				return subjects;
 			}
 		} catch (final FileNotFoundException | JSONException e) {
 			e.printStackTrace();
@@ -106,7 +106,7 @@ public final class FileManager {
 	 * @param subjects Subjects to save
 	 * @return whether it was successful or not
 	 */
-	public boolean saveSubjects(final Format.Subject[] subjects) {
+	public boolean saveSubjects (final List<Format.Subject> subjects) {
 		// First transform the subjects to the appropriate JSONObject
 		final JSONArray subjectArray = new JSONArray();
 		for (final Format.Subject subject : subjects)

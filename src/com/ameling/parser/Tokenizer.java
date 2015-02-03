@@ -37,7 +37,7 @@ public class Tokenizer {
 	 * @param reader The reader to use
 	 * @throws NullPointerException when the reader is null
 	 */
-	public Tokenizer(final Reader reader) {
+	public Tokenizer (final Reader reader) {
 		if (reader == null)
 			throw new NullPointerException();
 
@@ -48,9 +48,10 @@ public class Tokenizer {
 
 	/**
 	 * This method lets you inject the next string to be read. This works same as the reader which is used, other then this is not a reader.
+	 *
 	 * @param sequence The string to inject
 	 */
-	public void inject(final String sequence) {
+	public void inject (final String sequence) {
 		if (sequence != null) {
 			if (injectedCharacters != null) {
 				injectedCharacters += sequence;
@@ -71,7 +72,7 @@ public class Tokenizer {
 	 * @see #peek()
 	 * @see #skipBlanks()
 	 */
-	public boolean isNext(final char character) {
+	public boolean isNext (final char character) {
 		skipBlanks();
 		final Character c = peek();
 		if (c != null && c == character) {
@@ -89,7 +90,7 @@ public class Tokenizer {
 	 * <li>Null when the current position is not in range (by default that is that the end of the String).</li>
 	 * </ul>
 	 */
-	public Character peek() {
+	public Character peek () {
 		return injectedTracker != null ? injectedTracker : readerTracker;
 	}
 
@@ -101,7 +102,7 @@ public class Tokenizer {
 	 * <li>Null when the current position is not in range.</li>
 	 * </ul>
 	 */
-	public Character pop() {
+	public Character pop () {
 		final Character backup = (injectedTracker != null ? injectedTracker : readerTracker);
 		if (injectedTracker != null) {
 			if (injectedCharacters != null && injectedCharacters.length() > 0) {
@@ -134,7 +135,7 @@ public class Tokenizer {
 	/**
 	 * Sets the position to the next non-whitespace character.
 	 */
-	public void skipBlanks() {
+	public void skipBlanks () {
 		Character character;
 		while ((character = peek()) != null && Character.isWhitespace(character))
 			pop();

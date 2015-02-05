@@ -88,7 +88,7 @@ public class JSONArray extends JSON {
 	public boolean has (final int key) {
 		if (key >= 0 && key < storage.size())
 			return true;
-		throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_ARRAY);
+		return false;
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class JSONArray extends JSON {
 	public Object get (final int key) {
 		if (has(key))
 			return storage.get(key);
-		return null;
+		throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_ARRAY);
 	}
 
 	/**

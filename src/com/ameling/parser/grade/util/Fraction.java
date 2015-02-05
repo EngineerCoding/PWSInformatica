@@ -67,7 +67,7 @@ public final class Fraction implements Cloneable {
 	}
 
 	/**
-	 * Adds this fraction with the given fraction
+	 * Adds this fraction with the given fraction.
 	 *
 	 * @param fraction The fraction to add with
 	 */

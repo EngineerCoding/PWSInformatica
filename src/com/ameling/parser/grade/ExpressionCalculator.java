@@ -110,9 +110,6 @@ public class ExpressionCalculator extends Calculator {
 				}
 			}
 
-			// Set the found expressions in a proper immutable list (arrays are mutable)
-			this.subExpressions = (expressions.size() == 0 ? new Expression[0] : expressions.toArray(new Expression[expressions.size()]));
-
 			if (expressions.size() == 0) {
 				// No sub expression so it must be a variable name
 
@@ -134,6 +131,9 @@ public class ExpressionCalculator extends Calculator {
 			} else {
 				this.variable = null;
 			}
+
+			// Set the found expressions in a proper immutable list (arrays are mutable)
+			this.subExpressions = (expressions.size() == 0 ? new Expression[0] : expressions.toArray(new Expression[expressions.size()]));
 
 			// multiply all sub expressions with the multiplier, if available
 			if (multiplier != null)
@@ -232,6 +232,7 @@ public class ExpressionCalculator extends Calculator {
 	 */
 	private static Grade[] getGrades (final Tokenizer tokenizer) {
 		final Expression parentExpression = new Expression(tokenizer);
+		parentExpression.countFractions();
 
 		// If the parentExpression is not the Fraction 1/1, then the expression is not valid for an average
 		if (parentExpression.weighting.equals(FRACTION_1)) {

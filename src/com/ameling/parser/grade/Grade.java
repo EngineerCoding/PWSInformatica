@@ -35,7 +35,7 @@ public class Grade {
 	protected double value;
 
 	/**
-	 * A boolean flag whether it is set or not. Used in {@link #reset}, {@link #setGrade(double)} and {@link Calculator}
+	 * A boolean flag whether it is set or not. Used in {@link #reset}, {@link #setValue(double)} and {@link Calculator}
 	 */
 	protected boolean isSet = false;
 
@@ -44,14 +44,22 @@ public class Grade {
 	 *
 	 * @param grade The value to set to
 	 */
-	public void setGrade (final double grade) {
+	public void setValue (final double grade) {
 		value = grade;
 		if (!isSet)
 			isSet = true;
 	}
 
 	/**
-	 * Returns if the {@link #value} field is set through {@link #setGrade(double)}
+	 * Returns the current grade value
+	 * @return The grade value or 0 when it is not set. To check properly use {@link #hasValue}
+	 */
+	public double getValue () {
+		return value;
+	}
+
+	/**
+	 * Returns if the {@link #value} field is set through {@link #setValue(double)}
 	 *
 	 * @return If this object has a grade value
 	 */

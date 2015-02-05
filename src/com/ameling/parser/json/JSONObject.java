@@ -99,12 +99,11 @@ public class JSONObject extends JSON {
 	 *
 	 * @param key The key of the associated value
 	 * @return Whether it exists in the storage or not
-	 * @throws JSONException when the key is not in the {@link #storage}
 	 */
 	public boolean has (final String key) {
 		if (storage.containsKey(key))
 			return true;
-		throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_OBJECT);
+		return false;
 	}
 
 	/**
@@ -140,7 +139,7 @@ public class JSONObject extends JSON {
 	public Object get (final String key) {
 		if (has(key))
 			return storage.get(key);
-		return null;
+		throw new JSONException(FORMAT_EXPECTED_EXISTING_KEY, key, TYPE_JSON_OBJECT);
 	}
 
 	/**

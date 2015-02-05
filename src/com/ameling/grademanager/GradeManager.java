@@ -32,10 +32,13 @@ public class GradeManager extends Activity {
 	public static FileManager fileManager;
 
 	// Request code
-	public static final int REQUEST_CODE_SETUP = 0;
+	private static final int REQUEST_CODE_SETUP = 0;
+
+	// Strings which are is in onActivityResult
+	public static final String RESULT_JSON = "jsonObject";
 
 	// private data only for this activity
-	private static List<Format.Subject> subjects;
+	private List<Format.Subject> subjects;
 
 	@Override
 	public void onCreate (final Bundle bundle) {
@@ -56,7 +59,7 @@ public class GradeManager extends Activity {
 	@Override
 	protected void onPause () {
 		super.onPause();
-		if (subjects != null)
+		if (subjects.size() > 0)
 			fileManager.saveSubjects(subjects);
 	}
 
@@ -92,17 +95,15 @@ public class GradeManager extends Activity {
 	 * Adds a new instance of {@link SubjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
 	 */
 	private void setupListView () {
-		if (subjects != null) {
-			final ListView subjectList = (ListView) findViewById(R.id.subject_list);
-			subjectList.setAdapter(new SubjectAdapter());
-			subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-				@Override
-				public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
-					final Format.Subject subject = subjects.get(position);
-					Toast.makeText(GradeManager.this, subject.name, Toast.LENGTH_SHORT).show();
-				}
-			});
-		}
+		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
+		subjectList.setAdapter(new SubjectAdapter());
+		subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
+				final Format.Subject subject = subjects.get(position);
+				Toast.makeText(GradeManager.this, subject.name, Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	/**
@@ -121,7 +122,9 @@ public class GradeManager extends Activity {
 
 			final Format.Subject subject = subjects.get(position);
 
-			final String average = new BigDecimal(subject.calculator.calculateAverage()).setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString();
+			// Round the number properly (the value for BigDecimal must be a String to be working properly)
+			final String average = new BigDecimal(String.valueOf(subject.calculator.calculateAverage())).setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString();
+
 			final TextView averageGrade = (TextView) convertView.findViewById(R.id.averageGrade);
 			averageGrade.setText(average);
 

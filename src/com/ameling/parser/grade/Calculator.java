@@ -58,7 +58,7 @@ public class Calculator {
 	 * @param average The average to achieve
 	 * @return the grade's value
 	 * @throws SyntaxException when grade is null
-	 * @see com.ameling.parser.grade.Grade#setGrade(double)
+	 * @see com.ameling.parser.grade.Grade#setValue(double)
 	 * @see com.ameling.parser.grade.Grade#reset()
 	 */
 	public double calculateGrade (final Grade grade, double average) {

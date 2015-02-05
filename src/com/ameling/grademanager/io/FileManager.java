@@ -97,7 +97,7 @@ public final class FileManager {
 		} catch (final FileNotFoundException | JSONException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return new ArrayList<Format.Subject>();
 	}
 
 	/**

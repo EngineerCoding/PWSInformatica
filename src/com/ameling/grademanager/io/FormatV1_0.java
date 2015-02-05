@@ -32,7 +32,7 @@ public class FormatV1_0 extends Format {
 			final JSONObject jsonGrade = gradeArray.getJSONObject(i);
 			grades[i] = new Grade(jsonGrade.getString(KEY_GRADENAME), jsonGrade.getInt(KEY_WEIGHTING));
 			if (jsonGrade.has(KEY_VALUE))
-				grades[i].setGrade(jsonGrade.getDouble(KEY_VALUE));
+				grades[i].setValue(jsonGrade.getDouble(KEY_VALUE));
 		}
 
 		return new Subject(readObject.getString(KEY_SUBJECT), new Calculator(grades));
@@ -48,7 +48,7 @@ public class FormatV1_0 extends Format {
 			final Grade grade = subject.calculator.getGrade(gradeName);
 			jsonGrade.set(KEY_WEIGHTING, grade.weighting);
 			if (grade.hasValue())
-				jsonGrade.set(KEY_VALUE, 0);
+				jsonGrade.set(KEY_VALUE, grade.getValue());
 
 			gradeArray.add(jsonGrade);
 		}

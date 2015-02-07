@@ -80,7 +80,7 @@ public class GradeManager extends Activity {
 		// A response of SetupActivity should only be here, just an extra check
 		if (requestCode == REQUEST_CODE_SETUP && resultCode == RESULT_OK) {
 			// Decode the JSON back to a subject object
-			final Format.Subject subject = fileManager.format.decode(new JSONObject(data.getStringExtra("jsonSubject")));
+			final Format.Subject subject = fileManager.format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
 			subjects.add(subject);
 			// Update the ListView
 			final ListView subjectList = (ListView) findViewById(R.id.subject_list);

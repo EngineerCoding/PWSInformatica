@@ -11,6 +11,10 @@
     <string name="select_integrated_school">Select formula from integrated school</string>
     <string name="finish_button">Finish creating subject</string>
 
+    <!-- Toasts -->
+    <string name="toast_subject_required">The subject name is a required field!</string>
+    <string name="toast_invalid_formula">The formula could not be parsed or doesn\'t have any grades!</string>
+
     <string-array name="subjects">
         <item>Physics</item>
         <item>Chemistry</item>

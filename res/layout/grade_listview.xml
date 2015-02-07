@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_height="wrap_content"
-              android:layout_width="match_parent">
+             android:orientation="horizontal"
+             android:layout_height="wrap_content"
+             android:layout_width="match_parent">
     <TextView style="@style/medium_text"
               android:layout_width="wrap_content"
               android:layout_height="match_parent"
               android:layout_gravity="left"
               android:id="@+id/grade_name"/>
-    <EditText style="@style/medium_text"
+    <EditText style="@style/medium_text.edit"
               android:layout_width="50dip"
-              android:layout_height="wrap_content"
               android:layout_gravity="right"
+              android:singleLine="true"
               android:inputType="numberDecimal"
-              android:cursorVisible="true"
-              android:background="@android:drawable/editbox_background"
               android:id="@+id/grade_value"/>
 </FrameLayout>

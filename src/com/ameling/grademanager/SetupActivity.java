@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,6 +52,7 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 
 		// Add the adapter to the listview
 		adapter = new GradeAdapter();
+		adapter.setNotifyOnChange(true);
 		((ListView) findViewById(R.id.grade_list)).setAdapter(adapter);
 	}
 
@@ -65,10 +65,13 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 
 			// Reload the input of the grades
 			final String[] inputStrings = savedInstanceState.getStringArray(STATE_GRADE_INPUT);
-			final ListView gradeList = (ListView) findViewById(R.id.grade_list);
-			for (int i = 0; i < inputStrings.length; i++) {
-				final View child = gradeList.getChildAt(i);
-				((EditText) child.findViewById(R.id.grade_value)).setText(inputStrings[i]);
+			if (inputStrings != null) {
+				for (int i = 0; i < inputStrings.length; i++) {
+					if (!inputStrings[i].isEmpty()) {
+						final Grade grade = adapter.getItem(i);
+						grade.setValue(Double.valueOf(inputStrings[i]));
+					}
+				}
 			}
 		}
 	}
@@ -225,7 +228,6 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 		} catch (final SyntaxException e) {
 			adapter.clear();
 			calculator = null;
-			Log.i("test", "e", e);
 			Toast.makeText(this, R.string.toast_invalid_formula, Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -244,6 +246,11 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 			if (convertView == null)
 				convertView = getLayoutInflater().inflate(R.layout.grade_listview, parent, false);
 			final Grade grade = getItem(position);
+
+			if (grade.hasValue()) {
+				final EditText gradeValue = (EditText) convertView.findViewById(R.id.grade_value);
+				gradeValue.setText(String.valueOf(grade.getValue()));
+			}
 
 			final TextView gradeName = (TextView) convertView.findViewById(R.id.grade_name);
 			gradeName.setText(grade.name);

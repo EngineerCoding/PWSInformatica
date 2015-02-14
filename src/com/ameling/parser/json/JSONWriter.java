@@ -6,12 +6,12 @@ import com.ameling.parser.json.JSON.Type;
 import java.io.IOException;
 import java.io.Writer;
 
-import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_START;
-import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_END;
-import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_START;
-import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_END;
 import static com.ameling.parser.Constants.CHAR_COLON;
 import static com.ameling.parser.Constants.CHAR_COMMA;
+import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_END;
+import static com.ameling.parser.Constants.CHAR_JSON_ARRAY_START;
+import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_END;
+import static com.ameling.parser.Constants.CHAR_JSON_OBJECT_START;
 
 /**
  * This class is used to write to a {@link java.io.Writer} object.

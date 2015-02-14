@@ -1,34 +1,41 @@
-package com.ameling.grademanager;
+package com.ameling.grademanager.ui;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.ameling.grademanager.io.Format;
+import com.ameling.grademanager.R;
+import com.ameling.grademanager.storage.StorageManager;
+import com.ameling.grademanager.ui.adapter.GradeConverter;
+import com.ameling.grademanager.ui.adapter.ObjectAdapter;
+import com.ameling.grademanager.util.Subject;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.grade.Calculator;
 import com.ameling.parser.grade.ExpressionCalculator;
 import com.ameling.parser.grade.Grade;
 
-public class SetupActivity extends Activity implements View.OnFocusChangeListener, TextView.OnEditorActionListener {
+import java.util.ArrayList;
+
+public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener {
+
+	private static final int REQUEST_CODE = 1;
+
+	public static final String REQUEST_SUBJECT_NAME = "name";
+	public static final String REQUEST_SUBJECT_FORMULA = "formula";
+
 
 	/**
 	 * The adapter which is super important for this Activity
 	 */
-	private GradeAdapter adapter;
+	private ObjectAdapter<Grade> adapter;
 
 	/**
 	 * The latest parsed calculator. Also serves as a flag, because if it is null it will not finish properly this Activity
@@ -40,20 +47,45 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 	private static String STATE_GRADE_INPUT = "gradeInputs";
 
 	@Override
-	public void onCreate (final Bundle bundle) {
-		super.onCreate(bundle);
-		setContentView(R.layout.setup);
+	public int getMainLayout () {
+		return R.layout.setup;
+	}
 
+	@Override
+	public int getMenuID () {
+		return R.menu.setup_activity_actions;
+	}
+
+	@Override
+	public void initialize () {
 		// Set the back button on the toolbar
-		final ActionBar bar = getActionBar();
-		bar.setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		addEditTextListeners();
 
 		// Add the adapter to the listview
-		adapter = new GradeAdapter();
+		adapter = GradeConverter.instance.createAdapter(this, new ArrayList<Grade>());
 		adapter.setNotifyOnChange(true);
 		((ListView) findViewById(R.id.grade_list)).setAdapter(adapter);
+	}
+
+	@Override
+	protected void onSaveInstanceState (final Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (calculator != null) {
+			// Store the formula
+			outState.putString(STATE_FORMULA, ((EditText) findViewById(R.id.subject_formula)).getText().toString());
+
+			// Store the grade inputs
+			final String[] inputStrings = new String[calculator.grades.size()];
+			final ListView gradeList = (ListView) findViewById(R.id.grade_list);
+			for (int i = 0; i < gradeList.getChildCount(); i++) {
+				final View child = gradeList.getChildAt(i);
+				inputStrings[i] = ((EditText) child.findViewById(R.id.grade_value)).getText().toString();
+			}
+
+			outState.putStringArray(STATE_GRADE_INPUT, inputStrings);
+		}
 	}
 
 	@Override
@@ -77,12 +109,6 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu (final Menu menu) {
-		getMenuInflater().inflate(R.menu.setup_activity_actions, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
 	public boolean onOptionsItemSelected (final MenuItem item) {
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
@@ -92,25 +118,6 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	protected void onSaveInstanceState (final Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (calculator != null) {
-			// Store the formula
-			outState.putString(STATE_FORMULA, ((EditText) findViewById(R.id.subject_formula)).getText().toString());
-
-			// Store the grade inputs
-			final String[] inputStrings = new String[calculator.grades.size()];
-			final ListView gradeList = (ListView) findViewById(R.id.grade_list);
-			for (int i = 0; i < gradeList.getChildCount(); i++) {
-				final View child = gradeList.getChildAt(i);
-				inputStrings[i] = ((EditText) child.findViewById(R.id.grade_value)).getText().toString();
-			}
-
-			outState.putStringArray(STATE_GRADE_INPUT, inputStrings);
 		}
 	}
 
@@ -146,12 +153,12 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 	}
 
 	/**
-	 * Click handler for the associated Button. This button handles to choose an integrated formula from a school.
+	 * Click handler for the associated Button. This button handles to choose an integrated formula from a school_searchable.
 	 *
 	 * @param view The Button which got clicked
 	 */
 	public void selectFromIntegratedSchool (final View view) {
-
+		startActivityForResult(new Intent(this, IntegratedSchoolActivity.class), REQUEST_CODE);
 	}
 
 	/**
@@ -188,9 +195,9 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 		}
 
 		// We got all data, set the result and finish this
-		final Format.Subject subject = new Format.Subject(subjectName, calculator);
+		final Subject subject = new Subject(subjectName, calculator);
 		final Intent resultIntent = new Intent();
-		resultIntent.putExtra(GradeManager.RESULT_JSON, GradeManager.fileManager.format.encode(subject).toString());
+		resultIntent.putExtra(GradeManager.RESULT_JSON, StorageManager.getInstance(null).format.encode(subject).toString());
 		setResult(RESULT_OK, resultIntent);
 		finish();
 	}
@@ -229,33 +236,6 @@ public class SetupActivity extends Activity implements View.OnFocusChangeListene
 			adapter.clear();
 			calculator = null;
 			Toast.makeText(this, R.string.toast_invalid_formula, Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	/**
-	 * An ArrayAdapter which inflates an item view to show in the parent ListView. This handles {@link Grade} objects.
-	 */
-	private class GradeAdapter extends ArrayAdapter<Grade> {
-		public GradeAdapter () {
-			super(SetupActivity.this, R.layout.grade_listview);
-			setNotifyOnChange(true);
-		}
-
-		@Override
-		public View getView (final int position, View convertView, final ViewGroup parent) {
-			if (convertView == null)
-				convertView = getLayoutInflater().inflate(R.layout.grade_listview, parent, false);
-			final Grade grade = getItem(position);
-
-			if (grade.hasValue()) {
-				final EditText gradeValue = (EditText) convertView.findViewById(R.id.grade_value);
-				gradeValue.setText(String.valueOf(grade.getValue()));
-			}
-
-			final TextView gradeName = (TextView) convertView.findViewById(R.id.grade_name);
-			gradeName.setText(grade.name);
-
-			return convertView;
 		}
 	}
 }

@@ -1,6 +1,7 @@
-package com.ameling.grademanager.io;
+package com.ameling.grademanager.storage;
 
 import android.content.Context;
+import com.ameling.grademanager.util.Subject;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONException;
 import com.ameling.parser.json.JSONObject;
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @Author Wesley A
  */
-public final class FileManager {
+public final class StorageManager {
 
 	// All static strings
 	private static final String KEY_VERSION = "version";
@@ -29,7 +30,7 @@ public final class FileManager {
 	/**
 	 * The only instance of this FileManager
 	 */
-	private static FileManager instance;
+	private static StorageManager instance;
 
 	/**
 	 * Creates a new instance or returns the already created instance.
@@ -38,9 +39,9 @@ public final class FileManager {
 	 * @return an instance of FileManager
 	 * @throws NullPointerException when the given context is null
 	 */
-	public static FileManager getInstance (final Context context) throws NullPointerException {
+	public static StorageManager getInstance (final Context context) throws NullPointerException {
 		if (instance == null)
-			instance = new FileManager(context);
+			instance = new StorageManager(context);
 		return instance;
 	}
 
@@ -66,7 +67,7 @@ public final class FileManager {
 	 * @return an instance of FileManager
 	 * @throws NullPointerException when the given context is null
 	 */
-	private FileManager (final Context context) throws NullPointerException {
+	private StorageManager (final Context context) throws NullPointerException {
 		if (context == null)
 			throw new NullPointerException();
 		this.context = context;
@@ -77,17 +78,17 @@ public final class FileManager {
 	/**
 	 * Retrieves the Subjects from the file decoded with the {@link #format}
 	 *
-	 * @return an array of {@link Format.Subject} when there is a file or null when there is no file
+	 * @return an array of {@link Subject} when there is a file or null when there is no file
 	 * @see Format#decode(JSONObject)
 	 */
-	public List<Format.Subject> getSubjects () {
+	public List<Subject> getSubjects () {
 		try {
 			// Read the file and turn it into a JSONObject
 			final JSONObject mainObject = new JSONObject(new InputStreamReader(context.openFileInput(FILE_NAME)));
 			final Format format = Format.Version.getFormat(mainObject.getInt(KEY_VERSION));
 			if (format != null) {
 				// Decode it with the format and transform it into a Subject object
-				final List<Format.Subject> subjects = new ArrayList<Format.Subject>();
+				final List<Subject> subjects = new ArrayList<Subject>();
 				final JSONArray jsonSubjects = mainObject.getJSONArray(KEY_SUBJECTS);
 				for (int i = 0; i < jsonSubjects.getSize(); i++)
 					subjects.add(format.decode(jsonSubjects.getJSONObject(i)));
@@ -97,7 +98,7 @@ public final class FileManager {
 		} catch (final FileNotFoundException | JSONException e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<Format.Subject>();
+		return new ArrayList<Subject>();
 	}
 
 	/**
@@ -106,10 +107,10 @@ public final class FileManager {
 	 * @param subjects Subjects to save
 	 * @return whether it was successful or not
 	 */
-	public boolean saveSubjects (final List<Format.Subject> subjects) {
+	public boolean saveSubjects (final List<Subject> subjects) {
 		// First transform the subjects to the appropriate JSONObject
 		final JSONArray subjectArray = new JSONArray();
-		for (final Format.Subject subject : subjects)
+		for (final Subject subject : subjects)
 			subjectArray.add(format.encode(subject));
 
 		final JSONObject mainObject = new JSONObject();

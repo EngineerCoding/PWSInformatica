@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * This is the core of the app which calculates the grades. The weighting of all the grades is
@@ -14,10 +13,10 @@ import static java.util.Collections.unmodifiableList;
  *
  * @author Wesley A
  */
-public class Calculator {
+public class Calculator implements Cloneable {
 
 	// Constants which are used within this class only
-	private static final String FORMAT_INVALID_GRADE = "Invalid grade name '%s'";
+	private static final String FORMAT_INVALID_GRADE = "Invalid grade id '%s'";
 	private static final String STRING_UNKNOWN = "unknown";
 
 	/**
@@ -28,17 +27,17 @@ public class Calculator {
 	/**
 	 * Creates a new object using the given grades
 	 *
-	 * @param grades Thee grades to use
+	 * @param grades The grades to use
 	 */
 	public Calculator (final Grade[] grades) {
-		this.grades = unmodifiableList(asList(grades));
+		this.grades = asList(grades);
 	}
 
 	/**
 	 * Calculates the given grade when the average is given. This method will find the {@link com.ameling.parser.grade.Grade}
 	 * object for you and calls {@link #calculateGrade(com.ameling.parser.grade.Grade, double)}
 	 *
-	 * @param name    The name of the grade to calculate the value of
+	 * @param name    The id of the grade to calculate the value of
 	 * @param average What the average should be
 	 * @return the given grade's value to achieve the average
 	 */
@@ -64,7 +63,7 @@ public class Calculator {
 	public double calculateGrade (final Grade grade, double average) {
 		if (grade != null) {
 			// Firstly we want to collect all grades which have a value set, along with their weighting in the average grade
-			final List<Grade> setGrades = new ArrayList<Grade>();
+			final List<Grade> setGrades = new ArrayList<>();
 			int totalWeighting = grade.weighting;
 
 			// Loop through all grades, add the grade when it is set to the list of setGrades and add the total weighting
@@ -89,10 +88,10 @@ public class Calculator {
 	}
 
 	/**
-	 * Gets the {@link com.ameling.parser.grade.Grade} object in {@link #grades} by name
+	 * Gets the {@link com.ameling.parser.grade.Grade} object in {@link #grades} by id
 	 *
-	 * @param name The name of the grade
-	 * @return The {@link com.ameling.parser.grade.Grade} object corresponding with the name
+	 * @param name The id of the grade
+	 * @return The {@link com.ameling.parser.grade.Grade} object corresponding with the id
 	 */
 	public Grade getGrade (final String name) {
 		if (name != null) {
@@ -123,6 +122,14 @@ public class Calculator {
 		if (totalWeighting != 0) // If the totalWeighting is 0, that means that there are no value found
 			return total / totalWeighting;
 		return 0.0D;
+	}
+
+	@Override
+	public Calculator clone () {
+		final Grade[] grades = new Grade[this.grades.size()];
+		for (int i = 0; i < grades.length; i++)
+			grades[i] = this.grades.get(i).clone();
+		return new Calculator(grades);
 	}
 
 }

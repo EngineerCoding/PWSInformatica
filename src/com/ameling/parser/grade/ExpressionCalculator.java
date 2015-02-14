@@ -8,7 +8,6 @@ import com.ameling.parser.grade.util.Fraction;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.ameling.parser.Constants.CHAR_PLUS;
@@ -89,7 +88,7 @@ public class ExpressionCalculator extends Calculator {
 			}
 
 			// Collection of sub expressions
-			final List<Expression> expressions = new ArrayList<Expression>();
+			final List<Expression> expressions = new ArrayList<>();
 			if (tokenizer.isNext(CHAR_BRACKET_OPEN)) {
 				// A bracket has been found, so we parse Expressions while we found plus operators
 				do {
@@ -111,7 +110,7 @@ public class ExpressionCalculator extends Calculator {
 			}
 
 			if (expressions.size() == 0) {
-				// No sub expression so it must be a variable name
+				// No sub expression so it must be a variable id
 
 				if (asteriskUsed)
 					tokenizer.skipBlanks();
@@ -236,8 +235,8 @@ public class ExpressionCalculator extends Calculator {
 
 		// If the parentExpression is not the Fraction 1/1, then the expression is not valid for an average
 		if (parentExpression.weighting.equals(FRACTION_1)) {
-			final Expression[] gradeExpressions = findGradeExpressions(new Expression[]{ parentExpression }); // find all expressions which have a variable
-			final List<Integer> denominators = new ArrayList<Integer>();
+			final List<Expression> gradeExpressions = findGradeExpressions(new Expression[]{ parentExpression }); // find all expressions which have a variable
+			final List<Integer> denominators = new ArrayList<>();
 
 			// collect the denominators of Expression.weighting
 			for (final Expression grade : gradeExpressions) {
@@ -246,20 +245,20 @@ public class ExpressionCalculator extends Calculator {
 			}
 
 			// Create an empty array of Grade objects
-			final Grade[] grades = new Grade[gradeExpressions.length];
+			final Grade[] grades = new Grade[gradeExpressions.size()];
 
 			// Fill the grades array
-			for (int i = 0; i < gradeExpressions.length; i++) {
+			for (final Expression gradeExpression : gradeExpressions) {
 				// Multiply the denominator of this Grade with all other denominators except it's own (all grade objects must have the same denominator)
-				final int denominator_backup = gradeExpressions[i].weighting.getDenominator();
+				final int denominator_backup = gradeExpression.weighting.getDenominator();
 				for (final Integer denominator : denominators) {
 					if (denominator != denominator_backup) {
-						gradeExpressions[i].weighting.multiply(denominator);
-						gradeExpressions[i].weighting.divide(denominator);
+						gradeExpression.weighting.multiply(denominator);
+						gradeExpression.weighting.divide(denominator);
 					}
 				}
 				// Create the Grade object for the given expression
-				grades[i] = new Grade(gradeExpressions[i].variable, gradeExpressions[i].weighting.getNumerator());
+				grades[gradeExpressions.indexOf(gradeExpression)] = new Grade(gradeExpression.variable, gradeExpression.weighting.getNumerator());
 			}
 			return grades;
 		}
@@ -273,19 +272,16 @@ public class ExpressionCalculator extends Calculator {
 	 * @param subs The list to look through, used for recursion
 	 * @return An array with expressions which represent a grade
 	 */
-	private static Expression[] findGradeExpressions (final Expression[] subs) {
-		final List<Expression> grades = new ArrayList<Expression>();
+	private static List<Expression> findGradeExpressions (final Expression[] subs) {
+		final List<Expression> gradeExpressions = new ArrayList<>();
 		for (final Expression expression : subs) {
-			final int lengthSubExpression = expression.subExpressions.length;
-			// if it has no sub expressions, then it is a variable!
-			if (lengthSubExpression == 0) {
-				grades.add(expression);
+			if (expression.subExpressions.length == 0) {
+				gradeExpressions.add(expression);
 			} else {
-				// recurse into this method to dig down each sub expression
-				grades.addAll(Arrays.asList((lengthSubExpression == 1 ? findGradeExpressions(expression.subExpressions) : expression.subExpressions)));
+				gradeExpressions.addAll(findGradeExpressions(expression.subExpressions));
 			}
 		}
-		return grades.toArray(new Expression[grades.size()]);
+		return gradeExpressions;
 	}
 
 }

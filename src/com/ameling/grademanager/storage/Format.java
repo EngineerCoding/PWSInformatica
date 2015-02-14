@@ -1,6 +1,6 @@
-package com.ameling.grademanager.io;
+package com.ameling.grademanager.storage;
 
-import com.ameling.parser.grade.Calculator;
+import com.ameling.grademanager.util.Subject;
 import com.ameling.parser.json.JSONObject;
 
 /**
@@ -9,33 +9,6 @@ import com.ameling.parser.json.JSONObject;
  * @Author Wesley A
  */
 public abstract class Format {
-
-	/**
-	 * A holder class which gets given at the main activity to expose all those subjects
-	 */
-	public static class Subject {
-
-		public final String name;
-		public final Calculator calculator;
-
-		private String[] names = null;
-
-		public Subject (final String name, final Calculator calculator) {
-			if (name == null || name.length() == 0 || calculator == null)
-				throw new NullPointerException();
-			this.name = name;
-			this.calculator = calculator;
-		}
-
-		public String[] getGradeNames () {
-			if (names == null) {
-				names = new String[calculator.grades.size()];
-				for (int i = 0; i < names.length; i++)
-					names[i] = calculator.grades.get(i).name;
-			}
-			return names;
-		}
-	}
 
 	/**
 	 * All formats associated with a version

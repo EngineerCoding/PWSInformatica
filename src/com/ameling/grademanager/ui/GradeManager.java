@@ -1,4 +1,4 @@
-package com.ameling.grademanager;
+package com.ameling.grademanager.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.ameling.grademanager.io.FileManager;
-import com.ameling.grademanager.io.Format;
+import com.ameling.grademanager.R;
+import com.ameling.grademanager.storage.StorageManager;
+import com.ameling.grademanager.ui.adapter.SubjectConverter;
+import com.ameling.grademanager.util.Subject;
 import com.ameling.parser.json.JSONObject;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,7 +28,7 @@ import java.util.List;
 public class GradeManager extends Activity {
 
 	// public for other classes to access
-	public static FileManager fileManager;
+	public static StorageManager storageManager;
 
 	// Request code
 	private static final int REQUEST_CODE_SETUP = 0;
@@ -38,15 +37,14 @@ public class GradeManager extends Activity {
 	public static final String RESULT_JSON = "jsonObject";
 
 	// private data only for this activity
-	private List<Format.Subject> subjects;
+	private List<Subject> subjects;
 
 	@Override
 	public void onCreate (final Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.main);
 
-		fileManager = FileManager.getInstance(this);
-		subjects = fileManager.getSubjects();
+		subjects = StorageManager.getInstance(this).getSubjects();
 		setupListView();
 	}
 
@@ -60,7 +58,7 @@ public class GradeManager extends Activity {
 	protected void onPause () {
 		super.onPause();
 		if (subjects.size() > 0)
-			fileManager.saveSubjects(subjects);
+			StorageManager.getInstance(null).saveSubjects(subjects);
 	}
 
 	@Override
@@ -80,7 +78,7 @@ public class GradeManager extends Activity {
 		// A response of SetupActivity should only be here, just an extra check
 		if (requestCode == REQUEST_CODE_SETUP && resultCode == RESULT_OK) {
 			// Decode the JSON back to a subject object
-			final Format.Subject subject = fileManager.format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
+			final Subject subject = StorageManager.getInstance(null).format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
 			subjects.add(subject);
 			// Update the ListView
 			final ListView subjectList = (ListView) findViewById(R.id.subject_list);
@@ -92,47 +90,17 @@ public class GradeManager extends Activity {
 	}
 
 	/**
-	 * Adds a new instance of {@link SubjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
+	 * Adds a new instance of {@link com.ameling.grademanager.ui.adapter.ObjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
 	 */
 	private void setupListView () {
 		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
-		subjectList.setAdapter(new SubjectAdapter());
+		subjectList.setAdapter(SubjectConverter.instance.createAdapter(this, subjects));
 		subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
-				final Format.Subject subject = subjects.get(position);
+				final Subject subject = subjects.get(position);
 				Toast.makeText(GradeManager.this, subject.name, Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
-
-	/**
-	 * The ArrayAdapter which inflates the view to an element and populates it. This meant for the ListView with id:subject_list which can be
-	 * found in main.xml
-	 */
-	private class SubjectAdapter extends ArrayAdapter<Format.Subject> {
-		public SubjectAdapter () {
-			super(GradeManager.this, R.layout.subject_listview, subjects);
-		}
-
-		@Override
-		public View getView (final int position, View convertView, final ViewGroup parent) {
-			if (convertView == null)
-				convertView = getLayoutInflater().inflate(R.layout.subject_listview, parent, false);
-
-			final Format.Subject subject = subjects.get(position);
-
-			// Round the number properly (the value for BigDecimal must be a String to be working properly)
-			final String average = new BigDecimal(String.valueOf(subject.calculator.calculateAverage())).setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString();
-
-			final TextView averageGrade = (TextView) convertView.findViewById(R.id.averageGrade);
-			averageGrade.setText(average);
-
-			final TextView subjectName = (TextView) convertView.findViewById(R.id.subject_name);
-			subjectName.setText(subject.name);
-
-			return convertView;
-		}
-	}
-
 }

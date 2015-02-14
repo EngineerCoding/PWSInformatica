@@ -6,7 +6,7 @@ package com.ameling.parser.grade;
  *
  * @author Wesley A
  */
-public class Grade {
+public class Grade implements Cloneable {
 
 	/**
 	 * The name of this grade
@@ -22,7 +22,7 @@ public class Grade {
 	 * Creates a new grade with the name and weighting
 	 *
 	 * @param name      The name of this grade
-	 * @param weighting The weigthing of this grade
+	 * @param weighting The weighting of this grade
 	 */
 	public Grade (final String name, final int weighting) {
 		this.name = name;
@@ -52,6 +52,7 @@ public class Grade {
 
 	/**
 	 * Returns the current grade value
+	 *
 	 * @return The grade value or 0 when it is not set. To check properly use {@link #hasValue}
 	 */
 	public double getValue () {
@@ -72,5 +73,10 @@ public class Grade {
 	 */
 	public void reset () {
 		isSet = false;
+	}
+
+	@Override
+	public Grade clone () {
+		return new Grade(name, weighting);
 	}
 }

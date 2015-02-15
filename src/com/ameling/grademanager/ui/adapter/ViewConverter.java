@@ -29,7 +29,7 @@ public abstract class ViewConverter<T> {
 	 * @param objects The objects to create the adapter with
 	 * @return A simple adapter
 	 */
-	public final ObjectAdapter<T> createAdapter (final Context context, final List<T> objects) {
+	public ObjectAdapter<T> createAdapter (final Context context, final List<T> objects) {
 		return new ObjectAdapter<>(context, this, objects);
 	}
 }

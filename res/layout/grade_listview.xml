@@ -2,16 +2,25 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:orientation="horizontal"
              android:layout_height="wrap_content"
-             android:layout_width="match_parent">
+             android:layout_width="match_parent"
+             android:background="@android:color/white">
     <TextView style="@style/medium_text"
               android:layout_width="wrap_content"
               android:layout_height="match_parent"
-              android:layout_gravity="left"
+              android:layout_gravity="left|center_vertical"
               android:id="@+id/grade_name"/>
-    <EditText style="@style/medium_text.edit"
-              android:layout_width="50dip"
-              android:layout_gravity="right"
-              android:singleLine="true"
-              android:inputType="numberDecimal"
-              android:id="@+id/grade_value"/>
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="right">
+        <Button style="@style/medium_text"
+                android:id="@+id/button_add_formula"
+                android:text="@string/add_formula"
+                android:onClick="recurseFormula"/>
+        <EditText style="@style/medium_text.edit"
+                  android:layout_width="50dip"
+                  android:singleLine="true"
+                  android:inputType="numberDecimal"
+                  android:id="@+id/grade_value"/>
+    </LinearLayout>
 </FrameLayout>

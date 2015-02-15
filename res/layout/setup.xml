@@ -21,6 +21,7 @@
                           android:layout_height="wrap_content">
                 <TextView style="@style/medium_text"
                           android:paddingRight="10dip"
+                          android:id="@+id/input_name"
                           android:text="@string/subject_name"/>
                 <EditText style="@style/medium_text.edit"
                           android:cursorVisible="true"
@@ -46,6 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:id="@+id/select_integrated_school"
                     android:text="@string/select_integrated_school"
                     android:onClick="selectFromIntegratedSchool"/>
         </LinearLayout>

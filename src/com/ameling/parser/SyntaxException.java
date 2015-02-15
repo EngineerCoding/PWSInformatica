@@ -40,7 +40,7 @@ public class SyntaxException extends RuntimeException {
 	}
 
 	/**
-	 * Overrides the original to have a formatted message with the following constructor: {@link #SyntaxException(String, Object[])}
+	 * Overrides the expression to have a formatted message with the following constructor: {@link #SyntaxException(String, Object[])}
 	 *
 	 * @return String message of this exception
 	 * @see #SyntaxException(String, Object[])

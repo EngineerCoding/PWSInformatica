@@ -39,7 +39,7 @@ public final class StorageManager {
 	 * @return an instance of FileManager
 	 * @throws NullPointerException when the given context is null
 	 */
-	public static StorageManager getInstance (final Context context) throws NullPointerException {
+	public static StorageManager instance (final Context context) throws NullPointerException {
 		if (instance == null)
 			instance = new StorageManager(context);
 		return instance;
@@ -61,7 +61,7 @@ public final class StorageManager {
 	private final int format_version;
 
 	/**
-	 * Creates a new instance or returns the already created instance. An instance can be acquired from {@link #getInstance(Context)}
+	 * Creates a new instance or returns the already created instance. An instance can be acquired from {@link #instance(Context)}
 	 *
 	 * @param context The context which will supply the file
 	 * @return an instance of FileManager

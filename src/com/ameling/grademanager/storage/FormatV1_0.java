@@ -1,8 +1,8 @@
 package com.ameling.grademanager.storage;
 
+import com.ameling.grademanager.util.CalculatorWrapperFactory;
 import com.ameling.grademanager.util.GradeWrapper;
 import com.ameling.grademanager.util.Subject;
-import com.ameling.parser.grade.Calculator;
 import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONObject;
@@ -19,6 +19,7 @@ public class FormatV1_0 extends Format {
 	private static final String KEY_VALUE = "value";
 	private static final String KEY_WEIGHTING = "weighting";
 	private static final String KEY_CHILDS = "childs";
+	private static final String KEY_FORMULA = "formula";
 
 	/**
 	 * Singleton instance of this class
@@ -34,7 +35,7 @@ public class FormatV1_0 extends Format {
 
 		for (int i = 0; i < grades.length; i++)
 			grades[i] = recurseJsonGrade(gradeArray.getJSONObject(i));
-		return new Subject(readObject.getString(KEY_SUBJECT), new Calculator(grades));
+		return new Subject(readObject.getString(KEY_SUBJECT), CalculatorWrapperFactory.createCalculator(grades, readObject.getString(KEY_FORMULA)));
 	}
 
 	@Override
@@ -49,6 +50,7 @@ public class FormatV1_0 extends Format {
 		final JSONObject main = new JSONObject();
 		main.set(KEY_SUBJECT, subject.name);
 		main.set(KEY_GRADES, grades);
+		main.set(KEY_FORMULA, subject.calculator.expression);
 		return main;
 	}
 
@@ -58,21 +60,22 @@ public class FormatV1_0 extends Format {
 	 * @param jsonObject The object to write to
 	 * @param grade      The grade that gets written
 	 */
-	private void recurseGrade (final JSONObject jsonObject, final Grade grade) {
+	private static void recurseGrade (final JSONObject jsonObject, final Grade grade) {
 		jsonObject.set(KEY_GRADENAME, grade.name);
 		jsonObject.set(KEY_WEIGHTING, grade.weighting);
 		if (grade.hasValue()) {
 			jsonObject.set(KEY_VALUE, grade.getValue());
 		} else if (grade instanceof GradeWrapper) {
-			final Calculator subCalculator = ((GradeWrapper) grade).calculator;
+			final CalculatorWrapperFactory.CalculatorProxy subCalculator = ((GradeWrapper) grade).calculator;
 
-			final JSONArray childs = new JSONArray();
-			for (final Grade _grade : subCalculator.grades) {
-				final JSONObject object = new JSONObject();
-				recurseGrade(object, _grade);
-				childs.add(object);
-			}
-			jsonObject.set(KEY_CHILDS, childs);
+				final JSONArray childs = new JSONArray();
+				for (final Grade _grade : subCalculator.grades) {
+					final JSONObject object = new JSONObject();
+					recurseGrade(object, _grade);
+					childs.add(object);
+				}
+				jsonObject.set(KEY_CHILDS, childs);
+			jsonObject.set(KEY_FORMULA, subCalculator.expression);
 		}
 	}
 
@@ -82,7 +85,7 @@ public class FormatV1_0 extends Format {
 	 * @param gradeObject The JSONObject to recurse into
 	 * @return A corresponding Grade object
 	 */
-	private Grade recurseJsonGrade (final JSONObject gradeObject) {
+	private static Grade recurseJsonGrade (final JSONObject gradeObject) {
 		final String name = gradeObject.getString(KEY_GRADENAME);
 		final int weighting = gradeObject.getInt(KEY_WEIGHTING);
 
@@ -90,15 +93,16 @@ public class FormatV1_0 extends Format {
 			final Grade grade = new Grade(name, weighting);
 			grade.setValue(gradeObject.getDouble(KEY_VALUE));
 			return grade;
-		} else { // The childs key exists
+		} else if(gradeObject.has(KEY_CHILDS)) {
 			final JSONArray childArray = gradeObject.getJSONArray(KEY_CHILDS);
 			final Grade[] childGrades = new Grade[childArray.getSize()];
 			for (int i = 0; i < childGrades.length; i++)
 				childGrades[i] = recurseJsonGrade(childArray.getJSONObject(i));
 
 			final GradeWrapper wrapper = new GradeWrapper(name, weighting);
-			wrapper.setSubGrades(new Calculator(childGrades));
+			wrapper.setSubGrades(CalculatorWrapperFactory.createCalculator(childGrades, gradeObject.getString(KEY_FORMULA)));
 			return wrapper;
 		}
+		return new Grade(name, weighting);
 	}
 }

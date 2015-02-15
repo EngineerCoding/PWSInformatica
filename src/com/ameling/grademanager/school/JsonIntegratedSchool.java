@@ -2,6 +2,7 @@ package com.ameling.grademanager.school;
 
 import android.content.Context;
 import com.ameling.grademanager.R;
+import com.ameling.grademanager.util.CalculatorWrapperFactory;
 import com.ameling.grademanager.util.GradeWrapper;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.grade.Calculator;
@@ -89,7 +90,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 						final Grade grade = parent.grades.get(j);
 						if (grade.name.equals(childName)) {
 							final GradeWrapper wrapper = new GradeWrapper(grade);
-							wrapper.setSubGrades(new ExpressionCalculator(child.getString(KEY_FORMULA)));
+							wrapper.setSubGrades(CalculatorWrapperFactory.createCalculator(null, child.getString(KEY_FORMULA)));
 							parent.grades.set(j, wrapper);
 
 							recurseChilds(child, wrapper.calculator);

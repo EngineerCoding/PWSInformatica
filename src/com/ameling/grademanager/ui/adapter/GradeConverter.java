@@ -1,9 +1,11 @@
 package com.ameling.grademanager.ui.adapter;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.ameling.grademanager.R;
+import com.ameling.grademanager.util.GradeWrapper;
 import com.ameling.parser.grade.Grade;
 
 public class GradeConverter extends ViewConverter<Grade> implements View.OnFocusChangeListener {
@@ -23,6 +25,9 @@ public class GradeConverter extends ViewConverter<Grade> implements View.OnFocus
 			final EditText gradeValue = (EditText) view.findViewById(R.id.grade_value);
 			gradeValue.setText(String.valueOf(from.getValue()));
 			gradeValue.setOnFocusChangeListener(this);
+		} else if (from instanceof GradeWrapper) {
+			((Button) view.findViewById(R.id.button_add_formula)).setText(view.getContext().getString(R.string.edit_formula));
+			view.findViewById(R.id.grade_value).setEnabled(false);
 		}
 
 		final TextView gradeName = (TextView) view.findViewById(R.id.grade_name);

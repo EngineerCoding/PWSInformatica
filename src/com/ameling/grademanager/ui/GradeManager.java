@@ -44,7 +44,7 @@ public class GradeManager extends Activity {
 		super.onCreate(bundle);
 		setContentView(R.layout.main);
 
-		subjects = StorageManager.getInstance(this).getSubjects();
+		subjects = StorageManager.instance(this).getSubjects();
 		setupListView();
 	}
 
@@ -58,7 +58,7 @@ public class GradeManager extends Activity {
 	protected void onPause () {
 		super.onPause();
 		if (subjects.size() > 0)
-			StorageManager.getInstance(null).saveSubjects(subjects);
+			StorageManager.instance(null).saveSubjects(subjects);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class GradeManager extends Activity {
 		// A response of SetupActivity should only be here, just an extra check
 		if (requestCode == REQUEST_CODE_SETUP && resultCode == RESULT_OK) {
 			// Decode the JSON back to a subject object
-			final Subject subject = StorageManager.getInstance(null).format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
+			final Subject subject = StorageManager.instance(null).format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
 			subjects.add(subject);
 			// Update the ListView
 			final ListView subjectList = (ListView) findViewById(R.id.subject_list);

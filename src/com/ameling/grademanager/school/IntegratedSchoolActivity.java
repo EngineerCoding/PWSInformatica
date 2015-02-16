@@ -25,8 +25,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ameling.grademanager.util.ConstantKeys.KEY_CLASSES;
-
+/**
+ * This activity is the main activity which takes cares of {@link IntegratedSchool} objects. For now it simply loads it from the assets folder but in the future and a server is
+ * available this will also connect with that and build a cache of it. It is available to search for a school, city our even a country.
+ */
 public class IntegratedSchoolActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
 	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
@@ -64,11 +66,11 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		if (schoolCollection == null) {
 			schoolCollection = new ArrayList<>();
 
-			// Async task so it loads faster
+			// This task which loads and parses the JSON from the assets folder is asynchronous, otherwise the the ui-thread will do too much work
 			new AsyncTask<Void, Void, Void>() {
 				@Override
 				protected Void doInBackground (final Void... voids) {
-					// Load default data
+					// Load the array from the assets
 					JSONArray mainArray = null;
 					try {
 						final Reader reader = new InputStreamReader(getResources().getAssets().open(FILE_DEFAULT_SCHOOLS));
@@ -77,15 +79,11 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 						e.printStackTrace();
 					}
 
+					// Add the values to the collection
 					if (mainArray != null) {
 						for (int i = 0; i < mainArray.getSize(); i++) {
 							final JSONObject parentJson = mainArray.getJSONObject(i);
-							final JsonIntegratedSchool parent = new JsonIntegratedSchool(parentJson);
-							schoolCollection.add(parent);
-
-							final JSONArray arrayClasses = parentJson.getJSONArray(KEY_CLASSES);
-							for (int j = 0; j < arrayClasses.getSize(); j++)
-								new JsonIntegratedSchool.JsonClassLevel(arrayClasses.getJSONObject(j), parent, IntegratedSchoolActivity.this);
+							schoolCollection.add(JsonIntegratedSchool.create(parentJson, IntegratedSchoolActivity.this));
 						}
 					}
 					return null;
@@ -124,8 +122,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				setResult(RESULT_CANCELED);
-				finish();
+				onBackPressed();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -134,7 +131,6 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 
 	@Override
 	public void onBackPressed () {
-		super.onBackPressed();
 		setResult(RESULT_CANCELED);
 		finish();
 	}
@@ -217,8 +213,14 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		return false;
 	}
 
+	/**
+	 * This adapter simply binds the given position to a new view. This is also the suggestion listener, since it is set at pretty much the same time.
+	 */
 	private class IntegratedSchoolAdapter extends CursorAdapter implements SearchView.OnSuggestionListener {
 
+		/**
+		 * The given results
+		 */
 		private final List<IntegratedSchool> results;
 
 		public IntegratedSchoolAdapter (final Context context, final Cursor cursor, final List<IntegratedSchool> results) {

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Grade Manager</string>
-    <string name="school_PTA">Scala Molenwateringen Spijkenisse PTA</string>
-    <string name="choice_PTA">PTA formules invullen</string>
     <string name="subject_name">Subject:</string>
     <string name="grade_name">Grade:</string>
     <string name="grades">Grades:</string>
@@ -24,6 +22,7 @@
     <!-- Toasts -->
     <string name="toast_subject_required">The subject id is a required field!</string>
     <string name="toast_invalid_formula">The formula could not be parsed or doesn\'t have any grades!</string>
+    <string name="toast_invalid_subject">Subject name already in use!</string>
 
     <!-- Subjects used in IntegratedSchool.IntegratedSubject -->
     <string name="subject_geography">Geography</string>

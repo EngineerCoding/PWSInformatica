@@ -13,23 +13,47 @@ import com.ameling.parser.json.JSONObject;
 
 import static com.ameling.grademanager.util.ConstantKeys.*;
 
+/**
+ * An implementation of {@link IntegratedSchool} which reads it from a {@link JSONObject}. This is going to throw {@link com.ameling.parser.json.JSONException} when the given
+ * object is not an actual implementation of this object. Currently this is the only implementation of {@link IntegratedSchool} but there are plans in the future to use this more
+ * often once a server is in the air where this app can pull of schools. It will probably build a cache in the form of a database, but for now this is just here to load it from
+ * the assets.
+ */
 public class JsonIntegratedSchool extends IntegratedSchool {
 
+	/**
+	 * Implementation of {@link IntegratedSchool.ClassLevel} to return it in the parent object
+	 */
+	private static class JsonClassLevel extends ClassLevel {
 
-	public static class JsonClassLevel extends ClassLevel {
-
+		/**
+		 * The name of the classLevel
+		 */
 		public final String name;
-		private ClassLevel parentClassLevel;
 
+		/**
+		 * All stored subjects
+		 */
 		private final String[] subjects;
+
+		/**
+		 * All corresponding calculators
+		 */
 		private final Calculator[] calculators;
 
+		/**
+		 * Creates a new ClassLevel
+		 * @param object The object to read from
+		 * @param parentSchool The parent object to get a possible class parent, should never be null
+		 * @param context The context to try to localize from, should not be null
+		 */
 		public JsonClassLevel (final JSONObject object, final JsonIntegratedSchool parentSchool, final Context context) {
 			if (object == null)
 				throw new NullPointerException();
 
+			ClassLevel parentClassLevel = null;
 			if (object.has(KEY_PARENT))
-				this.parentClassLevel = parentSchool.getClassLevel(object.getString(KEY_PARENT));
+				parentClassLevel = parentSchool.getClassLevel(object.getString(KEY_PARENT));
 
 			name = object.getString(KEY_NAME);
 			final JSONArray subjectArray = object.getJSONArray(KEY_SUBJECTS);
@@ -62,9 +86,9 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 				if (formula == null)
 					throw new SyntaxException("Key formula must be defined!");
 
-				recurseChilds(subject, formula);
+				recurseChildren(subject, formula);
 				calculators[i] = formula;
-				parentSchool.add(name, this);
+				parentSchool.add(name, this); // Add this object to the parent
 			}
 		}
 
@@ -74,9 +98,9 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 		 * @param object The object which can have child objects
 		 * @param parent The parent calculator
 		 */
-		private void recurseChilds (final JSONObject object, final Calculator parent) {
-			if (object.has(KEY_CHILDS)) {
-				final JSONArray array = object.getJSONArray(KEY_CHILDS);
+		private void recurseChildren (final JSONObject object, final Calculator parent) {
+			if (object.has(KEY_CHILDREN)) {
+				final JSONArray array = object.getJSONArray(KEY_CHILDREN);
 
 				for (int i = 0; i < array.getSize(); i++) {
 					final JSONObject child = array.getJSONObject(i);
@@ -89,7 +113,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 							wrapper.setSubGrades(new CalculatorWrapper(child.getString(KEY_FORMULA)));
 							parent.grades.set(j, wrapper);
 
-							recurseChilds(child, wrapper.calculator);
+							recurseChildren(child, wrapper.calculator);
 							break;
 						}
 					}
@@ -112,15 +136,31 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 		}
 	}
 
+	/**
+	 * All stored classNames, a corresponding ClassLevel can be found in {@link #classLevels} with the same index
+	 */
 	private final String[] classNames;
+
+	/**
+	 * All stored classLevels, a corresponding class name can be found in ({@link #classNames} with the same index
+	 */
 	private final JsonClassLevel[] classLevels;
 
-	public JsonIntegratedSchool (final JSONObject object) {
+	/**
+	 * Creates a plain IntegratedSchool object. This does not parse ClassLevels by itself!
+	 * @param object The json to read from
+	 */
+	private JsonIntegratedSchool (final JSONObject object) {
 		super(object.getString(KEY_NAME), object.getString(KEY_COUNTRY), object.getString(KEY_CITY));
 		classNames = new String[object.getJSONArray(KEY_CLASSES).getSize()];
 		classLevels = new JsonClassLevel[classNames.length];
 	}
 
+	/**
+	 * Adds a classLevel to this school. Only used internally
+	 * @param name The name of the {@link ClassLevel}
+	 * @param classLevel The actual {@link JsonClassLevel}
+	 */
 	private void add (final String name, final JsonClassLevel classLevel) {
 		for (int i = 0; i < classNames.length; i++) {
 			if (classNames[i] == null) {
@@ -142,5 +182,19 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 			if (classNames[i].equalsIgnoreCase(identifier))
 				return classLevels[i];
 		return null;
+	}
+
+	/**
+	 * Creates a functional object of {@link JsonIntegratedSchool}
+	 * @param object The object to read the values from
+	 * @param context The context to localize the keys with
+	 * @return A functional {@link JsonIntegratedSchool}
+	 */
+	public static JsonIntegratedSchool create (final JSONObject object, final Context context) {
+		final JsonIntegratedSchool parent = new JsonIntegratedSchool(object);
+		final JSONArray arrayClasses = object.getJSONArray(KEY_CLASSES);
+		for (int j = 0; j < arrayClasses.getSize(); j++)
+			new JsonIntegratedSchool.JsonClassLevel(arrayClasses.getJSONObject(j), parent, context);
+		return parent;
 	}
 }

@@ -22,7 +22,7 @@
           {
             "subject": "german",
             "formula": "(SE1 + SE2 + SE3 + SE4 + PO)/5",
-            "childs": [
+            "children": [
               {
                 "name": "SE2",
                 "formula": "(3SE2a + SE2b)/4"
@@ -48,7 +48,7 @@
           {
             "subject": "french",
             "formula": "(SE1 + SE2 + SE3 + SE4)/4",
-            "childs": [
+            "children": [
               {
                 "name": "SE3",
                 "formula": "(SE3a + SE3b)/2"
@@ -62,7 +62,7 @@
           {
             "subject": "informatics",
             "formula": "(SE1 + SE2 + SE3 + SE4)/4",
-            "childs": [
+            "children": [
               {
                 "name": "SE2",
                 "formula": "(SE2a + SE2b)/2"
@@ -80,7 +80,7 @@
           {
             "subject": "art",
             "formula": "(SE1 + SE2 + SE3 + SE4)/4",
-            "childs": [
+            "children": [
               {
                 "name": "SE2",
                 "formula": "(SE2a + 2SE2b)/3"
@@ -98,7 +98,7 @@
           {
             "subject": "music",
             "formula": "(SE1 + SE2 + SE3 + SE4)/4",
-            "childs": [
+            "children": [
               {
                 "name": "SE2",
                 "formula": "(SE2a + 2SE2b)/3"
@@ -144,7 +144,7 @@
           {
             "subject": "mathematics_d",
             "formula": "(SE1 + SE2 + SE3 + SE4 + PO)/5",
-            "childs": [
+            "children": [
               {
                 "name": "PO",
                 "formula": "(PO1 + 2PO2)/3"
@@ -159,7 +159,7 @@
         "subjects": [
           {
             "subject": "geography",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1a + 2T1b + 3T2 + 3T3 + 3T4)/12"
@@ -171,7 +171,7 @@
           },
           {
             "subject": "biology",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(4T1 + 8T2 + 4T3 + 8T4 + 4T5 + 8T6 + 4T7 + 8T8 + 2P1a + 1P1b + 3P1c + 1P1d)/55"
@@ -180,15 +180,15 @@
           },
           {
             "subject": "german",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4)/4",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1b + T1d)/2",
-                    "childs": [
+                    "children": [
                       {
                         "name": "T1d",
                         "formula": "(T1a + 4T1c)/5"
@@ -198,7 +198,7 @@
                   {
                     "name": "T2",
                     "formula": "(T2b + T2d)/2",
-                    "childs": [
+                    "children": [
                       {
                         "name": "T2d",
                         "formula": "(T2a + 4T2c)/5"
@@ -208,7 +208,7 @@
                   {
                     "name": "T3",
                     "formula": "(T3b + T3d)/2",
-                    "childs": [
+                    "children": [
                       {
                         "name": "T3d",
                         "formula": "(T3a + 4T3c)/5"
@@ -218,7 +218,7 @@
                   {
                     "name": "T4",
                     "formula": "(T4b + T4d)/2",
-                    "childs": [
+                    "children": [
                       {
                         "name": "T4d",
                         "formula": "(T4a + 4T4c)/5"
@@ -231,11 +231,11 @@
           },
           {
             "subject": "economics",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4)/4",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + T1b)/2"
@@ -254,7 +254,7 @@
           },
           {
             "subject": "english",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1a + 2T1b + T2a + 2T2b + T3a + 2T3b + T4a + 2T4b + P1)/13"
@@ -263,11 +263,11 @@
           },
           {
             "subject": "french",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + 2T2 + 2T3 + T4)/6",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + T1b)/2"
@@ -290,7 +290,7 @@
           },
           {
             "subject": "history",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1a+2T1b+2T2+2T3+4T4)/11"
@@ -299,11 +299,11 @@
           },
           {
             "subject": "informatics",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4 + 6PO)/10",
-                "childs": [
+                "children": [
                   {
                     "name": "PO",
                     "formula": "(P1 + P2 + 2P3 + 2P4)/6"
@@ -318,11 +318,11 @@
           },
           {
             "subject": "art",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4)/4",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(3T1a + 7T1b + 10P1)/20"
@@ -345,11 +345,11 @@
           },
           {
             "subject": "music",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4)/4",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(3T1a + 7T1b + 10P1)/20"
@@ -372,7 +372,7 @@
           },
           {
             "subject": "philosophy",
-            "childs": [
+            "children": [
               {
                 "name": "SE2",
                 "formula": "(T2 + T3)/2"
@@ -385,11 +385,11 @@
           },
           {
             "subject": "organisation_management",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + T3 + T4)/4",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + T1b)/2"
@@ -412,11 +412,11 @@
           },
           {
             "subject": "physics",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(4(T1 + T2 + T3 + T4) + 4PO)/20",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(4T1a + T1b)/5"
@@ -443,11 +443,11 @@
           },
           {
             "subject": "dutch",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(9T1 + 6T2 + 6T3 + 3T4)/24",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(3T1a + 6T1b)/9"
@@ -462,7 +462,7 @@
           },
           {
             "subject": "chemistry",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(T1 + T2 + 2T3 + 2T4 + 2T5)/8"
@@ -471,11 +471,11 @@
           },
           {
             "subject": "mathematics_a",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(3T1 + 6T2 + 6T3 + 6T4 + 3P1)/24",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + 2T1b)/3"
@@ -486,11 +486,11 @@
           },
           {
             "subject": "mathematics_b",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(3T1 + 6T2 + 6T3 + 6T4 + 3P1)/24",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + 2T1b)/3"
@@ -501,11 +501,11 @@
           },
           {
             "subject": "mathematics_d",
-            "childs": [
+            "children": [
               {
                 "name": "SE1",
                 "formula": "(3T1 + 6T2 + 6T3 + 6T4)/21",
-                "childs": [
+                "children": [
                   {
                     "name": "T1",
                     "formula": "(T1a + 2T1b)/3"

@@ -13,10 +13,14 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GradeManager {
+/**
+ * This is the class that takes care of all {@link Subject} objects. This will load them, save them and let other classes check if a subject is already taken.
+ */
+public class SubjectManager {
 
 	/**
-	 * A holder class which gets given at the main activity to expose all those subjects
+	 * A holder class which gets given at the main activity to expose all those subjects. The {@link com.ameling.grademanager.converter.JsonConverter} can be found in {@link
+	 * com.ameling.grademanager.SubjectConverter}
 	 */
 	public static class Subject {
 
@@ -38,18 +42,35 @@ public class GradeManager {
 		}
 	}
 
+	// The file name of the internal storage subject file
 	private static final String FILE_NAME = "subjects.json";
 
-	protected static GradeManager instance;
+	/**
+	 * The only instance created by {@link com.ameling.grademanager.MainActivity}
+	 */
+	protected static SubjectManager instance;
 
+	/**
+	 * The context to use
+	 */
 	private final Context context;
+
+	/**
+	 * All {@link Subject} objects
+	 */
 	protected final List<Subject> subjects;
 
-	protected GradeManager(final Context context) {
+	protected SubjectManager (final Context context) {
 		this.context = context;
 		subjects = getSubjects();
 	}
 
+	/**
+	 * Loads the subjects from the internal file
+	 * @return A list subjects
+	 * @see #FILE_NAME
+	 * @see #context
+	 */
 	public List<Subject> getSubjects () {
 		try {
 			final List<Subject> subjects = new ArrayList<>();
@@ -63,9 +84,15 @@ public class GradeManager {
 		} catch (final FileNotFoundException | JSONException e) {
 			e.printStackTrace();
 		}
+		// Create an empty list
 		return new ArrayList<>();
 	}
 
+	/**
+	 * Saves all subjects in the internal storage file
+	 * @see #FILE_NAME
+	 * @see #context
+	 */
 	public void saveSubjects () {
 		if (subjects.size() > 0) {
 			final JSONArray subjectArray = new JSONArray();
@@ -81,6 +108,18 @@ public class GradeManager {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * Checks if the name is already a {@link Subject} object
+	 * @param name The name of the subject
+	 * @return Whether it already exists or nots
+	 */
+	public boolean hasSubject (final String name) {
+		for (final Subject subject : subjects)
+			if (subject.name.equals(name))
+				return true;
+		return false;
 	}
 }
 

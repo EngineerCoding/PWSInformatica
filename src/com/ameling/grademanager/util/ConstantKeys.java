@@ -1,11 +1,14 @@
 package com.ameling.grademanager.util;
 
+/**
+ * This class contains all standard keys used among all classes
+ */
 public abstract class ConstantKeys {
 
 	public static final String KEY_PARENT = "parent";
 	public static final String KEY_SUBJECT = "subject";
 	public static final String KEY_FORMULA = "formula";
-	public static final String KEY_CHILDS = "childs";
+	public static final String KEY_CHILDREN = "children";
 	public static final String KEY_SUBJECTS = KEY_SUBJECT + "s";
 	public static final String PREFIX_SUBJECT = KEY_SUBJECT + "_";
 

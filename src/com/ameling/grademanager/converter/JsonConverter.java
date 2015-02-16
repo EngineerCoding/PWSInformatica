@@ -8,7 +8,7 @@ import com.ameling.parser.json.JSON;
  * @param <A> The object which would get converted
  * @param <B> A type of Json, where the default and most used ones are: {@link com.ameling.parser.json.JSONObject} and {@link com.ameling.parser.json.JSONArray}
  */
-public interface IConverterJson<A, B extends JSON> {
+public interface JsonConverter<A, B extends JSON> {
 	/**
 	 * Converts the given json type to an actual object (A)
 	 *

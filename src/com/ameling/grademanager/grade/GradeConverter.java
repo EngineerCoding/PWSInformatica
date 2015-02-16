@@ -5,8 +5,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.ameling.grademanager.R;
-import com.ameling.grademanager.converter.IConverterJson;
-import com.ameling.grademanager.converter.ViewConverter;
+import com.ameling.grademanager.converter.JsonConverter;
+import com.ameling.grademanager.converter.ObjectAdapter;
 import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONObject;
 
@@ -15,8 +15,15 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_NAME;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_VALUE;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_WEIGHTING;
 
-public class GradeConverter extends ViewConverter<Grade> implements IConverterJson<Grade, JSONObject>, View.OnFocusChangeListener {
+/**
+ * This is converter is not just a simple {@link com.ameling.grademanager.converter.ObjectAdapter.ViewConverter}, but also takes care of the Json converting with
+ * {@link com.ameling.grademanager.converter.JsonConverter}
+ */
+public class GradeConverter extends ObjectAdapter.ViewConverter<Grade> implements JsonConverter<Grade, JSONObject>, View.OnFocusChangeListener {
 
+	/**
+	 * The one and only instance
+	 */
 	public static final GradeConverter instance = new GradeConverter();
 
 	private GradeConverter () {}

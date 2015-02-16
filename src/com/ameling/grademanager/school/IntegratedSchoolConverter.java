@@ -5,9 +5,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.ameling.grademanager.R;
-import com.ameling.grademanager.converter.ViewConverter;
+import com.ameling.grademanager.converter.ObjectAdapter;
 
-public class IntegratedSchoolConverter extends ViewConverter<IntegratedSchool> implements AdapterView.OnItemClickListener {
+public class IntegratedSchoolConverter extends ObjectAdapter.ViewConverter<IntegratedSchool> implements AdapterView.OnItemClickListener {
 
 	public static final IntegratedSchoolConverter instance = new IntegratedSchoolConverter();
 

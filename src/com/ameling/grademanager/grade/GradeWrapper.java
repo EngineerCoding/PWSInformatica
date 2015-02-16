@@ -4,8 +4,8 @@ package com.ameling.grademanager.grade;
 import com.ameling.parser.grade.Grade;
 
 /**
- * A wrapper class for the Grade Object. This is so because we want to have child expressions and the default parser Grade Object is not capable
- * of doing that.
+ * A wrapper class for {@link Grade} so it can contain sub-expressions which are stored in a {@link CalculatorWrapper}. The converter of this class can be found in {@link
+ * com.ameling.grademanager.grade.GradeConverter}.
  */
 public class GradeWrapper extends Grade {
 
@@ -24,6 +24,10 @@ public class GradeWrapper extends Grade {
 		super(name, weighting);
 	}
 
+	/**
+	 * Creates from the given grade a wrapper
+	 * @param grade The grade with the weighting and name
+	 */
 	public GradeWrapper (final Grade grade) {
 		this(grade.name, grade.weighting);
 	}

@@ -1,15 +1,12 @@
 package com.ameling.grademanager;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import com.ameling.grademanager.converter.ObjectAdapter;
 import com.ameling.grademanager.grade.SetupActivity;
 import com.ameling.parser.json.JSONObject;
 
@@ -20,7 +17,7 @@ import com.ameling.parser.json.JSONObject;
  *
  * @author Wesley A
  */
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
 	// Request code
 	private static final int REQUEST_CODE_SETUP = 0;
@@ -28,27 +25,43 @@ public class MainActivity extends Activity {
 	// Strings which are is in onActivityResult
 	public static final String RESULT_SUBJECT = "subject";
 
+	private ObjectAdapter<SubjectManager.Subject> adapter;
 
 	@Override
-	public void onCreate (final Bundle bundle) {
-		super.onCreate(bundle);
-		setContentView(R.layout.main);
-
-		if (GradeManager.instance == null)
-			GradeManager.instance = new GradeManager(this);
-		setupListView();
+	public int getMainLayout () {
+		return R.layout.main;
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu (final Menu menu) {
-		getMenuInflater().inflate(R.menu.main_acitivity_actions, menu);
-		return super.onCreateOptionsMenu(menu);
+	public int getMenuID () {
+		return R.menu.main_acitivity_actions;
+	}
+
+	@Override
+	public void initialize () {
+		if (SubjectManager.instance == null)
+			SubjectManager.instance = new SubjectManager(this);
+
+		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
+		adapter = SubjectConverter.instance.createAdapter(this, SubjectManager.instance.subjects);
+		subjectList.setAdapter(adapter);
+		subjectList.setOnItemClickListener(this);
+	}
+
+	@Override
+	public void handleActivityResult (final int requestCode, final Intent data) {
+		// An extra check just in case
+		if (requestCode == REQUEST_CODE_SETUP) {
+			// Decode the JSON back to a subject object
+			final SubjectManager.Subject subject = SubjectConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_SUBJECT)));
+			adapter.add(subject); // Add it to the adapter (which adds it in GradeManager.subjects
+		}
 	}
 
 	@Override
 	protected void onPause () {
 		super.onPause();
-		GradeManager.instance.saveSubjects();
+		SubjectManager.instance.saveSubjects();
 	}
 
 	@Override
@@ -63,34 +76,22 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	// Implementation of AdapterView.OnItemClickListener (for the listview)
 	@Override
-	protected void onActivityResult (final int requestCode, final int resultCode, final Intent data) {
-		// A response of SetupActivity should only be here, just an extra check
-		if (requestCode == REQUEST_CODE_SETUP && resultCode == RESULT_OK) {
-			// Decode the JSON back to a subject object
-			final GradeManager.Subject subject = SubjectConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_SUBJECT)));
-			GradeManager.instance.subjects.add(subject);
-			// Update the ListView
-			final ListView subjectList = (ListView) findViewById(R.id.subject_list);
-			final ArrayAdapter<?> subjectAdapter = (ArrayAdapter) subjectList.getAdapter();
-			if (subjectAdapter != null) {
-				subjectAdapter.notifyDataSetChanged();
-			}
-		}
+	public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
+		final SubjectManager.Subject subject = SubjectManager.instance.subjects.get(position);
+		Toast.makeText(this, subject.name, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
-	 * Adds a new instance of {@link com.ameling.grademanager.converter.ObjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
+	 * A proxy to {@link SubjectManager#hasSubject(String)} because only this class should have direct access to the SubjectManager
+	 * @param name The name of the *new* subject
+	 * @return Whether it already exists or not
 	 */
-	private void setupListView () {
-		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
-		subjectList.setAdapter(SubjectConverter.instance.createAdapter(this, GradeManager.instance.subjects));
-		subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
-				final GradeManager.Subject subject = GradeManager.instance.subjects.get(position);
-				Toast.makeText(MainActivity.this, subject.name, Toast.LENGTH_SHORT).show();
-			}
-		});
+	public static boolean hasSubject (final String name) {
+		if (name != null || !name.isEmpty())
+			// no null check for the instance because this is the first activity to ever live
+			return SubjectManager.instance.hasSubject(name);
+		return false;
 	}
 }

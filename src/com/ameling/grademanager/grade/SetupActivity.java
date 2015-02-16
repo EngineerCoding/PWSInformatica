@@ -14,12 +14,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.ameling.grademanager.BaseActivity;
-import com.ameling.grademanager.GradeManager;
 import com.ameling.grademanager.MainActivity;
 import com.ameling.grademanager.R;
+import com.ameling.grademanager.SubjectConverter;
+import com.ameling.grademanager.SubjectManager;
 import com.ameling.grademanager.converter.ObjectAdapter;
 import com.ameling.grademanager.school.IntegratedSchoolActivity;
-import com.ameling.grademanager.storage.StorageManager;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.grade.ExpressionCalculator;
 import com.ameling.parser.grade.Grade;
@@ -31,10 +31,22 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_FORMULA;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_NAME;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_WEIGHTING;
 
+/**
+ * This activity handles everything which contains input. The input stuff is formulas, grade values, sub formulas and pre-defined formulas. This is also used to edit already
+ * existing formulas because this is the most simple solution for that.
+ */
 public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener {
 
+	// The key which is used with recursive formulas
+	private static final String RESULT_GRADEWRAPPER = "gradewrapper";
+
+	// The values for making new requests
 	private static final int REQUEST_INTEGRATED_FORMULA = 0;
 	private static final int REQUEST_SUB_FORMULA = 1;
+
+	// Keys for saving and loading a state
+	private static String STATE_FORMULA = "formulaInput";
+	private static String STATE_GRADE_INPUT = "gradeInputs";
 
 	//public static final String REQUEST_SUBJECT_NAME = "name";
 	//public static final String REQUEST_SUBJECT_FORMULA = "formula";
@@ -63,12 +75,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 * A flag to determine whether this is a sub calculator or the main calculator
 	 */
 	private boolean flagSubCalculator = false;
-
-	// Keys for saving and loading a state
-	private static String STATE_FORMULA = "formulaInput";
-	private static String STATE_GRADE_INPUT = "gradeInputs";
-
-	private static final String RESULT_GRADEWRAPPER = "gradewrapper";
 
 	@Override
 	public int getMainLayout () {
@@ -101,12 +107,14 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			flagSubCalculator = true;
 			gradeWeighting = intent.getIntExtra(KEY_WEIGHTING, -1);
 
+			// Set better texts and disable the subject name TextEdit and the ability to choose from a integrated school
 			((TextView) findViewById(R.id.input_name)).setText(getString(R.string.grade_name));
 			final EditText inputFieldName = (EditText) findViewById(R.id.new_subject_name);
 			inputFieldName.setText(intent.getStringExtra(KEY_NAME));
 			inputFieldName.setEnabled(false);
-
 			findViewById(R.id.select_integrated_school).setEnabled(false);
+
+			// If there is a formula present, then show it
 			if (intent.hasExtra(KEY_FORMULA)) {
 				final GradeWrapper wrapper = (GradeWrapper) GradeConverter.instance.convert(new JSONObject(intent.getStringExtra(KEY_FORMULA)));
 				((TextView) findViewById(R.id.subject_formula)).setText(wrapper.calculator.expression);
@@ -148,8 +156,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// Handle presses on the action bar items
 		switch (item.getItemId()) {
 			case android.R.id.home:
-				setResult(RESULT_CANCELED);
-				finish();
+				onBackPressed();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -158,7 +165,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 
 	@Override
 	public void onBackPressed () {
-		super.onBackPressed();
+		// Result failed
 		setResult(RESULT_CANCELED);
 		finish();
 	}
@@ -167,6 +174,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	@Override
 	public void onFocusChange (final View view, final boolean hasFocus) {
 		if (!hasFocus) {
+			// Try to parse the expression
 			final EditText editText = (EditText) view;
 			parseFromExpression(editText.getText().toString());
 		}
@@ -196,11 +204,13 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				break;
 			}
 			case REQUEST_SUB_FORMULA: {
+				// Get the wrapper for a grade in this adapter
 				final GradeWrapper wrapper = (GradeWrapper) GradeConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_GRADEWRAPPER)));
 
 				for (int i = 0; i < adapter.getCount(); i++) {
 					final Grade grade = adapter.getItem(i);
 					if (grade.name.equals(wrapper.name)) {
+						// Remove the original object and insert our wrapper
 						adapter.remove(grade);
 						adapter.insert(wrapper, i);
 						break;
@@ -231,6 +241,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		final ViewGroup parent = (ViewGroup) view.getParent().getParent();
 		final String name = ((TextView) parent.findViewById(R.id.grade_name)).getText().toString();
 
+		// Create the intent with information for the sub activity
 		final Intent intent = new Intent(this, SetupActivity.class);
 		intent.putExtra(KEY_NAME, name);
 
@@ -269,8 +280,12 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		if (subjectName.isEmpty()) {
 			Toast.makeText(this, R.string.toast_subject_required, Toast.LENGTH_SHORT).show();
 			return;
-		} else {
-			// TODO link to grademanager : check name used
+		} else if (!flagSubCalculator) {
+			if (MainActivity.hasSubject(subjectName)) {
+				Toast.makeText(this, R.string.toast_invalid_subject, Toast.LENGTH_SHORT).show();
+				((TextView) findViewById(R.id.new_subject_name)).setText("");
+				return;
+			}
 		}
 
 		// Add double values to the grade object
@@ -288,8 +303,8 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// We got all data, set the result and finish this
 		final Intent resultIntent = new Intent();
 		if (!flagSubCalculator) {
-			final GradeManager.Subject object = new GradeManager.Subject(subjectName, createCalculator(subjectName));
-			resultIntent.putExtra(MainActivity.RESULT_SUBJECT, StorageManager.instance(null).format.encode(object).toString());
+			final SubjectManager.Subject object = new SubjectManager.Subject(subjectName, createCalculator(subjectName));
+			resultIntent.putExtra(MainActivity.RESULT_SUBJECT, SubjectConverter.instance.convert(object).toString());
 		} else {
 			// Create a gradewrapper of this activity
 			final GradeWrapper wrapper = new GradeWrapper(subjectName, gradeWeighting);

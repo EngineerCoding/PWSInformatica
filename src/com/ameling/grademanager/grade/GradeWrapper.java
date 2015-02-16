@@ -1,4 +1,4 @@
-package com.ameling.grademanager.util;
+package com.ameling.grademanager.grade;
 
 
 import com.ameling.parser.grade.Grade;
@@ -12,7 +12,7 @@ public class GradeWrapper extends Grade {
 	/**
 	 * The calculator with sub grades
 	 */
-	public CalculatorWrapperFactory.CalculatorProxy calculator;
+	public CalculatorWrapper calculator;
 
 	/**
 	 * Setup super values
@@ -34,7 +34,7 @@ public class GradeWrapper extends Grade {
 	 *
 	 * @param calculator The calculator to set
 	 */
-	public void setSubGrades (final CalculatorWrapperFactory.CalculatorProxy calculator) {
+	public void setSubGrades (final CalculatorWrapper calculator) {
 		if (calculator != null && calculator.grades.size() > 0)
 			this.calculator = calculator;
 	}
@@ -58,5 +58,4 @@ public class GradeWrapper extends Grade {
 					return true;
 		return false;
 	}
-
 }

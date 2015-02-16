@@ -11,7 +11,7 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo"
             >
-        <activity android:name=".ui.GradeManager"
+        <activity android:name=".MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,18 +19,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.SetupActivity"
+        <activity android:name=".grade.SetupActivity"
                   android:label="New Subject"/>
         <!-- TODO @strings -->
 
-        <activity android:name=".ui.IntegratedSchoolActivity"
+        <activity android:name=".school.IntegratedSchoolActivity"
                   android:label="Choose formula"> <!-- TODO @strings -->
             <meta-data
                     android:name="android.app.searchable"
                     android:resource="@xml/school_searchable"/>
         </activity>
 
-        <activity android:name=".ui.SubjectDialogActivity"
+        <activity android:name=".school.SubjectDialogActivity"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
     </application>
 </manifest>

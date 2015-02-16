@@ -2,8 +2,8 @@ package com.ameling.grademanager.school;
 
 import android.content.Context;
 import com.ameling.grademanager.R;
-import com.ameling.grademanager.util.CalculatorWrapperFactory;
-import com.ameling.grademanager.util.GradeWrapper;
+import com.ameling.grademanager.grade.CalculatorWrapper;
+import com.ameling.grademanager.grade.GradeWrapper;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.grade.Calculator;
 import com.ameling.parser.grade.ExpressionCalculator;
@@ -11,14 +11,10 @@ import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONObject;
 
+import static com.ameling.grademanager.util.ConstantKeys.*;
+
 public class JsonIntegratedSchool extends IntegratedSchool {
 
-	private static final String KEY_PARENT = "parent";
-	private static final String KEY_SUBJECT = "subject";
-	private static final String KEY_FORMULA = "formula";
-	private static final String KEY_CHILDS = "childs";
-	private static final String KEY_SUBJECTS = KEY_SUBJECT + "s";
-	private static final String PREFIX_SUBJECT = KEY_SUBJECT + "_";
 
 	public static class JsonClassLevel extends ClassLevel {
 
@@ -90,7 +86,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 						final Grade grade = parent.grades.get(j);
 						if (grade.name.equals(childName)) {
 							final GradeWrapper wrapper = new GradeWrapper(grade);
-							wrapper.setSubGrades(CalculatorWrapperFactory.createCalculator(null, child.getString(KEY_FORMULA)));
+							wrapper.setSubGrades(new CalculatorWrapper(child.getString(KEY_FORMULA)));
 							parent.grades.set(j, wrapper);
 
 							recurseChilds(child, wrapper.calculator);
@@ -115,11 +111,6 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 			return null;
 		}
 	}
-
-	private static final String KEY_NAME = "name";
-	private static final String KEY_COUNTRY = "country";
-	private static final String KEY_CITY = "city";
-	public static final String KEY_CLASSES = "classes";
 
 	private final String[] classNames;
 	private final JsonClassLevel[] classLevels;

@@ -1,11 +1,11 @@
-package com.ameling.grademanager.ui.adapter;
+package com.ameling.grademanager.school;
 
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.ameling.grademanager.R;
-import com.ameling.grademanager.school.IntegratedSchool;
+import com.ameling.grademanager.converter.ViewConverter;
 
 public class IntegratedSchoolConverter extends ViewConverter<IntegratedSchool> implements AdapterView.OnItemClickListener {
 

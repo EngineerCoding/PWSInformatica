@@ -1,4 +1,4 @@
-package com.ameling.grademanager.ui;
+package com.ameling.grademanager.school;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -13,11 +13,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import com.ameling.grademanager.BaseActivity;
 import com.ameling.grademanager.R;
-import com.ameling.grademanager.school.IntegratedSchool;
-import com.ameling.grademanager.school.JsonIntegratedSchool;
-import com.ameling.grademanager.ui.adapter.IntegratedSchoolConverter;
-import com.ameling.grademanager.ui.adapter.ObjectAdapter;
+import com.ameling.grademanager.converter.ObjectAdapter;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONObject;
 
@@ -26,6 +24,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ameling.grademanager.util.ConstantKeys.KEY_CLASSES;
 
 public class IntegratedSchoolActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
@@ -83,7 +83,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 							final JsonIntegratedSchool parent = new JsonIntegratedSchool(parentJson);
 							schoolCollection.add(parent);
 
-							final JSONArray arrayClasses = parentJson.getJSONArray(JsonIntegratedSchool.KEY_CLASSES);
+							final JSONArray arrayClasses = parentJson.getJSONArray(KEY_CLASSES);
 							for (int j = 0; j < arrayClasses.getSize(); j++)
 								new JsonIntegratedSchool.JsonClassLevel(arrayClasses.getJSONObject(j), parent, IntegratedSchoolActivity.this);
 						}

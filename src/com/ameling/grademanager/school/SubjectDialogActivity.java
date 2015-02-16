@@ -1,4 +1,4 @@
-package com.ameling.grademanager.ui;
+package com.ameling.grademanager.school;
 
 import android.app.Activity;
 

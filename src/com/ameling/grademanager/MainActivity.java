@@ -1,4 +1,4 @@
-package com.ameling.grademanager.ui;
+package com.ameling.grademanager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,13 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.ameling.grademanager.R;
-import com.ameling.grademanager.storage.StorageManager;
-import com.ameling.grademanager.ui.adapter.SubjectConverter;
-import com.ameling.grademanager.util.Subject;
+import com.ameling.grademanager.grade.SetupActivity;
 import com.ameling.parser.json.JSONObject;
-
-import java.util.List;
 
 /**
  * This is the main activity for this app. It creates the FileManager and acts accordingly to display. It either setups all subjects or loads
@@ -25,26 +20,22 @@ import java.util.List;
  *
  * @author Wesley A
  */
-public class GradeManager extends Activity {
-
-	// public for other classes to access
-	public static StorageManager storageManager;
+public class MainActivity extends Activity {
 
 	// Request code
 	private static final int REQUEST_CODE_SETUP = 0;
 
 	// Strings which are is in onActivityResult
-	public static final String RESULT_JSON = "jsonObject";
+	public static final String RESULT_SUBJECT = "subject";
 
-	// private data only for this activity
-	private List<Subject> subjects;
 
 	@Override
 	public void onCreate (final Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.main);
 
-		subjects = StorageManager.instance(this).getSubjects();
+		if (GradeManager.instance == null)
+			GradeManager.instance = new GradeManager(this);
 		setupListView();
 	}
 
@@ -57,8 +48,7 @@ public class GradeManager extends Activity {
 	@Override
 	protected void onPause () {
 		super.onPause();
-		if (subjects.size() > 0)
-			StorageManager.instance(null).saveSubjects(subjects);
+		GradeManager.instance.saveSubjects();
 	}
 
 	@Override
@@ -78,8 +68,8 @@ public class GradeManager extends Activity {
 		// A response of SetupActivity should only be here, just an extra check
 		if (requestCode == REQUEST_CODE_SETUP && resultCode == RESULT_OK) {
 			// Decode the JSON back to a subject object
-			final Subject subject = StorageManager.instance(null).format.decode(new JSONObject(data.getStringExtra(RESULT_JSON)));
-			subjects.add(subject);
+			final GradeManager.Subject subject = SubjectConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_SUBJECT)));
+			GradeManager.instance.subjects.add(subject);
 			// Update the ListView
 			final ListView subjectList = (ListView) findViewById(R.id.subject_list);
 			final ArrayAdapter<?> subjectAdapter = (ArrayAdapter) subjectList.getAdapter();
@@ -90,16 +80,16 @@ public class GradeManager extends Activity {
 	}
 
 	/**
-	 * Adds a new instance of {@link com.ameling.grademanager.ui.adapter.ObjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
+	 * Adds a new instance of {@link com.ameling.grademanager.converter.ObjectAdapter} to the ListView and gives it a proper ItemClickListener which opens new intents
 	 */
 	private void setupListView () {
 		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
-		subjectList.setAdapter(SubjectConverter.instance.createAdapter(this, subjects));
+		subjectList.setAdapter(SubjectConverter.instance.createAdapter(this, GradeManager.instance.subjects));
 		subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
-				final Subject subject = subjects.get(position);
-				Toast.makeText(GradeManager.this, subject.name, Toast.LENGTH_SHORT).show();
+				final GradeManager.Subject subject = GradeManager.instance.subjects.get(position);
+				Toast.makeText(MainActivity.this, subject.name, Toast.LENGTH_SHORT).show();
 			}
 		});
 	}

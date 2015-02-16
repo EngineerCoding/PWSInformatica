@@ -1,10 +1,9 @@
-package com.ameling.grademanager.ui;
+package com.ameling.grademanager;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import com.ameling.grademanager.R;
 
 public abstract class BaseActivity extends Activity {
 

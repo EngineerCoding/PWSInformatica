@@ -43,9 +43,10 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 		/**
 		 * Creates a new ClassLevel
-		 * @param object The object to read from
+		 *
+		 * @param object       The object to read from
 		 * @param parentSchool The parent object to get a possible class parent, should never be null
-		 * @param context The context to try to localize from, should not be null
+		 * @param context      The context to try to localize from, should not be null
 		 */
 		public JsonClassLevel (final JSONObject object, final JsonIntegratedSchool parentSchool, final Context context) {
 			if (object == null)
@@ -148,6 +149,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 	/**
 	 * Creates a plain IntegratedSchool object. This does not parse ClassLevels by itself!
+	 *
 	 * @param object The json to read from
 	 */
 	private JsonIntegratedSchool (final JSONObject object) {
@@ -158,7 +160,8 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 	/**
 	 * Adds a classLevel to this school. Only used internally
-	 * @param name The name of the {@link ClassLevel}
+	 *
+	 * @param name       The name of the {@link ClassLevel}
 	 * @param classLevel The actual {@link JsonClassLevel}
 	 */
 	private void add (final String name, final JsonClassLevel classLevel) {
@@ -186,7 +189,8 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 	/**
 	 * Creates a functional object of {@link JsonIntegratedSchool}
-	 * @param object The object to read the values from
+	 *
+	 * @param object  The object to read the values from
 	 * @param context The context to localize the keys with
 	 * @return A functional {@link JsonIntegratedSchool}
 	 */

@@ -26,6 +26,7 @@ public class GradeWrapper extends Grade {
 
 	/**
 	 * Creates from the given grade a wrapper
+	 *
 	 * @param grade The grade with the weighting and name
 	 */
 	public GradeWrapper (final Grade grade) {

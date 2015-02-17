@@ -67,6 +67,7 @@ public class SubjectManager {
 
 	/**
 	 * Loads the subjects from the internal file
+	 *
 	 * @return A list subjects
 	 * @see #FILE_NAME
 	 * @see #context
@@ -90,6 +91,7 @@ public class SubjectManager {
 
 	/**
 	 * Saves all subjects in the internal storage file
+	 *
 	 * @see #FILE_NAME
 	 * @see #context
 	 */
@@ -112,6 +114,7 @@ public class SubjectManager {
 
 	/**
 	 * Checks if the name is already a {@link Subject} object
+	 *
 	 * @param name The name of the subject
 	 * @return Whether it already exists or nots
 	 */

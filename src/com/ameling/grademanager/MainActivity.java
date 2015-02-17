@@ -85,6 +85,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
 	/**
 	 * A proxy to {@link SubjectManager#hasSubject(String)} because only this class should have direct access to the SubjectManager
+	 *
 	 * @param name The name of the *new* subject
 	 * @return Whether it already exists or not
 	 */

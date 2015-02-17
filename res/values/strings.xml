@@ -33,11 +33,14 @@
     <string name="subject_english">English</string>
     <string name="subject_french">French</string>
     <string name="subject_history">History</string>
+    <string name="subject_greek">Greek</string>
     <string name="subject_informatics">Informatics</string>
     <string name="subject_art">Art</string>
     <string name="subject_music">Music</string>
+    <string name="subject_latin">Latin</string>
     <string name="subject_philosophy">Philosophy</string>
     <string name="subject_sociology">Sociology</string>
+    <string name="subject_science">Science</string>
     <string name="subject_organisation_management">M&amp;O</string>
     <string name="subject_chemistry">Chemistry</string>
     <string name="subject_physics">Physics</string>

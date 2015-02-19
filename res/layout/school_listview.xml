@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:padding="5dip"
-              android:background="@android:color/white">
-    <TextView style="@style/medium_text"
+              android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:id="@+id/school_name"
-            />
-    <FrameLayout android:layout_width="match_parent"
-                 android:layout_height="wrap_content">
+              android:padding="5dip"
+              android:background="@android:color/white">
         <TextView style="@style/medium_text"
-                  android:layout_gravity="left"
-                  android:textSize="15sp"
-                  android:id="@+id/school_country"
-                />
-        <TextView style="@style/medium_text"
-                  android:layout_gravity="right"
-                  android:textSize="15sp"
-                  android:id="@+id/school_city"
-                />
-    </FrameLayout>
-
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/school_name"/>
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content" >
+            <TextView style="@style/medium_text"
+                      android:layout_gravity="left"
+                      android:textSize="15sp"
+                      android:id="@+id/school_country"/>
+            <TextView style="@style/medium_text"
+                      android:layout_gravity="right"
+                      android:textSize="15sp"
+                      android:id="@+id/school_city"/>
+        </FrameLayout>
 </LinearLayout>

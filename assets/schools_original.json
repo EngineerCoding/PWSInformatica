@@ -711,7 +711,7 @@
 					{
 						"subject": "music",
 						"formula": "(SE1 + SE2 + SE3 + SE4 + SE5 + SE6 + SE7 + SE8)/8",
-						"children": {
+						"children": [
 							{
 								"name": "SE6",
 								"formula": "(SE6a + 2SE6b)/3"
@@ -777,20 +777,463 @@
 						]
 					},
 					{
-						"subject": "mathematics A",
+						"subject": "mathematics_a",
 						"formula": "(SE1 + SE2 + SE3 + 2SE4 + 2SE5 + 2SE6 + 2SE7 + 2SE8 + 2PO)/15"
 					},
 					{
-						"subject": "mathematics B",
+						"subject": "mathematics_b",
 						"formula": "(SE1 + SE2 + SE3 + 2SE4 + 2SE5 + 2SE6 + 2SE7 + 2SE8 + 2PO)/15"
 					},
 					{
-						"subject": "mathematics C",
+						"subject": "mathematics_c",
 						"formula": "(SE1 + SE2 + SE3 + 2SE4 + 2SE5 + 2SE6 + 2SE7 + 2SE8 + 2PO)/15"
 					},
 					{
-						"subject": "mathematics D",
+						"subject": "mathematics_d",
 						"formula": "(SE1 + SE2 + SE3 + 2SE4 + 2SE5 + 2SE6 + 2SE7 + 2SE8 + 2PO)/15"
+					}
+				]
+			},
+			{
+				"name": "5vwo",
+				"parent": "6vwo",
+				"subjects": [
+					{
+						"subject": "geography"
+					},
+					{
+						"subject": "ALGEMENE NATUURWETENSCHAPPEN TODO",
+						"formula": "(SE1 + SE2 + SE3 + SE4)/4"
+					},
+					{
+						"subject": "sports"
+					},
+					{
+						"subject": "biology"
+					},
+					{
+						"subject": "german",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(SE2a + SE2b)/2"
+							},
+							{
+								"name": "SE3",
+								"formula": "(SE3a + SE3b)/2"
+							},
+							{
+								"name": "SE4",
+								"formula": "(SE4a + SE4b)/2"
+							},
+							{
+								"name": "SE5",
+								"formula": "(SE5a + SE5b)/2"
+							}
+						]
+					},
+					{
+						"subject": "economics"
+					},
+					{
+						"subject": "english",
+						"children": [
+							{
+								"name": "SE2",
+								"subject": "(SE2a + 2SE2b)/3"
+							},
+							{
+								"name": "SE3",
+								"subject": "(SE3a + 2SE3b)/3"
+							},
+							{
+								"name": "SE4",
+								"subject": "(SE4a + 2SE4b)/3"
+							},
+							{
+								"name": "SE5",
+								"subject": "(SE5a + 2SE5b + 2PO5c)/5"
+							}
+						]
+					},
+					{
+						"subject": "french",
+						"children": [
+							{
+								"name": "SE3",
+								"formula": "(SE3a + 3SE3b)/4"
+							},
+							{
+								"name": "SE4",
+								"formula": "(SE4a + 3SE4b)/4"
+							},
+							{
+								"name": "SE5",
+								"formula": "(2SE5a + SE5b + SE5c)/4"
+							}
+						]
+					},
+					{
+						"subject": "history",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(4T2 + PO)/5"
+							}
+						]
+					},
+					{
+						"subject": "greek"
+					},
+					{
+						"subject": "informatics",
+						"formula": "(SE1 + SE2 + SE3 + SE4 + SE5)/5",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(SE2a + SE2b)/2"
+							},
+							{
+								"name": "SE3",
+								"formula": "(2SE3a + SE3b)/3"
+							},
+							{
+								"name": "SE4",
+								"formula": "(SE4a + SE4b)/2"
+							}
+						]
+					},
+					{
+						"subject": "arts",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(SE2a + 2SE2b)/3"
+							},
+							{
+								"name": "SE3",
+								"formula": "(SE3a + 2SE3b)/3"
+							},
+							{
+								"name": "SE4",
+								"formula": "(SE4a + 2SE4b)/3"
+							},
+							{
+								"name": "SE5",
+								"formula": "(SE5a + 2SE5b)/3"
+							}
+						]
+					},
+					{
+						"subject": "music",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(SE2a + 2SE2b)/3"
+							},
+							{
+								"name": "SE3",
+								"formula": "(SE3a + 2SE3b)/3"
+							},
+							{
+								"name": "SE4",
+								"formula": "(SE4a + 2SE4b)/3"
+							},
+							{
+								"name": "SE5",
+								"formula": "(SE5a + 2SE5b)/3"
+							}
+						]
+					},
+					{
+						"subject": "latin"
+					},
+					{
+						"subject": "philosophy"
+					},
+					{
+						"subject": "management_organisation"
+					},
+					{
+						"subject": "physics",
+						"children": [
+							{
+								"name": "SE2",
+								"formula": "(4T2 + P2)/5"
+							},
+							{
+								"name": "SE3",
+								"formula": "(4T3 + P3)/5"
+							},
+							{
+								"name": "SE4",
+								"formula": "(4T4 + P4)/5"
+							},
+							{
+								"name": "SE5",
+								"formula": "(4T5 + P5)/5"
+							}
+						]
+					},
+					{
+						"subject": "dutch"
+					},
+					{
+						"subject": "chemistry"
+					},
+					{
+						"subject": "mathematics_a"
+					},
+					{
+						"subject": "mathematics_b"
+					},
+					{
+						"subject": "mathematics_c"
+					},
+					{
+						"subject": "mathematics_d"
+					}
+				]
+			},
+			{
+				"name": "4vwo",
+				"parent": "5vwo",
+				"subjects": [
+					{
+						"subject": "geography",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 3T2 + 3T3 + 3T4)/12"
+							}
+						]
+					},
+					{
+						"subject": "ALGEMENE NATUURWETENSCHAPPEN TODO"
+					},
+					{
+						"subject": "sports"
+					},
+					{
+						"subject": "biology",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(2T1 + 4T2 + 4T3 + 4T4 + 4T5 + 2PO1 + 2PO2)/22"
+							}
+						]
+					},
+					{
+						"subject": "german",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1b + T1d + T2b + T2d + T3b + T3d + T4b + T4d + T4e)/9",
+								"children": [
+									{
+										"name": "T1d",
+										"formula": "(T1a + 4T1c)/5"
+									},
+									{
+										"name": "T2d",
+										"formula": "(T2a + 4T2c)/5"
+									},
+									{
+										"name": "T3d",
+										"formula": "(T3a + 4T3c)/5"
+									},
+									{
+										"name": "T4d",
+										"formula": "(T4a + 4T4c)/5"
+									}
+								]
+							}
+						]
+					},
+					{
+						"subject": "english",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + T2a + 2T2b + 2T3a + 2T3b + T4a + T4b + P1)/13"
+							}
+						]
+					},
+					{
+						"subject": "french",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + T1b + 2T2a + 2T2b + 2T3a + 2T3b + T4a + T4b)/12"
+							}
+						]
+					},
+					{
+						"subject": "history",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 2T2 + 2T3 + 2T4)/9"
+							}
+						]
+					},
+					{
+						"subject": "greek",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1 + 2T2 + T3 + 2T4 + 2T5 + T6 + 2T7 + T8 + 2T9 + T10)/15"
+							}
+						]
+					},
+					{
+						"subject": "art",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1 + T2 + T3 + T4)/4",
+								"children": [
+									{
+										"name": "T1",
+										"formula": "(3T1a + 7T1b + 10P1)/20"
+									},
+									{
+										"name": "T2",
+										"formula": "(10T2 + 10P2)/20"
+									},
+									{
+										"name": "T3",
+										"formula": "(10T3 + 10P3)/20"
+									},
+									{
+										"name": "T4",
+										"formula": "(10T2 + 10P2)/20"
+									}
+								]
+							}
+						]
+					},
+					{
+						"subject": "music",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1 + T2 + T3 + T4)/4",
+								"children": [
+									{
+										"name": "T1",
+										"formula": "(3T1a + 7T1b + 10P1)/20"
+									},
+									{
+										"name": "T2",
+										"formula": "(10T2 + 10P2)/20"
+									},
+									{
+										"name": "T3",
+										"formula": "(10T3 + 10P3)/20"
+									},
+									{
+										"name": "T4",
+										"formula": "(10T2 + 10P2)/20"
+									}
+								]
+							}
+						]
+					},
+					{
+						"subject": "greek",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1 + 2T2 + T3 + 2T4 + 2T5 + T6 + 2T7 + T8 + 2T9 + T10)/15"
+							}
+						]
+					},
+					{
+						"subject": "philosophy"
+					},
+					{
+						"subject": "sociology",
+						"formula": "(SE1 + SE2 + SE3 + SE4 + PO)/5"
+					},
+					{
+						"subject": "management_organisation",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1 + 2T2 + 3T3 + 3T4)/9",
+								"children": [
+									{
+										"name": "T1",
+										"formula": "(T1a + T1b)/2"
+									}
+								]
+							}
+						]
+					},
+					{
+						"subject": "physics",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(4T1 + 4T2 + 4T3 + 4T4 + PO)/17",
+								"children": [
+									{
+										"name": "T1",
+										"formula": "(T1a + T1b)/2"
+									},
+									{
+										"name": "PO",
+										"formula": "(PO1 + PO2 + PO3 + PO4)/4"
+									}
+								]
+							}
+						]
+					},
+					{
+						"subject": "dutch",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + T1b + 2T2 + 3T3 + 3T4)/10"
+							}
+						]
+					},
+					{
+						"subject": "mathematics_a",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 6T3 + 6T4 + 6T5)/21"
+							}
+						]
+					},
+					{
+						"subject": "mathematics_b",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 6T3 + 6T4 + 6T5)/21"
+							}
+						]
+					},
+					{
+						"subject": "mathematics_c",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 6T3 + 6T4 + 6T5)/21"
+							}
+						]
+					},
+					{
+						"subject": "mathematics_d",
+						"children": [
+							{
+								"name": "SE1",
+								"formula": "(T1a + 2T1b + 6T3 + 6T4 + 6T5)/21"
+							}
+						]
 					}
 				]
 			}

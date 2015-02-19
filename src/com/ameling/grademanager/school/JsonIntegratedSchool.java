@@ -82,15 +82,14 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 				if (subject.has(KEY_FORMULA))
 					formula = new ExpressionCalculator(subject.getString(KEY_FORMULA));
-
 				// If the formula is null, then formula must be defined -> exception
 				if (formula == null)
 					throw new SyntaxException("Key formula must be defined!");
 
 				recurseChildren(subject, formula);
 				calculators[i] = formula;
-				parentSchool.add(name, this); // Add this object to the parent
 			}
+			parentSchool.add(name, this); // Add this object to the parent
 		}
 
 		/**
@@ -100,7 +99,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 		 * @param parent The parent calculator
 		 */
 		private void recurseChildren (final JSONObject object, final Calculator parent) {
-			if (object.has(KEY_CHILDREN)) {
+			if (object.has(KEY_CHILDREN) && parent != null) {
 				final JSONArray array = object.getJSONArray(KEY_CHILDREN);
 
 				for (int i = 0; i < array.getSize(); i++) {

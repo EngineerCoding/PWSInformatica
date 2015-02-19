@@ -70,52 +70,29 @@ public class ExpressionCalculator extends Calculator {
 		private Expression (final Tokenizer tokenizer) {
 			super(tokenizer); // required for the parent class, Parser
 
-			Double multiplier = parseNumber(false); // Parse a possible number, without e10 etc.
-
-			// Check if an asterisk is used, also when a number comes next, multiply the multiplier with it
-			// When an asterisk has been found, but no number, then this boolean is set to true
-			boolean asteriskUsed = false;
-			while (tokenizer.isNext(CHAR_MULTIPLY)) {
-				final Double number = parseNumber(false);
-				if (number != null) {
-					if (multiplier == null)
-						multiplier = number;
-					else
-						multiplier *= number;
-				} else {
-					asteriskUsed = true;
-				}
+			// First try to parse a number
+			Double multiplier = parseNumber(false);
+			boolean usedAsterisk = false;
+			if (multiplier != null) {
+				final Object[] multiplyObject = parseMultipliers();
+				if ((Boolean) multiplyObject[0])
+					multiplier *= (Double) multiplyObject[1];
+				usedAsterisk = (Boolean) multiplyObject[2];
 			}
 
-			// Collection of sub expressions
-			final List<Expression> expressions = new ArrayList<>();
+			final List<Expression> expressions = new ArrayList<Expression>();
 			if (tokenizer.isNext(CHAR_BRACKET_OPEN)) {
-				// A bracket has been found, so we parse Expressions while we found plus operators
 				do {
 					expressions.add(new Expression(tokenizer));
 				} while (tokenizer.isNext(CHAR_PLUS));
-
-				// The last bracket has not been found, so throw an exception
 				if (!tokenizer.isNext(CHAR_BRACKET_CLOSE))
 					throw new SyntaxException(FORMAT_EXPECTED_CHAR, CHAR_BRACKET_CLOSE);
-
-				// A number can be right next to the last bracket, so try to parse it and set or multiply with the multiplier
-				final Double number = parseNumber(false);
-				if (number != null) {
-					if (multiplier == null)
-						multiplier = number;
-					else
-						multiplier *= number;
-				}
 			}
 
 			if (expressions.size() == 0) {
-				// No sub expression so it must be a variable id
-
-				if (asteriskUsed)
+				if (usedAsterisk)
 					tokenizer.skipBlanks();
 
-				// No brackets, so maybe a variable (eg. SE1)
 				final StringBuilder builder = new StringBuilder();
 				Character character = tokenizer.peek();
 				if (character != null && character.toString().matches(REGEX_VARIABLE_STARTING)) {
@@ -131,6 +108,19 @@ public class ExpressionCalculator extends Calculator {
 				this.variable = null;
 			}
 
+			// Try to parse multipliers again
+			final Object[] multiplyObject = parseMultipliers();
+			if ((Boolean) multiplyObject[0]) {
+				if (multiplier != null) {
+					multiplier *= (Double) multiplyObject[1];
+				} else {
+					multiplier = (Double) multiplyObject[1];
+				}
+			}
+
+			if ((Boolean) multiplyObject[2])
+				throw new SyntaxException("Expected number!");
+
 			// Set the found expressions in a proper immutable list (arrays are mutable)
 			this.subExpressions = (expressions.size() == 0 ? new Expression[0] : expressions.toArray(new Expression[expressions.size()]));
 
@@ -144,6 +134,33 @@ public class ExpressionCalculator extends Calculator {
 				if (divider != null)
 					divide(divider.intValue());
 			}
+		}
+
+		/**
+		 * Parses a number which to multiply with
+		 *
+		 * @return An array containing the following information (index-1):
+		 * <ol>
+		 * <li>Boolean: whether to use the next index</li>
+		 * <li>Double: the parsed number, defaults to 1D</li>
+		 * <li>Boolean: whether a number couldn't be parsed</li>
+		 * </ol>
+		 */
+		private Object[] parseMultipliers () {
+			Double number = 1D;
+			boolean changed = false;
+			while (tokenizer.isNext(CHAR_MULTIPLY)) {
+				final Double multiplyNumber = parseNumber(false);
+				if (multiplyNumber != null) {
+					number *= multiplyNumber;
+				} else {
+					return new Object[]{ changed, number, true };
+				}
+
+				if (!changed)
+					changed = true;
+			}
+			return new Object[]{ changed, number, false };
 		}
 
 		/**

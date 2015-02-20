@@ -10,6 +10,7 @@
     <application
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Holo"
+            android:icon="@drawable/ic_launcher"
             >
         <activity android:name=".MainActivity"
                   android:label="@string/app_name">
@@ -25,12 +26,16 @@
 
         <activity android:name=".school.IntegratedSchoolActivity"
                   android:label="Choose formula"> <!-- TODO @strings -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
             <meta-data
                     android:name="android.app.searchable"
                     android:resource="@xml/school_searchable"/>
         </activity>
 
         <activity android:name=".school.SubjectDialogActivity"
+                  android:label="Choose subject"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
     </application>
 </manifest>

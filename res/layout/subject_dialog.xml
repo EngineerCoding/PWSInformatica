@@ -3,6 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:padding="10dip"
               android:background="@android:color/white">
 
     <TextView style="@style/medium_text"
@@ -11,7 +12,14 @@
               android:text="@string/choose_subject"/>
 
     <Spinner android:layout_height="wrap_content"
-             android:layout_width="wrap_content"
+             android:layout_width="match_parent"
+             android:layout_gravity="center_horizontal"
              android:id="@+id/classes"/>
 
+    <ListView android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:layout_gravity="center_horizontal"
+              android:padding="10dip"
+              android:background="@drawable/border_average_grade"
+              android:id="@+id/subjects"/>
 </LinearLayout>

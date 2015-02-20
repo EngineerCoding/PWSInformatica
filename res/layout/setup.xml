@@ -68,13 +68,14 @@
                           android:layout_gravity="right"/>
             </FrameLayout>
             <ListView android:layout_width="match_parent"
-                      android:layout_height="310dip"
+                      android:layout_height="300dip"
                       android:layout_gravity="top"
                       android:transcriptMode="alwaysScroll"
                       android:id="@+id/grade_list"/>
             <Button style="@style/button"
                     android:layout_gravity="center_horizontal|bottom"
                     android:onClick="finishSetup"
+                    android:layout_marginTop="10dip"
                     android:text="@string/finish_button"
                     />
         </LinearLayout>

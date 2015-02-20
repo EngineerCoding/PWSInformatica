@@ -14,7 +14,7 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_GRADES;
  * A wrapper for all currently implemented {@link Calculator} objects. This simply holds the expression which is saved when the subjects get written to an internal private file.
  * To make it more organized, this class also contains its {@link JsonConverter} to convert from and to a {@link JSONObject}
  */
-public class CalculatorWrapper extends Calculator {
+public class CalculatorWrapper extends Calculator implements Cloneable {
 
 	/**
 	 * The converter for this class
@@ -81,5 +81,11 @@ public class CalculatorWrapper extends Calculator {
 	private static Grade[] getGrades (final String expression) {
 		final Calculator calculator = new ExpressionCalculator(expression);
 		return calculator.grades.toArray(new Grade[calculator.grades.size()]);
+	}
+
+	@Override
+	public CalculatorWrapper clone () {
+		final Calculator calculator = super.clone();
+		return new CalculatorWrapper(calculator.grades.toArray(new Grade[calculator.grades.size()]), expression);
 	}
 }

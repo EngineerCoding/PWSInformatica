@@ -6,7 +6,6 @@ import com.ameling.grademanager.grade.CalculatorWrapper;
 import com.ameling.grademanager.grade.GradeWrapper;
 import com.ameling.parser.SyntaxException;
 import com.ameling.parser.grade.Calculator;
-import com.ameling.parser.grade.ExpressionCalculator;
 import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONObject;
@@ -39,7 +38,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 		/**
 		 * All corresponding calculators
 		 */
-		private final Calculator[] calculators;
+		private final CalculatorWrapper[] calculators;
 
 		/**
 		 * Creates a new ClassLevel
@@ -60,7 +59,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 			final JSONArray subjectArray = object.getJSONArray(KEY_SUBJECTS);
 
 			subjects = new String[subjectArray.getSize()];
-			calculators = new Calculator[subjectArray.getSize()];
+			calculators = new CalculatorWrapper[subjectArray.getSize()];
 
 			// Decode the subjects
 			for (int i = 0; i < subjectArray.getSize(); i++) {
@@ -76,12 +75,12 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 				}
 
 				// Check if the parentClassLevel has it, then try to grab it from the actual key
-				Calculator formula = null;
+				CalculatorWrapper formula = null;
 				if (parentClassLevel != null && parentClassLevel.hasSubject(subjects[i]))
 					formula = parentClassLevel.getFormula(subjects[i]);
 
 				if (subject.has(KEY_FORMULA))
-					formula = new ExpressionCalculator(subject.getString(KEY_FORMULA));
+					formula = new CalculatorWrapper(subject.getString(KEY_FORMULA));
 				// If the formula is null, then formula must be defined -> exception
 				if (formula == null)
 					throw new SyntaxException("Key formula must be defined!");
@@ -128,7 +127,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 		}
 
 		@Override
-		public Calculator getFormula (final String subject) {
+		public CalculatorWrapper getFormula (final String subject) {
 			for (int i = 0; i < subjects.length; i++)
 				if (subjects[i].equals(subject))
 					return calculators[i].clone();

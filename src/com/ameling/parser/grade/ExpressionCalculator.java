@@ -80,7 +80,7 @@ public class ExpressionCalculator extends Calculator {
 				usedAsterisk = (Boolean) multiplyObject[2];
 			}
 
-			final List<Expression> expressions = new ArrayList<Expression>();
+			final List<Expression> expressions = new ArrayList<>();
 			if (tokenizer.isNext(CHAR_BRACKET_OPEN)) {
 				do {
 					expressions.add(new Expression(tokenizer));

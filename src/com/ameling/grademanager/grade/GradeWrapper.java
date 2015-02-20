@@ -46,7 +46,9 @@ public class GradeWrapper extends Grade {
 
 	@Override
 	public double getValue () {
-		return calculator.calculateAverage();
+		if (calculator != null)
+			return calculator.calculateAverage();
+		return 0D;
 	}
 
 	@Override

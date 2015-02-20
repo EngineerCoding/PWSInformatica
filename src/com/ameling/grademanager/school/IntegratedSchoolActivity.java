@@ -2,15 +2,21 @@ package com.ameling.grademanager.school;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.AsyncTask;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import com.ameling.grademanager.BaseActivity;
@@ -29,16 +35,18 @@ import java.util.List;
  * This activity is the main activity which takes cares of {@link IntegratedSchool} objects. For now it simply loads it from the assets folder but in the future and a server is
  * available this will also connect with that and build a cache of it. It is available to search for a school, city our even a country.
  */
-public class IntegratedSchoolActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class IntegratedSchoolActivity extends BaseActivity implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, TextWatcher {
 
 	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
 	private static final String REGEX_SPLIT = "\\s+";
 	private static final String[] COLUMN_SCHOOL = new String[]{ "_id", "school" };
+	public static final String KEY_INDEX = "index";
+	private static final int REQUEST_SUBJECT_CLASS = 0;
 
 	/**
 	 * All integrated schools
 	 */
-	private static List<IntegratedSchool> schoolCollection;
+	protected static List<IntegratedSchool> schoolCollection;
 
 	/**
 	 * The adapter of the listview
@@ -69,6 +77,11 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 			// This task which loads and parses the JSON from the assets folder is asynchronous, otherwise the the ui-thread will do too much work
 			new AsyncTask<Void, Void, Void>() {
 				@Override
+				protected void onPreExecute () {
+					findViewById(R.id.loading_schools).setVisibility(View.VISIBLE);
+				}
+
+				@Override
 				protected Void doInBackground (final Void... voids) {
 					// Load the array from the assets
 					JSONArray mainArray = null;
@@ -90,8 +103,9 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 				}
 
 				@Override
-				protected void onPostExecute (Void aVoid) {
+				protected void onPostExecute (final Void aVoid) {
 					schoolAdapter.addAll(schoolCollection);
+					findViewById(R.id.loading_schools).setVisibility(View.GONE);
 				}
 			}.execute();
 		}
@@ -101,7 +115,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		schoolAdapter.addAll(schoolCollection);
 
 		schoolList.setAdapter(schoolAdapter);
-		schoolList.setOnItemClickListener(IntegratedSchoolConverter.instance);
+		schoolList.setOnItemClickListener(this);
 	}
 
 	@Override
@@ -113,6 +127,9 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
 		searchView.setOnQueryTextListener(this);
 		searchView.setOnCloseListener(this);
+
+		final int resource_edit_text = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+		((EditText) searchView.findViewById(resource_edit_text)).addTextChangedListener(this);
 
 		return returnVal;
 	}
@@ -135,8 +152,42 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 		finish();
 	}
 
-	// Implementation of OnQueryTextListener with helper methods
+	@Override
+	public void handleActivityResult (final int requestCode, final Intent data) {
+		if (requestCode == REQUEST_SUBJECT_CLASS) {
+			setResult(RESULT_OK, data);
+			finish();
+		}
+	}
 
+	private void showIntegratedSchool (final IntegratedSchool school) {
+		final Intent intent = new Intent(this, SubjectDialogActivity.class);
+		intent.putExtra(KEY_INDEX, schoolCollection.indexOf(school));
+		startActivityForResult(intent, REQUEST_SUBJECT_CLASS);
+	}
+
+	// Implementation of AdapterView.OnItemClickListener
+	@Override
+	public void onItemClick (final AdapterView<?> adapterView, final View view, final int position, final long id) {
+		// Show the clicked school
+		final ArrayAdapter<IntegratedSchool> schoolArrayAdapter = (ArrayAdapter<IntegratedSchool>) adapterView.getAdapter();
+		showIntegratedSchool(schoolArrayAdapter.getItem(position));
+	}
+
+	// Implementation of TextWatcher, used to have a proper onQueryTextChange (it doesn't update when the last character is removed)
+	@Override
+	public void beforeTextChanged (final CharSequence charSequence, final int start, final int count, final int after) {}
+
+	@Override
+	public void onTextChanged (final CharSequence charSequence, final int start, final int before, final int after) {}
+
+	@Override
+	public void afterTextChanged (final Editable editable) {
+		if (editable.length() == 0)
+			onQueryTextChange(editable.toString());
+	}
+
+	// Implementation of OnQueryTextListener with helper methods
 	@Override
 	public boolean onQueryTextChange (final String query) {
 		// Only set suggestions
@@ -149,12 +200,17 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 			final IntegratedSchoolAdapter adapter = new IntegratedSchoolAdapter(this, cursor, results);
 			searchView.setSuggestionsAdapter(adapter);
 			searchView.setOnSuggestionListener(adapter);
+		} else {
+			// Set an empty suggestions adapter
+			searchView.setSuggestionsAdapter(new IntegratedSchoolAdapter(this, new MatrixCursor(COLUMN_SCHOOL), new ArrayList<IntegratedSchool>()));
 		}
-		return true;
+
+		return false;
 	}
 
 	@Override
 	public boolean onQueryTextSubmit (final String query) {
+		// Set the list to the results instead of a suggestion adapter
 		final List<IntegratedSchool> result = getResults(query);
 		if (result != null) {
 			schoolAdapter.clear();
@@ -170,11 +226,14 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 	 * @return A list of results or null when none are found
 	 */
 	private static List<IntegratedSchool> getResults (final String query) {
-		final List<IntegratedSchool> results = new ArrayList<>();
-		for (final IntegratedSchool school : schoolCollection)
-			if (matchWord(query, school.name) || matchWord(query, school.country) || matchWord(query, school.city))
-				results.add(school);
-		return results.size() > 0 ? results : null;
+		if (!query.trim().isEmpty()) {
+			final List<IntegratedSchool> results = new ArrayList<>();
+			for (final IntegratedSchool school : schoolCollection)
+				if (matchWord(query, school.name) || matchWord(query, school.country) || matchWord(query, school.city))
+					results.add(school);
+			return results.size() > 0 ? results : null;
+		}
+		return null;
 	}
 
 	/**
@@ -208,6 +267,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 	// implementation of OnCloseListener
 	@Override
 	public boolean onClose () {
+		// The search is closed -> use the original list again
 		schoolAdapter.clear();
 		schoolAdapter.addAll(schoolCollection);
 		return false;
@@ -247,10 +307,8 @@ public class IntegratedSchoolActivity extends BaseActivity implements SearchView
 
 		@Override
 		public boolean onSuggestionClick (final int position) {
-			IntegratedSchoolConverter.instance.showPopup(results.get(position));
+			IntegratedSchoolActivity.this.showIntegratedSchool(results.get(position));
 			return true;
 		}
 	}
-
-
 }

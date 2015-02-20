@@ -27,8 +27,11 @@ import com.ameling.parser.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.ameling.grademanager.util.ConstantKeys.KEY_CALCULATOR;
+import static com.ameling.grademanager.util.ConstantKeys.KEY_CLASSES;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_FORMULA;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_NAME;
+import static com.ameling.grademanager.util.ConstantKeys.KEY_SUBJECT;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_WEIGHTING;
 
 /**
@@ -117,8 +120,9 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			// If there is a formula present, then show it
 			if (intent.hasExtra(KEY_FORMULA)) {
 				final GradeWrapper wrapper = (GradeWrapper) GradeConverter.instance.convert(new JSONObject(intent.getStringExtra(KEY_FORMULA)));
-				((TextView) findViewById(R.id.subject_formula)).setText(wrapper.calculator.expression);
+				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.calculator.expression);
 				adapter.addAll(wrapper.calculator.grades);
+				flagParsed = true;
 			}
 		}
 	}
@@ -200,22 +204,42 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// Curly braces at the cases for readability purposes (no negative penalties because of that, only more compile time)
 		switch (requestCode) {
 			case REQUEST_INTEGRATED_FORMULA: {
+				final CalculatorWrapper wrapper = CalculatorWrapper.converter.convert(new JSONObject(data.getStringExtra(KEY_CALCULATOR)));
 
+				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.expression);
+				parseFromExpression(wrapper.expression);
+
+				for(final Grade grade : wrapper.grades) {
+					if (grade instanceof GradeWrapper)
+						replaceGrade(grade);
+				}
+
+				final TextView view = (TextView) findViewById(R.id.new_subject_name);
+				if (view.getText().toString().trim().isEmpty()) {
+					String new_subject = data.getStringExtra(KEY_SUBJECT);
+					if (MainActivity.hasSubject(new_subject))
+						new_subject = data.getStringExtra(KEY_CLASSES) + ":" + new_subject;
+					// Don't double check, the user gets notified when it is already in use
+					view.setText(new_subject);
+				}
 				break;
 			}
 			case REQUEST_SUB_FORMULA: {
 				// Get the wrapper for a grade in this adapter
 				final GradeWrapper wrapper = (GradeWrapper) GradeConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_GRADEWRAPPER)));
+				replaceGrade(wrapper);
+				break;
+			}
+		}
+	}
 
-				for (int i = 0; i < adapter.getCount(); i++) {
-					final Grade grade = adapter.getItem(i);
-					if (grade.name.equals(wrapper.name)) {
-						// Remove the original object and insert our wrapper
-						adapter.remove(grade);
-						adapter.insert(wrapper, i);
-						break;
-					}
-				}
+	private void replaceGrade (final Grade grade) {
+		for (int i = 0; i < adapter.getCount(); i++) {
+			final Grade toReplaceGrade = adapter.getItem(i);
+			if (grade.name.equals(grade.name)) {
+				// Remove the original object and insert our wrapper
+				adapter.remove(toReplaceGrade);
+				adapter.insert(grade, i);
 				break;
 			}
 		}
@@ -228,7 +252,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 */
 	public void selectFromIntegratedSchool (final View view) {
 		startActivityForResult(new Intent(this, IntegratedSchoolActivity.class), REQUEST_INTEGRATED_FORMULA);
-		// TODO: handle this
 	}
 
 	/**
@@ -291,7 +314,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// Add double values to the grade object
 		for (int i = 0; i < gradeList.getChildCount(); i++) {
 			final View child = gradeList.getChildAt(i);
-
 			final Grade grade = adapter.getItem(i);
 			if (!(grade instanceof GradeWrapper)) {
 				final String sValue = ((EditText) child.findViewById(R.id.grade_value)).getText().toString().trim();
@@ -303,12 +325,12 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// We got all data, set the result and finish this
 		final Intent resultIntent = new Intent();
 		if (!flagSubCalculator) {
-			final SubjectManager.Subject object = new SubjectManager.Subject(subjectName, createCalculator(subjectName));
+			final SubjectManager.Subject object = new SubjectManager.Subject(subjectName, createCalculator());
 			resultIntent.putExtra(MainActivity.RESULT_SUBJECT, SubjectConverter.instance.convert(object).toString());
 		} else {
-			// Create a gradewrapper of this activity
+			// Create a grade wrapper of this activity
 			final GradeWrapper wrapper = new GradeWrapper(subjectName, gradeWeighting);
-			wrapper.setSubGrades(createCalculator(subjectName));
+			wrapper.setSubGrades(createCalculator());
 			resultIntent.putExtra(RESULT_GRADEWRAPPER, GradeConverter.instance.convert(wrapper).toString());
 		}
 		setResult(RESULT_OK, resultIntent);
@@ -320,11 +342,11 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 *
 	 * @return A proper CalculatorWrapper
 	 */
-	private CalculatorWrapper createCalculator (final String subjectName) {
+	private CalculatorWrapper createCalculator () {
 		final Grade[] grades = new Grade[adapter.getCount()];
 		for (int i = 0; i < grades.length; i++)
 			grades[i] = adapter.getItem(i);
-		return new CalculatorWrapper(grades, subjectName);
+		return new CalculatorWrapper(grades, ((EditText) findViewById(R.id.subject_formula)).getText().toString());
 	}
 
 	/**
@@ -354,3 +376,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		}
 	}
 }
+
+
+

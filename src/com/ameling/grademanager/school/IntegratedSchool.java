@@ -1,6 +1,6 @@
 package com.ameling.grademanager.school;
 
-import com.ameling.parser.grade.Calculator;
+import com.ameling.grademanager.grade.CalculatorWrapper;
 
 public abstract class IntegratedSchool {
 
@@ -24,7 +24,7 @@ public abstract class IntegratedSchool {
 		 * @param subject The subject which we need the formula from
 		 * @return A valid average expression
 		 */
-		public abstract Calculator getFormula (final String subject);
+		public abstract CalculatorWrapper getFormula (final String subject);
 
 		/**
 		 * Checks if subject is in the {@link #getSupportedSubjects()} array
@@ -34,7 +34,7 @@ public abstract class IntegratedSchool {
 		 */
 		public final boolean hasSubject (final String subject) {
 			for (final String s : getSupportedSubjects())
-				if (s.equals(subject))
+				if (s.equalsIgnoreCase(subject))
 					return true;
 			return false;
 		}
@@ -77,5 +77,13 @@ public abstract class IntegratedSchool {
 	 */
 	public abstract ClassLevel getClassLevel (final String identifier);
 
+	@Override
+	public final boolean equals (final Object object) {
+		if (object instanceof IntegratedSchool) {
+			final IntegratedSchool school = (IntegratedSchool) object;
+			return school.name.equals(name) && school.country.equals(country) && school.city.equals(city);
+		}
+		return false;
+	}
 
 }

@@ -1,0 +1,3 @@
+[submodule "libs/polidea/tree-view-list-android"]
+	path = libs/polidea/tree-view-list-android
+	url = git://github.com/polidea/tree-view-list-android.git

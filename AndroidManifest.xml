@@ -36,6 +36,7 @@
 
         <activity android:name=".school.SubjectDialogActivity"
                   android:label="Choose subject"
+                  android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
     </application>
 </manifest>

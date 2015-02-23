@@ -3,23 +3,45 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:padding="10dip"
               android:background="@android:color/white">
+    <LinearLayout android:orientation="vertical"
+                  android:padding="10dip"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <TextView style="@style/medium_text"
+                  android:layout_gravity="center_horizontal"
+                  android:textSize="25sp"
+                  android:text="@string/choose_subject"/>
 
-    <TextView style="@style/medium_text"
-              android:layout_gravity="center_horizontal"
-              android:textSize="25sp"
-              android:text="@string/choose_subject"/>
+        <Spinner android:layout_height="wrap_content"
+                 android:layout_width="match_parent"
+                 android:layout_gravity="center_horizontal"
+                 android:id="@+id/classes"/>
 
-    <Spinner android:layout_height="wrap_content"
-             android:layout_width="match_parent"
-             android:layout_gravity="center_horizontal"
-             android:id="@+id/classes"/>
+        <ListView android:layout_width="wrap_content"
+                  android:layout_height="240dp"
+                  android:layout_gravity="center_horizontal"
+                  android:padding="10dip"
+                  android:background="@drawable/border_average_grade"
+                  android:id="@+id/subjects"/>
+    </LinearLayout>
 
-    <ListView android:layout_width="wrap_content"
-              android:layout_height="match_parent"
-              android:layout_gravity="center_horizontal"
-              android:padding="10dip"
-              android:background="@drawable/border_average_grade"
-              android:id="@+id/subjects"/>
+
+    <LinearLayout style="?android:attr/buttonBarStyle"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <View android:background="@android:color/black"
+              android:layout_width="match_parent"
+              android:layout_height="1dp"/>
+
+        <Button style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@android:color/black"
+                android:textSize="17sp"
+                android:onClick="onCancel"
+                android:text="@string/cancel"/>
+    </LinearLayout>
 </LinearLayout>

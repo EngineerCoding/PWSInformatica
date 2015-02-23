@@ -101,9 +101,9 @@ public class SubjectDialogActivity extends BaseActivity {
 	}
 
 	@Override
-	public boolean onTouchEvent(final MotionEvent event) {
+	public boolean onTouchEvent (final MotionEvent event) {
 		if (MotionEvent.ACTION_OUTSIDE == event.getAction()) {
-			onBackPressed();
+			onCancel(null);
 			return true;
 		}
 		return super.onTouchEvent(event);
@@ -121,6 +121,15 @@ public class SubjectDialogActivity extends BaseActivity {
 
 	@Override
 	public void onBackPressed () {
+		onCancel(null);
+	}
+
+	/**
+	 * A click handler for the cancel button
+	 *
+	 * @param view
+	 */
+	public void onCancel (final View view) {
 		setResult(RESULT_CANCELED);
 		finish();
 	}

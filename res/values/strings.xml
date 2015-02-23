@@ -6,10 +6,11 @@
     <string name="grades">Grades:</string>
     <string name="formula">Formula:</string>
     <string name="select_integrated_school">Select formula from integrated school</string>
-    <string name="finish_button">Finish creating subject</string>
+    <string name="finish_button">Finish</string>
     <string name="choose_subject">Choose subject</string>
     <string name="add_formula">Add formula</string>
     <string name="edit_formula">Edit formula</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Hints -->
     <string name="hint_search_school">School/Country/City</string>

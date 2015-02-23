@@ -26,5 +26,10 @@ proguard/
 
 # Log Files
 *.log
+
+# Custom files
 src/com/ameling/CommitGenerator.java
 src/com/ameling/Main.java
+
+# Assets (done)
+assets/*

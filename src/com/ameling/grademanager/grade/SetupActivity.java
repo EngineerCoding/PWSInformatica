@@ -209,7 +209,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.expression);
 				parseFromExpression(wrapper.expression);
 
-				for(final Grade grade : wrapper.grades) {
+				for (final Grade grade : wrapper.grades) {
 					if (grade instanceof GradeWrapper)
 						replaceGrade(grade);
 				}

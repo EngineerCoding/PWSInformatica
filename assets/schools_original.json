@@ -9,7 +9,7 @@
 				"subjects": [
 					{
 						"subject": "geography",
-						"formula": "(SE1+2E2+SE3+SE4)/4"
+						"formula": "(SE1+SE2+SE3+SE4)/4"
 					},
 					{
 						"subject": "biology",

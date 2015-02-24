@@ -123,7 +123,7 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 		@Override
 		public String[] getSupportedSubjects () {
-			return subjects;
+			return subjects.clone();
 		}
 
 		@Override
@@ -174,13 +174,13 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 
 	@Override
 	public String[] getClassLevelNames () {
-		return classNames;
+		return classNames.clone();
 	}
 
 	@Override
 	public ClassLevel getClassLevel (final String identifier) {
 		for (int i = 0; i < classNames.length; i++)
-			if (classNames[i].equalsIgnoreCase(identifier))
+			if (classNames[i].equals(identifier))
 				return classLevels[i];
 		return null;
 	}

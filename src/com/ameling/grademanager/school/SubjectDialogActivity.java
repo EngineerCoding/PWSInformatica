@@ -49,10 +49,15 @@ public class SubjectDialogActivity extends BaseActivity {
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL, WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL);
 			getWindow().setFlags(WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
+			// Get the school
 			final IntegratedSchool school = IntegratedSchoolActivity.schoolCollection.get(intent.getIntExtra(IntegratedSchoolActivity.KEY_INDEX, 0));
 
-			// Set the adapter for the spinner (select class)
-			final ArrayAdapter<String> classAdapter = new ArrayAdapter<>(this, R.layout.text_item_spinner, school.getClassLevelNames());
+			// sort the names for a more friendly view
+			final String[] subjects = school.getClassLevelNames();
+			Arrays.sort(subjects);
+
+			// Set the adapter
+			final ArrayAdapter<String> classAdapter = new ArrayAdapter<>(this, R.layout.text_item_spinner, subjects);
 			classAdapter.setDropDownViewResource(R.layout.text_item_spinner);
 
 			final Spinner spinner = (Spinner) findViewById(R.id.classes);
@@ -63,26 +68,29 @@ public class SubjectDialogActivity extends BaseActivity {
 
 				@Override
 				public void onItemSelected (final AdapterView<?> adapterView, final View view, final int position, final long id) {
-					// Show the subject spinner
-					final ListView subjectList = (ListView) findViewById(R.id.subjects);
-					if (subjectList.getVisibility() == View.GONE)
-						subjectList.setVisibility(View.VISIBLE);
+					// Set the proper list
 
 					// Get the ClassLevel
 					final String classLevel = classAdapter.getItem(position);
 					final IntegratedSchool.ClassLevel level = school.getClassLevel(classLevel);
 
 					// Set the adapter to the subject spinner
-					final ArrayAdapter<String> classLevelAdapter = StringConvert.createAdapter(SubjectDialogActivity.this, Arrays.asList(level.getSupportedSubjects()));
+					final String[] subjects = level.getSupportedSubjects();
+					Arrays.sort(subjects);
 
+					final ArrayAdapter<String> classLevelAdapter = StringConvert.createAdapter(SubjectDialogActivity.this, Arrays.asList(subjects));
+
+					final ListView subjectList = (ListView) findViewById(R.id.subjects);
 					subjectList.setAdapter(classLevelAdapter);
 					subjectList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 						@Override
 						public void onItemClick (final AdapterView<?> adapterView, final View view, final int position, final long id) {
 							// get the subject name
 							final String subject = classLevelAdapter.getItem(position);
+							final CalculatorWrapper wrapper = level.getFormula(classLevelAdapter.getItem(position));
+
 							// send the result back
-							final Intent intent = new Intent().putExtra(KEY_SUBJECT, subject).putExtra(KEY_CLASSES, classLevel).putExtra(KEY_CALCULATOR, CalculatorWrapper.converter.convert(level.getFormula(subject)).toString());
+							final Intent intent = new Intent().putExtra(KEY_SUBJECT, subject).putExtra(KEY_CLASSES, classLevel).putExtra(KEY_CALCULATOR, CalculatorWrapper.converter.convert(wrapper).toString());
 							setResult(RESULT_OK, intent);
 							finish();
 						}
@@ -127,7 +135,7 @@ public class SubjectDialogActivity extends BaseActivity {
 	/**
 	 * A click handler for the cancel button
 	 *
-	 * @param view
+	 * @param view The view which got clicked
 	 */
 	public void onCancel (final View view) {
 		setResult(RESULT_CANCELED);

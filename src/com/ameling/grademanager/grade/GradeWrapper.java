@@ -65,4 +65,11 @@ public class GradeWrapper extends Grade {
 					return true;
 		return false;
 	}
+
+	@Override
+	public Grade clone () {
+		final GradeWrapper wrapper = new GradeWrapper (this);
+		wrapper.setSubGrades(calculator.clone());
+		return wrapper;
+	}
 }

@@ -209,15 +209,14 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.expression);
 				parseFromExpression(wrapper.expression);
 
-				for (final Grade grade : wrapper.grades) {
+				for (final Grade grade : wrapper.grades)
 					if (grade instanceof GradeWrapper)
-						replaceGrade(grade);
-				}
+						replaceGrade((GradeWrapper) grade);
 
 				final TextView view = (TextView) findViewById(R.id.new_subject_name);
 				if (view.getText().toString().trim().isEmpty()) {
 					String new_subject = data.getStringExtra(KEY_SUBJECT);
-					if (MainActivity.hasSubject(new_subject))
+					if (SubjectManager.instance.hasSubject(new_subject))
 						new_subject = data.getStringExtra(KEY_CLASSES) + ":" + new_subject;
 					// Don't double check, the user gets notified when it is already in use
 					view.setText(new_subject);
@@ -233,10 +232,15 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		}
 	}
 
-	private void replaceGrade (final Grade grade) {
+	/**
+	 * Replaces the appropriate grade object in the {@link #adapter} for the given {@link GradeWrapper}
+	 *
+	 * @param grade The wrapper to replace the grade object for
+	 */
+	private void replaceGrade (final GradeWrapper grade) {
 		for (int i = 0; i < adapter.getCount(); i++) {
 			final Grade toReplaceGrade = adapter.getItem(i);
-			if (grade.name.equals(grade.name)) {
+			if (toReplaceGrade.name.equals(grade.name)) {
 				// Remove the original object and insert our wrapper
 				adapter.remove(toReplaceGrade);
 				adapter.insert(grade, i);
@@ -304,7 +308,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			Toast.makeText(this, R.string.toast_subject_required, Toast.LENGTH_SHORT).show();
 			return;
 		} else if (!flagSubCalculator) {
-			if (MainActivity.hasSubject(subjectName)) {
+			if (SubjectManager.instance.hasSubject(subjectName)) {
 				Toast.makeText(this, R.string.toast_invalid_subject, Toast.LENGTH_SHORT).show();
 				((TextView) findViewById(R.id.new_subject_name)).setText("");
 				return;

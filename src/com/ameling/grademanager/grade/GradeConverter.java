@@ -37,7 +37,7 @@ public class GradeConverter extends ObjectAdapter.ViewConverter<Grade> implement
 	public void populateInflatedView (final View view, final Grade from) {
 		if (from instanceof GradeWrapper) {
 			((Button) view.findViewById(R.id.button_add_formula)).setText(view.getContext().getString(R.string.edit_formula));
-			view.findViewById(R.id.grade_value).setEnabled(false);
+			view.findViewById(R.id.grade_value).setVisibility(View.GONE);
 		} else if (from.hasValue()) {
 			final EditText gradeValue = (EditText) view.findViewById(R.id.grade_value);
 			gradeValue.setText(String.valueOf(from.getValue()));

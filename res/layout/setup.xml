@@ -3,7 +3,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
     <LinearLayout android:orientation="vertical"
-                  android:layout_height="match_parent"
+                  android:layout_height="wrap_content"
                   android:layout_width="match_parent"
                   android:padding="10dip"
                   android:background="@android:color/white">
@@ -14,7 +14,6 @@
         <LinearLayout android:orientation="vertical"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:layout_alignParentTop="true"
                       android:padding="10dip">
             <LinearLayout android:orientation="horizontal"
                           android:layout_width="match_parent"

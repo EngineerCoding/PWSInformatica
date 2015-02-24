@@ -16,7 +16,7 @@
                 />
         <TextView style="@style/standard_text"
                   android:layout_centerInParent="true"
-                  android:textSize="35dip"
+                  android:textSize="35sp"
                   android:id="@+id/averageGrade"
                 />
     </RelativeLayout>

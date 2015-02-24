@@ -20,6 +20,12 @@
     <string name="action_settings">Instellingen</string>
     <string name="action_search">Zoeken</string>
 
+    <!-- Array for context menu's -->
+    <string-array name="options_subject_menu">
+        <item>Bewerken</item>
+        <item>Verwijderen</item>
+    </string-array>
+
     <!-- Toasts -->
     <string name="toast_subject_required">De vaknaam is verplicht om te geven!</string>
     <string name="toast_invalid_formula">De formule kon niet ge.. worden of heeft geen cijfers!</string>

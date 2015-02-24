@@ -79,6 +79,16 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 */
 	private boolean flagSubCalculator = false;
 
+	/**
+	 * A flag to determine wheter this activity is used for editing purposes
+	 */
+	private boolean flagEditing = false;
+
+	/**
+	 * The name of the subject which is being edited
+	 */
+	private String editingSubject;
+
 	@Override
 	public int getMainLayout () {
 		return R.layout.setup;
@@ -123,6 +133,17 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.calculator.expression);
 				adapter.addAll(wrapper.calculator.grades);
 				flagParsed = true;
+			}
+		}
+
+		if (intent.hasExtra(MainActivity.FLAG_EDIT)) {
+			flagEditing = intent.getBooleanExtra(MainActivity.FLAG_EDIT, false);
+			if (flagEditing) {
+				// Set the proper field name
+				((TextView) findViewById(R.id.input_name)).setText(getString(R.string.subject_name));
+				findViewById(R.id.new_subject_name).setEnabled(true);
+				editingSubject = intent.getStringExtra(KEY_NAME);
+				flagSubCalculator = false;
 			}
 		}
 	}
@@ -175,12 +196,22 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	}
 
 	// Implementation of the OnFocusActionListener
+	/**
+	 * A variable to check if parsing is necessary
+	 */
+	private String lastExpression = null;
+
 	@Override
 	public void onFocusChange (final View view, final boolean hasFocus) {
-		if (!hasFocus) {
-			// Try to parse the expression
-			final EditText editText = (EditText) view;
-			parseFromExpression(editText.getText().toString());
+		if (hasFocus) {
+			lastExpression = ((EditText) view).getText().toString();
+		} else {
+			final String newText = ((EditText) view).getText().toString();
+			if (!lastExpression.equals(newText)) {
+				// Text changed, try to parse the expression
+				parseFromExpression(newText);
+			}
+
 		}
 	}
 
@@ -189,11 +220,15 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	public boolean onEditorAction (final TextView textView, final int action, final KeyEvent keyEvent) {
 		if (action == EditorInfo.IME_ACTION_SEND) {
 			// Close the keyboard
-			InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+			final InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			manager.hideSoftInputFromWindow(textView.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
 
-			// Try to parse the text
-			parseFromExpression(textView.getText().toString());
+			// Check if the text is changed
+			final String newText = textView.getText().toString();
+			if (!lastExpression.equals(newText)) {
+				// Text changed, try to parse the expression
+				parseFromExpression(newText);
+			}
 			return true;
 		}
 		return false;
@@ -308,7 +343,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			Toast.makeText(this, R.string.toast_subject_required, Toast.LENGTH_SHORT).show();
 			return;
 		} else if (!flagSubCalculator) {
-			if (SubjectManager.instance.hasSubject(subjectName)) {
+			if (SubjectManager.instance.hasSubject(subjectName) && !(flagEditing && subjectName.equals(editingSubject))) {
 				Toast.makeText(this, R.string.toast_invalid_subject, Toast.LENGTH_SHORT).show();
 				((TextView) findViewById(R.id.new_subject_name)).setText("");
 				return;
@@ -331,6 +366,8 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		if (!flagSubCalculator) {
 			final SubjectManager.Subject object = new SubjectManager.Subject(subjectName, createCalculator());
 			resultIntent.putExtra(MainActivity.RESULT_SUBJECT, SubjectConverter.instance.convert(object).toString());
+			if (flagEditing)
+				resultIntent.putExtra(KEY_NAME, editingSubject);
 		} else {
 			// Create a grade wrapper of this activity
 			final GradeWrapper wrapper = new GradeWrapper(subjectName, gradeWeighting);

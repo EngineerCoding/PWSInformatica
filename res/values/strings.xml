@@ -20,6 +20,12 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
 
+    <!-- Array for context menu's -->
+    <string-array name="options_subject_menu">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
+
     <!-- Toasts -->
     <string name="toast_subject_required">The subject id is a required field!</string>
     <string name="toast_invalid_formula">The formula could not be parsed or doesn\'t have any grades!</string>

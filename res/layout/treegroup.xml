@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white">
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingTop="1dip"
+                  android:paddingBottom="1dip"
+                  android:id="@+id/group_title">
+
+        <ImageView android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:paddingRight="10px"
+                   android:src="@drawable/ic_expanded"
+                   android:id="@+id/group_icon"/>
+
+        <LinearLayout android:orientation="vertical"
+                      android:layout_gravity="center_vertical"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/inflatable_content"/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/inflatable_children"/>
+</LinearLayout>

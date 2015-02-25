@@ -12,7 +12,7 @@ import com.ameling.grademanager.converter.ObjectAdapter;
 import com.ameling.grademanager.grade.GradeConverter;
 import com.ameling.grademanager.grade.GradeWrapper;
 import com.ameling.grademanager.grade.SetupActivity;
-import com.ameling.grademanager.grade.ShowActivity;
+import com.ameling.grademanager.tree.subject.SubjectTreeActivity;
 import com.ameling.parser.json.JSONObject;
 
 import static com.ameling.grademanager.util.ConstantKeys.KEY_FORMULA;
@@ -165,7 +165,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	@Override
 	public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
 		final SubjectManager.Subject subject = SubjectManager.instance.subjects.get(position);
-		final Intent intent = new Intent(this, ShowActivity.class);
+		final Intent intent = new Intent(this, SubjectTreeActivity.class);
 		intent.putExtra(RESULT_SUBJECT, subject.name);
 		startActivity(intent);
 	}

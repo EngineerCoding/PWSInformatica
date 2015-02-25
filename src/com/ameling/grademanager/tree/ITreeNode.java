@@ -1,4 +1,4 @@
-package com.ameling.grademanager.grade.tree;
+package com.ameling.grademanager.tree;
 
 import android.view.View;
 

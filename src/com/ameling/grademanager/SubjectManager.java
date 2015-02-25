@@ -2,8 +2,6 @@ package com.ameling.grademanager;
 
 import android.content.Context;
 import com.ameling.grademanager.grade.CalculatorWrapper;
-import com.ameling.grademanager.grade.GradeWrapper;
-import com.ameling.grademanager.grade.tree.ITreeNode;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONException;
 import com.ameling.parser.json.JSONWriter;
@@ -24,8 +22,7 @@ public class SubjectManager {
 	 * A holder class which gets given at the main activity to expose all those subjects. The {@link com.ameling.grademanager.converter.JsonConverter} can be found in {@link
 	 * com.ameling.grademanager.SubjectConverter}
 	 */
-	public static class Subject {
-
+	public static class Subject implements Cloneable {
 		/**
 		 * The id of the subject
 		 */
@@ -41,13 +38,13 @@ public class SubjectManager {
 				throw new NullPointerException();
 			this.name = name;
 			this.calculator = calculator;
+
+
 		}
 
-		public ITreeNode createTreeNode () {
-			// Use the wrapper because it is a perfect data structure for this
-			final GradeWrapper wrapper = new GradeWrapper(name, 1);
-			wrapper.setSubGrades(calculator);
-			return wrapper;
+		@Override
+		public Subject clone () {
+			return new Subject(name, calculator.clone());
 		}
 	}
 

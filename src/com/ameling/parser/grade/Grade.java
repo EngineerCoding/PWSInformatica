@@ -77,6 +77,9 @@ public class Grade implements Cloneable {
 
 	@Override
 	public Grade clone () {
-		return new Grade(name, weighting);
+		final Grade grade = new Grade(name, weighting);
+		if (hasValue())
+			grade.setValue(getValue());
+		return grade;
 	}
 }

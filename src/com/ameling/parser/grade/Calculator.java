@@ -113,9 +113,9 @@ public class Calculator implements Cloneable {
 		int totalWeighting = 0; // Total weighting
 
 		for (final Grade grade : grades) {
-			if (grade.isSet) { // when the grade is set, it is valid
+			if (grade.hasValue()) { // when the grade is set, it is valid
 				totalWeighting += grade.weighting; // add to the weighting
-				total += grade.value * grade.weighting; // add the grade times the weighting (otherwise you get odd values)
+				total += grade.getValue() * grade.weighting; // add the grade times the weighting (otherwise you get odd values)
 			}
 		}
 

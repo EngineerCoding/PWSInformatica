@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@android:color/white">
+    <TextView style="@style/medium_text"
+              android:layout_gravity="left|center_vertical"
+              android:id="@+id/grade_name"
+            />
+
+    <EditText style="@style/medium_text.edit"
+              android:layout_gravity="right"
+              android:inputType="numberDecimal"
+              android:id="@+id/grade_value"/>
+</FrameLayout>

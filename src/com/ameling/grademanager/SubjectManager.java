@@ -2,6 +2,8 @@ package com.ameling.grademanager;
 
 import android.content.Context;
 import com.ameling.grademanager.grade.CalculatorWrapper;
+import com.ameling.grademanager.grade.GradeWrapper;
+import com.ameling.grademanager.grade.tree.ITreeNode;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONException;
 import com.ameling.parser.json.JSONWriter;
@@ -40,6 +42,13 @@ public class SubjectManager {
 			this.name = name;
 			this.calculator = calculator;
 		}
+
+		public ITreeNode createTreeNode () {
+			// Use the wrapper because it is a perfect data structure for this
+			final GradeWrapper wrapper = new GradeWrapper(name, 1);
+			wrapper.setSubGrades(calculator);
+			return wrapper;
+		}
 	}
 
 	// The file name of the internal storage subject file
@@ -48,7 +57,7 @@ public class SubjectManager {
 	/**
 	 * The only instance created by {@link com.ameling.grademanager.MainActivity}
 	 */
-	protected static SubjectManager instance;
+	public static SubjectManager instance;
 
 	/**
 	 * The context to use
@@ -123,6 +132,19 @@ public class SubjectManager {
 			if (subject.name.equals(name))
 				return true;
 		return false;
+	}
+
+	/**
+	 * Retrieves the {@link Subject} from {@link #subjects} with a given subject name
+	 *
+	 * @param subjectName The associated object to return
+	 * @return The {@link Subject} or null when it doesn't exist
+	 */
+	public Subject getSubject (final String subjectName) {
+		for (final Subject subject : subjects)
+			if (subject.name.equals(subjectName))
+				return subject;
+		return null;
 	}
 }
 

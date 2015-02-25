@@ -38,5 +38,8 @@
                   android:label="Choose subject"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
+        <activity android:name=".grade.ShowActivity"
+                  android:label="Grade Tree"
+                  android:windowSoftInputMode="adjustPan"/>
     </application>
 </manifest>

@@ -17,7 +17,7 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_WEIGHTING;
 
 /**
  * This is converter is not just a simple {@link com.ameling.grademanager.converter.ObjectAdapter.ViewConverter}, but also takes care of the Json converting with
- * {@link com.ameling.grademanager.converter.JsonConverter}
+ * {@link JsonConverter}
  */
 public class GradeConverter extends ObjectAdapter.ViewConverter<Grade> implements JsonConverter<Grade, JSONObject>, View.OnFocusChangeListener {
 
@@ -26,6 +26,9 @@ public class GradeConverter extends ObjectAdapter.ViewConverter<Grade> implement
 	 */
 	public static final GradeConverter instance = new GradeConverter();
 
+	/**
+	 * This is a singleton class, so a private constructor
+	 */
 	private GradeConverter () {}
 
 	@Override
@@ -36,9 +39,11 @@ public class GradeConverter extends ObjectAdapter.ViewConverter<Grade> implement
 	@Override
 	public void populateInflatedView (final View view, final Grade from) {
 		if (from instanceof GradeWrapper) {
+			// Set the appropriate button title and remove the value field
 			((Button) view.findViewById(R.id.button_add_formula)).setText(view.getContext().getString(R.string.edit_formula));
 			view.findViewById(R.id.grade_value).setVisibility(View.GONE);
 		} else if (from.hasValue()) {
+			// Set the value of the grade and the focus-listener
 			final EditText gradeValue = (EditText) view.findViewById(R.id.grade_value);
 			gradeValue.setText(String.valueOf(from.getValue()));
 			gradeValue.setOnFocusChangeListener(this);

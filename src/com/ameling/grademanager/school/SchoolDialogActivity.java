@@ -21,8 +21,16 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_CALCULATOR;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_CLASSES;
 import static com.ameling.grademanager.util.ConstantKeys.KEY_SUBJECT;
 
-public class SubjectDialogActivity extends BaseActivity {
+/**
+ * This class is shown as a Dialog as the name suggests. It show all classes given by the {@link IntegratedSchool} which is received by
+ * the intent that started this dialog. When the user selected a subject, the formula gets send back all the way to the {@link com.ameling.grademanager.grade.SetupActivity} so the
+ * user can make the final edits and save the subject.
+ */
+public class SchoolDialogActivity extends BaseActivity {
 
+	/**
+	 * This converter converts a {@link String} to a simple {@link TextView}
+	 */
 	private static final ObjectAdapter.ViewConverter<String> StringConvert = new ObjectAdapter.ViewConverter<String>() {
 		@Override
 		public int getLayout () {
@@ -77,7 +85,7 @@ public class SubjectDialogActivity extends BaseActivity {
 					final String[] subjects = level.getSupportedSubjects();
 					Arrays.sort(subjects);
 
-					final ArrayAdapter<String> classLevelAdapter = StringConvert.createAdapter(SubjectDialogActivity.this, Arrays.asList(subjects));
+					final ArrayAdapter<String> classLevelAdapter = StringConvert.createAdapter(SchoolDialogActivity.this, Arrays.asList(subjects));
 
 					final ListView subjectList = (ListView) findViewById(R.id.subjects);
 					subjectList.setAdapter(classLevelAdapter);
@@ -111,6 +119,7 @@ public class SubjectDialogActivity extends BaseActivity {
 	@Override
 	public boolean onTouchEvent (final MotionEvent event) {
 		if (MotionEvent.ACTION_OUTSIDE == event.getAction()) {
+			// A touch event happened so we cancel this activity
 			onCancel(null);
 			return true;
 		}
@@ -123,6 +132,7 @@ public class SubjectDialogActivity extends BaseActivity {
 	 * @param view The view which got clicked
 	 */
 	public void onCancel (final View view) {
+		// On back pressed is cancelling, see BaseActivity#onBackPressed()
 		onBackPressed();
 	}
 }

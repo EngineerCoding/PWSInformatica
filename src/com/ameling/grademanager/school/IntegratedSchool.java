@@ -2,6 +2,12 @@ package com.ameling.grademanager.school;
 
 import com.ameling.grademanager.grade.CalculatorWrapper;
 
+/**
+ * This class represents a school with its formulas. To formulas are arranged with their classes, as a school can have multiple
+ * classes with the same subjects. Those classes are represented by the {@link ClassLevel} class, which return the supported subjects
+ * and the formulas for them. The school itself only manages those classes by giving their names and returning the appropriate objects
+ * for the name.
+ */
 public abstract class IntegratedSchool {
 
 	/**

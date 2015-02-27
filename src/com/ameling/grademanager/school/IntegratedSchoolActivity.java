@@ -36,14 +36,15 @@ import java.util.List;
  */
 public class IntegratedSchoolActivity extends BaseActivity implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, TextWatcher {
 
+	// Some static values used in this class
 	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
-
 	private static final String REGEX_SPLIT = "\\s+";
-
 	private static final String[] COLUMN_SCHOOL = new String[]{ "_id", "school" };
 
+	// Value used to set the intent
 	public static final String KEY_INDEX = "index";
 
+	// Request Code
 	private static final int REQUEST_SUBJECT_CLASS = 0;
 
 	/**
@@ -77,6 +78,9 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 			schoolCollection = new ArrayList<>();
 
 			// This task which loads and parses the JSON from the assets folder is asynchronous, otherwise the the ui-thread will do too much work
+			// Currently it onl loads schools from the assets, but this could be expanded to a server. This task will read the objects from the server
+			// and store them into a cache for later use, so it also check there for integrated schools. This is a feature that can be implemented, but
+			// since no server is available to us we cannot do that (yet)
 			new AsyncTask<Void, Void, Void>() {
 				@Override
 				protected void onPreExecute () {
@@ -112,6 +116,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 			}.execute();
 		}
 
+		// Set the adapter to the listview and all available schools to it
 		final ListView schoolList = (ListView) findViewById(R.id.school_list);
 		schoolAdapter = IntegratedSchoolConverter.instance.createAdapter(this, new ArrayList<IntegratedSchool>());
 		schoolAdapter.addAll(schoolCollection);
@@ -124,12 +129,14 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 	public boolean onCreateOptionsMenu (final Menu menu) {
 		final boolean returnVal = super.onCreateOptionsMenu(menu);
 
+		// Configure the search field
 		this.searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
 		final SearchManager manager = (SearchManager) getSystemService(SEARCH_SERVICE);
 		searchView.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
 		searchView.setOnQueryTextListener(this);
 		searchView.setOnCloseListener(this);
 
+		// Get the edit text of the search field to add a TextChangedListener
 		final int resource_edit_text = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
 		((EditText) searchView.findViewById(resource_edit_text)).addTextChangedListener(this);
 
@@ -139,13 +146,19 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 	@Override
 	public void handleActivityResult (final int requestCode, final Intent data) {
 		if (requestCode == REQUEST_SUBJECT_CLASS) {
+			// Proxy the data back
 			setResult(RESULT_OK, data);
 			finish();
 		}
 	}
 
+	/**
+	 * This starts the {@link SchoolDialogActivity} to select a formula from the selected school, class and subject.
+	 *
+	 * @param school The school which manages the classes
+	 */
 	private void showIntegratedSchool (final IntegratedSchool school) {
-		final Intent intent = new Intent(this, SubjectDialogActivity.class);
+		final Intent intent = new Intent(this, SchoolDialogActivity.class);
 		intent.putExtra(KEY_INDEX, schoolCollection.indexOf(school));
 		startActivityForResult(intent, REQUEST_SUBJECT_CLASS);
 	}

@@ -52,6 +52,7 @@ public class SubjectManager {
 			this.name = name;
 			this.calculator = calculator;
 
+			// Get the sub grades from the calculator; all Grade objects get collected (NOT GradeWrapper objects)
 			final List<Grade> subGrades = new ArrayList<>();
 			for (final Grade grade : calculator.grades) {
 				if (grade instanceof GradeWrapper) {
@@ -73,7 +74,9 @@ public class SubjectManager {
 		}
 	}
 
-	// The file name of the internal storage subject file
+	/**
+	 * The file name of the internal storage subject file
+	 */
 	private static final String FILE_NAME = "subjects.json";
 
 	/**
@@ -91,6 +94,11 @@ public class SubjectManager {
 	 */
 	protected final List<Subject> subjects;
 
+	/**
+	 * Creates the manager which uses the Context to load the internal storage
+	 *
+	 * @param context The activity's Context
+	 */
 	protected SubjectManager (final Context context) {
 		this.context = context;
 		subjects = getSubjects();

@@ -34,7 +34,7 @@
                     android:resource="@xml/school_searchable"/>
         </activity>
 
-        <activity android:name=".school.SubjectDialogActivity"
+        <activity android:name=".school.SchoolDialogActivity"
                   android:label="Choose subject"
                   android:screenOrientation="portrait"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>

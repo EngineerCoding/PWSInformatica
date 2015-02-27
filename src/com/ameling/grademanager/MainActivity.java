@@ -33,7 +33,9 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
 	// Request codes
 	private static final int REQUEST_CODE_SETUP = 0;
+
 	private static final int REQUEST_EDIT = 1;
+
 	private static final int REQUEST_SHOW = 2;
 
 	/**

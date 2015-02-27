@@ -88,6 +88,7 @@ public class SubjectTreeActivity extends TreeActivity {
 
 	/**
 	 * Retrieves the inputs from the views in the shown tree.
+	 *
 	 * @return An array of inputs in correct order.
 	 */
 	private String[] getInputs () {

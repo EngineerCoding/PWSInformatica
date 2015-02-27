@@ -49,6 +49,13 @@ public class ObjectAdapter<T> extends ArrayAdapter<T> {
 	 */
 	private final ViewConverter<T> converter;
 
+	/**
+	 * Creates a new adapter which uses the {@link ViewConverter} to get the layout resource and populates that view
+	 *
+	 * @param context   The activity's Context
+	 * @param converter The converter which converts T to a view
+	 * @param objects   All objects to load initially
+	 */
 	public ObjectAdapter (final Context context, final ViewConverter<T> converter, final List<T> objects) {
 		super(context, converter.getLayout(), objects);
 		this.converter = converter;
@@ -58,10 +65,11 @@ public class ObjectAdapter<T> extends ArrayAdapter<T> {
 	@Override
 	public View getView (final int position, View convertView, final ViewGroup parent) {
 		if (convertView == null) {
+			// Inflate the view from the converter
 			final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 			convertView = layoutInflater.inflate(converter.getLayout(), parent, false);
 		}
-
+		// Populate the view from the converter
 		converter.populateInflatedView(convertView, getItem(position));
 		return convertView;
 	}

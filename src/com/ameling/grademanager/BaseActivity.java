@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * This class is the base of every activity because it is supposed to save a lot of typing. This activity does the basic stuff that
+ * almost every activity has, so it is more of an utility than a real feature.
+ */
 public abstract class BaseActivity extends Activity {
 
 	@Override

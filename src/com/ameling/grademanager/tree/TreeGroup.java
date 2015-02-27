@@ -10,30 +10,64 @@ import com.ameling.grademanager.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This object represents a {@link ITreeNode} as a group. That means that {@link ITreeNode#hasChildNodes()} was true.
+ * This class collects all the children nodes and can create a {@link LinearLayout} for this group. This also handles the click
+ * events so that the the group can be collapsed and expanded.
+ */
 public final class TreeGroup implements View.OnClickListener {
 
+	/**
+	 * The tag of the LinearLayout to recognise it
+	 */
 	private static final String TAG = TreeGroup.class.toString();
 
+	/**
+	 * The parent node where this class is based on
+	 */
 	private final ITreeNode parentNode;
 
+	/**
+	 * A flag to determine if the collapsible/expandable image should be drawn
+	 */
 	private final boolean isCollapsible;
 
+	/**
+	 * A flag to determine whether this group is collapsed or not
+	 */
 	protected boolean isCollapsed = true;
 
+	/**
+	 * All child-nodes from the {@link #parentNode}. When a node is null in this array it can be found in {@link #childGroups}
+	 */
 	protected final ITreeNode[] childNodes;
 
+	/**
+	 * All child-nodes which area group from the {@link #parentNode}. When a node is null in this array it can be found in {@link #childNodes}
+	 */
 	protected final TreeGroup[] childGroups;
 
+	/**
+	 * The latest layout that got created in {@link #createLayout(LayoutInflater, ViewGroup)}
+	 */
 	protected LinearLayout treeLayout = null;
 
+	/**
+	 * Creates a group from the parent node
+	 *
+	 * @param parentNode    The parent node to create the group from
+	 * @param isCollapsible Sets the {@link #isCollapsible} flag
+	 */
 	protected TreeGroup (final ITreeNode parentNode, boolean isCollapsible) {
 		this.parentNode = parentNode;
 		this.isCollapsible = isCollapsible;
+
+		// Get the child nodes
 		final ITreeNode[] subNodes = parentNode.getChildNodes();
 
+		// Put the nodes in the appropriate array
 		childNodes = new ITreeNode[subNodes.length];
 		childGroups = new TreeGroup[subNodes.length];
-
 		for (int i = 0; i < subNodes.length; i++) {
 			if (subNodes[i].hasChildNodes()) {
 				childGroups[i] = new TreeGroup(subNodes[i]);
@@ -43,10 +77,26 @@ public final class TreeGroup implements View.OnClickListener {
 		}
 	}
 
+	/**
+	 * Creates a new group from the parent node, but the {@link #isCollapsible} flag is always set to true
+	 *
+	 * @param parentNode The parent node to create the group from
+	 */
 	protected TreeGroup (final ITreeNode parentNode) {
 		this(parentNode, true);
 	}
 
+	/**
+	 * Creates a new layout from this group. The basic layout can be found in res/layout/treegroup.xml, this has 2 elements:
+	 * <ul>
+	 * <li>The title: this is the image and the inflatable resource</li>
+	 * <li>The children-layout: All children get added here</li>
+	 * </ul>
+	 * This also attaches to the parent.
+	 *
+	 * @param inflater An inflater to inflate resources
+	 * @param parent   The parent to attach to
+	 */
 	protected void createLayout (final LayoutInflater inflater, final ViewGroup parent) {
 		// The main layout for this group
 		treeLayout = (LinearLayout) inflater.inflate(R.layout.treegroup, null, false);
@@ -92,11 +142,22 @@ public final class TreeGroup implements View.OnClickListener {
 		parent.addView(treeLayout);
 	}
 
+	/**
+	 * This is a proxy to {@link #getChildNodes(LinearLayout)} to make the recursion properly work
+	 *
+	 * @return All child views which are not a group
+	 */
 	public View[] getChildViews () {
 		final List<View> children = getChildNodes(treeLayout);
 		return children.toArray(new View[children.size()]);
 	}
 
+	/**
+	 * Retrieves all child elements from the given Layout, this uses recursion to achieve that.
+	 *
+	 * @param treeGroup The group to check in
+	 * @return A List of child-views
+	 */
 	private static List<View> getChildNodes (final LinearLayout treeGroup) {
 		final LinearLayout childrenList = (LinearLayout) treeGroup.findViewById(R.id.inflatable_children);
 		final List<View> childViews = new ArrayList<>();
@@ -114,6 +175,11 @@ public final class TreeGroup implements View.OnClickListener {
 		return childViews;
 	}
 
+	/**
+	 * Counts the groups in this group, also includes sub-sub-groups ;)
+	 *
+	 * @return the amount of groups stored in all groups in this group
+	 */
 	public int countGroups () {
 		int amount = 0;
 		for (final TreeGroup group : childGroups) {

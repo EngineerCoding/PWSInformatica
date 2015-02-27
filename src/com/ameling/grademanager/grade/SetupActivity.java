@@ -44,16 +44,11 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 
 	// The values for making new requests
 	private static final int REQUEST_INTEGRATED_FORMULA = 0;
-
 	private static final int REQUEST_SUB_FORMULA = 1;
 
 	// Keys for saving and loading a state
 	private static String STATE_FORMULA = "formulaInput";
-
 	private static String STATE_GRADE_INPUT = "gradeInputs";
-
-	//public static final String REQUEST_SUBJECT_NAME = "name";
-	//public static final String REQUEST_SUBJECT_FORMULA = "formula";
 
 	/**
 	 * The adapter which is super important for this Activity
@@ -219,15 +214,19 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// Curly braces at the cases for readability purposes (no negative penalties because of that, only more compile time)
 		switch (requestCode) {
 			case REQUEST_INTEGRATED_FORMULA: {
+				// Get the wrapper for it
 				final CalculatorWrapper wrapper = CalculatorWrapper.converter.convert(new JSONObject(data.getStringExtra(KEY_CALCULATOR)));
 
+				// Set the expression text and parse it
 				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.expression);
 				parseFromExpression(wrapper.expression);
 
+				// Replace the grades if they have a GradeWrapper
 				for (final Grade grade : wrapper.grades)
 					if (grade instanceof GradeWrapper)
 						replaceGrade((GradeWrapper) grade);
 
+				// Set the subject name
 				final TextView view = (TextView) findViewById(R.id.new_subject_name);
 				if (view.getText().toString().trim().isEmpty()) {
 					String new_subject = data.getStringExtra(KEY_SUBJECT);
@@ -287,6 +286,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		final Intent intent = new Intent(this, SetupActivity.class);
 		intent.putExtra(KEY_NAME, name);
 
+		// Get the grade by name and set the appropriate data to handle in #intialize
 		for (int i = 0; i < adapter.getCount(); i++) {
 			final Grade grade = adapter.getItem(i);
 			if (grade.name.equals(name)) {
@@ -318,6 +318,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			}
 		}
 
+		// Checks for the subject name
 		final String subjectName = ((EditText) findViewById(R.id.new_subject_name)).getText().toString().trim();
 		if (subjectName.isEmpty()) {
 			Toast.makeText(this, R.string.toast_subject_required, Toast.LENGTH_SHORT).show();
@@ -330,7 +331,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			}
 		}
 
-		// Add double values to the grade object
+		// Add double values to the grade objects
 		for (int i = 0; i < gradeList.getChildCount(); i++) {
 			final View child = gradeList.getChildAt(i);
 			final Grade grade = adapter.getItem(i);
@@ -397,6 +398,3 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		}
 	}
 }
-
-
-

@@ -22,8 +22,6 @@ import static com.ameling.grademanager.util.ConstantKeys.KEY_NAME;
  * This is the main activity for this app. It creates the FileManager and acts accordingly to display. It either setups all subjects or loads
  * it from the saved file and shows those.
  * When it does not setup the grades, it uses the internal adapter for the ListView
- *
- * @author Wesley A
  */
 public class MainActivity extends BaseActivity implements AdapterView.OnItemClickListener {
 
@@ -35,9 +33,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
 	// Request codes
 	private static final int REQUEST_CODE_SETUP = 0;
-
 	private static final int REQUEST_EDIT = 1;
-
 	private static final int REQUEST_SHOW = 2;
 
 	/**
@@ -62,10 +58,14 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
 	@Override
 	public void initialize () {
+		// If the subjectManager doesn't exist, create one
 		if (SubjectManager.instance == null)
 			SubjectManager.instance = new SubjectManager(this);
+
+		// The default is true, but this the main activity so it is false
 		getActionBar().setDisplayHomeAsUpEnabled(false);
 
+		// Set the adapter for the listview so it shows the current subjects
 		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
 		adapter = SubjectConverter.instance.createAdapter(this, SubjectManager.instance.subjects);
 		subjectList.setAdapter(adapter);
@@ -98,8 +98,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 				}
 			}
 		} else if (requestCode == REQUEST_SHOW) {
-			final SubjectManager.Subject subject = SubjectConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_SUBJECT)));
-			SubjectManager.instance.replaceSubject(subject);
+			// The subject got edited so just notify the adapter to update the listview
 			adapter.notifyDataSetChanged();
 		}
 	}
@@ -107,6 +106,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	@Override
 	protected void onPause () {
 		super.onPause();
+		// Save the subjects, because the app is not visible now
 		SubjectManager.instance.saveSubjects();
 	}
 
@@ -114,6 +114,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	public boolean onOptionsItemSelected (final MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_add_subject:
+				// Show the activity to add a subject
 				final Intent intent = new Intent(this, SetupActivity.class);
 				startActivityForResult(intent, REQUEST_CODE_SETUP);
 				return true;
@@ -166,6 +167,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 				adapter.remove(subject);
 				break;
 			default:
+				// A debug feature, if this shows then the developer knows something is forgotten
 				Toast.makeText(this, String.format("Unimplemented method: %s", options[item.getItemId()]), Toast.LENGTH_LONG).show();
 		}
 
@@ -175,6 +177,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	// Implementation of AdapterView.OnItemClickListener (for the listview)
 	@Override
 	public void onItemClick (final AdapterView<?> parent, final View view, final int position, final long id) {
+		// Send the subject name to the SubjectTreeActivity which retrieves the subject from the SubjectManager
 		final SubjectManager.Subject subject = SubjectManager.instance.subjects.get(position);
 		final Intent intent = new Intent(this, SubjectTreeActivity.class);
 		intent.putExtra(RESULT_SUBJECT, subject.name);

@@ -1,5 +1,6 @@
 package com.ameling.grademanager;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,11 @@ public abstract class BaseActivity extends Activity {
 	public void onCreate (final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getMainLayout());
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		final ActionBar bar = getActionBar();
+		if (bar != null)
+			bar.setDisplayHomeAsUpEnabled(true);
+
 		initialize();
 	}
 

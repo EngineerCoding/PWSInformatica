@@ -45,7 +45,7 @@ public class SchoolDialogActivity extends BaseActivity {
 
 	@Override
 	public int getMainLayout () {
-		return R.layout.subject_dialog;
+		return R.layout.school_dialog;
 	}
 
 	@Override

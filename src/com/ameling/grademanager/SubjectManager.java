@@ -2,6 +2,8 @@ package com.ameling.grademanager;
 
 import android.content.Context;
 import com.ameling.grademanager.grade.CalculatorWrapper;
+import com.ameling.grademanager.grade.GradeWrapper;
+import com.ameling.parser.grade.Grade;
 import com.ameling.parser.json.JSONArray;
 import com.ameling.parser.json.JSONException;
 import com.ameling.parser.json.JSONWriter;
@@ -33,13 +35,35 @@ public class SubjectManager {
 		 */
 		public final CalculatorWrapper calculator;
 
+		/**
+		 * All {@link Grade} objects used in the {@link #calculator}
+		 */
+		private final Grade[] subGrades;
+
+		/**
+		 * Creates a Subject with a name and calculator
+		 * @param name The name of the subject
+		 * @param calculator The calculator which is used in this Subject
+		 */
 		public Subject (final String name, final CalculatorWrapper calculator) {
 			if (name == null || name.length() == 0 || calculator == null)
 				throw new NullPointerException();
 			this.name = name;
 			this.calculator = calculator;
 
+			final List<Grade> subGrades = new ArrayList<>();
+			for (final Grade grade : calculator.grades) {
+				if (grade instanceof GradeWrapper) {
+					subGrades.addAll(((GradeWrapper) grade).getChildren());
+				} else {
+					subGrades.add(grade);
+				}
+			}
+			this.subGrades = subGrades.toArray(new Grade[subGrades.size()]);
+		}
 
+		public Grade[] getSubGrades () {
+			return subGrades;
 		}
 
 		@Override
@@ -52,7 +76,7 @@ public class SubjectManager {
 	private static final String FILE_NAME = "subjects.json";
 
 	/**
-	 * The only instance created by {@link com.ameling.grademanager.MainActivity}
+	 * The only instance created by {@link MainActivity}
 	 */
 	public static SubjectManager instance;
 
@@ -119,16 +143,18 @@ public class SubjectManager {
 	}
 
 	/**
-	 * Checks if the name is already a {@link Subject} object
+	 * Replaces the subject with the same name in the list with the given subject
 	 *
-	 * @param name The name of the subject
-	 * @return Whether it already exists or nots
+	 * @param subject The subject to replace with the name of this subject
 	 */
-	public boolean hasSubject (final String name) {
-		for (final Subject subject : subjects)
-			if (subject.name.equals(name))
-				return true;
-		return false;
+	protected void replaceSubject (final Subject subject) {
+		for (int i = 0; i < subjects.size(); i++) {
+			final Subject subjectToReplace = subjects.get(i);
+			if (subjectToReplace.name.equals(subject.name)) {
+				subjects.set(i, subject);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -142,6 +168,19 @@ public class SubjectManager {
 			if (subject.name.equals(subjectName))
 				return subject;
 		return null;
+	}
+
+	/**
+	 * Checks if the name is already a {@link Subject} object
+	 *
+	 * @param name The name of the subject
+	 * @return Whether it already exists or nots
+	 */
+	public boolean hasSubject (final String name) {
+		for (final Subject subject : subjects)
+			if (subject.name.equals(name))
+				return true;
+		return false;
 	}
 }
 

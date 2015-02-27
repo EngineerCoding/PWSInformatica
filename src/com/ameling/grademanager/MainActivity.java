@@ -29,11 +29,15 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 
 	// Strings which are used in onActivityResult
 	public static final String RESULT_SUBJECT = "subject";
+
 	// String used in this activity and SetupActivity
 	public static final String FLAG_EDIT = "edit";
+
 	// Request codes
 	private static final int REQUEST_CODE_SETUP = 0;
 	private static final int REQUEST_EDIT = 1;
+	private static final int REQUEST_SHOW = 2;
+
 	/**
 	 * The adapter for this ListView
 	 */
@@ -58,6 +62,7 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	public void initialize () {
 		if (SubjectManager.instance == null)
 			SubjectManager.instance = new SubjectManager(this);
+		getActionBar().setDisplayHomeAsUpEnabled(false);
 
 		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
 		adapter = SubjectConverter.instance.createAdapter(this, SubjectManager.instance.subjects);
@@ -90,6 +95,10 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 					break;
 				}
 			}
+		} else if (requestCode == REQUEST_SHOW) {
+			final SubjectManager.Subject subject = SubjectConverter.instance.convert(new JSONObject(data.getStringExtra(RESULT_SUBJECT)));
+			SubjectManager.instance.replaceSubject(subject);
+			adapter.notifyDataSetChanged();
 		}
 	}
 
@@ -167,6 +176,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 		final SubjectManager.Subject subject = SubjectManager.instance.subjects.get(position);
 		final Intent intent = new Intent(this, SubjectTreeActivity.class);
 		intent.putExtra(RESULT_SUBJECT, subject.name);
-		startActivity(intent);
+		startActivityForResult(intent, REQUEST_SHOW);
 	}
 }

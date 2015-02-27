@@ -1,7 +1,6 @@
 package com.ameling.grademanager.school;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,28 +116,12 @@ public class SubjectDialogActivity extends BaseActivity {
 		return super.onTouchEvent(event);
 	}
 
-	@Override
-	protected void onSaveInstanceState (Bundle outState) {
-		super.onSaveInstanceState(outState);
-	}
-
-	@Override
-	protected void onRestoreInstanceState (Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	@Override
-	public void onBackPressed () {
-		onCancel(null);
-	}
-
 	/**
 	 * A click handler for the cancel button
 	 *
 	 * @param view The view which got clicked
 	 */
 	public void onCancel (final View view) {
-		setResult(RESULT_CANCELED);
-		finish();
+		onBackPressed();
 	}
 }

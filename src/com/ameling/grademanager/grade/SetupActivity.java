@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -101,9 +100,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 
 	@Override
 	public void initialize () {
-		// Set the back button on the toolbar
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 		// Add listeners
 		final EditText editText = (EditText) findViewById(R.id.subject_formula);
 		editText.setOnFocusChangeListener(this);
@@ -174,25 +170,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		if (inputStrings != null)
 			for (final String grade : inputStrings)
 				adapter.add(GradeConverter.instance.convert(new JSONObject(grade)));
-	}
-
-	@Override
-	public boolean onOptionsItemSelected (final MenuItem item) {
-		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				onBackPressed();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	public void onBackPressed () {
-		// Result failed
-		setResult(RESULT_CANCELED);
-		finish();
 	}
 
 	// Implementation of the OnFocusActionListener

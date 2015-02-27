@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public abstract class BaseActivity extends Activity {
 
@@ -11,6 +12,7 @@ public abstract class BaseActivity extends Activity {
 	public void onCreate (final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(getMainLayout());
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		initialize();
 	}
 
@@ -18,6 +20,24 @@ public abstract class BaseActivity extends Activity {
 	public boolean onCreateOptionsMenu (final Menu menu) {
 		getMenuInflater().inflate(getMenuID(), menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected (final MenuItem item) {
+		// Handle presses on the action bar items
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				onBackPressed();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	public void onBackPressed () {
+		setResult(RESULT_CANCELED);
+		finish();
 	}
 
 	/**

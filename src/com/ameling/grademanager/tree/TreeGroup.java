@@ -7,16 +7,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import com.ameling.grademanager.R;
 
-public final class TreeGroup {
+import java.util.ArrayList;
+import java.util.List;
+
+public final class TreeGroup implements View.OnClickListener{
+
+	private static final String TAG = TreeGroup.class.toString();
 
 	private final ITreeNode parentNode;
+	private final boolean isCollapsible;
 	protected boolean isCollapsed = true;
 
 	protected final ITreeNode[] childNodes;
 	protected final TreeGroup[] childGroups;
 
-	protected TreeGroup (final ITreeNode parentNode) {
+	protected LinearLayout treeLayout = null;
+
+	protected TreeGroup (final ITreeNode parentNode, boolean isCollapsible) {
 		this.parentNode = parentNode;
+		this.isCollapsible = isCollapsible;
 		final ITreeNode[] subNodes = parentNode.getChildNodes();
 
 		childNodes = new ITreeNode[subNodes.length];
@@ -31,20 +40,22 @@ public final class TreeGroup {
 		}
 	}
 
+	protected TreeGroup (final ITreeNode parentNode) {
+		this(parentNode, true);
+	}
+
 	protected void createLayout (final LayoutInflater inflater, final ViewGroup parent) {
 		// The main layout for this group
-		final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.treegroup, null, false);
-
-		// Set the correct image
-		((ImageView) layout.findViewById(R.id.group_icon)).setImageResource(isCollapsed ? R.drawable.ic_collapsed : R.drawable.ic_expanded);
+		treeLayout = (LinearLayout) inflater.inflate(R.layout.treegroup, null, false);
+		treeLayout.setTag(TAG);
 
 		// Add the title for this group view
 		final View titleView = inflater.inflate(parentNode.getInflatableResource(), null, false);
 		parentNode.populateView(titleView);
-		((LinearLayout) layout.findViewById(R.id.inflatable_content)).addView(titleView);
+		((LinearLayout) treeLayout.findViewById(R.id.inflatable_content)).addView(titleView);
 
 		// Add the children views
-		final LinearLayout childrenList = (LinearLayout) layout.findViewById(R.id.inflatable_children);
+		final LinearLayout childrenList = (LinearLayout) treeLayout.findViewById(R.id.inflatable_children);
 		childrenList.setPadding(50, 0, 0, 0);
 
 		for (int i = 0; i < childNodes.length; i++) {
@@ -60,21 +71,63 @@ public final class TreeGroup {
 		}
 
 		// Set the proper visibility
-		if (isCollapsed)
+		if (isCollapsed && isCollapsible)
 			childrenList.setVisibility(View.GONE);
 
-		// Add the click listener to the title
-		layout.findViewById(R.id.group_title).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick (final View view) {
-				isCollapsed = !isCollapsed;
-				((ImageView) layout.findViewById(R.id.group_icon)).setImageResource(isCollapsed ? R.drawable.ic_collapsed : R.drawable.ic_expanded);
+		if (isCollapsible) {
+			// Add the click listener to the title
+			treeLayout.findViewById(R.id.group_title).setOnClickListener(this);
 
-				// Set the proper visibility
-				childrenList.setVisibility(isCollapsed ? View.GONE : View.VISIBLE);
+			// Set the correct image
+			((ImageView) treeLayout.findViewById(R.id.group_icon)).setImageResource(isCollapsed ? R.drawable.ic_collapsed : R.drawable.ic_expanded);
+		} else {
+			// Remove the collapsible image
+			final LinearLayout titleLayout = (LinearLayout) treeLayout.findViewById(R.id.group_title);
+			titleLayout.removeView(titleLayout.findViewById(R.id.group_icon));
+		}
+
+		parent.addView(treeLayout);
+	}
+
+	public View[] getChildViews () {
+		final List<View> children = getChildNodes(treeLayout);
+		return children.toArray(new View[children.size()]);
+	}
+
+	private static List<View> getChildNodes (final LinearLayout treeGroup) {
+		final LinearLayout childrenList = (LinearLayout) treeGroup.findViewById(R.id.inflatable_children);
+		final List<View> childViews = new ArrayList<>();
+
+		for (int i = 0; i < childrenList.getChildCount(); i++) {
+			final View child = childrenList.getChildAt(i);
+			if (child instanceof LinearLayout && child.getTag().equals(TAG)) {
+				// This our tag so we need to get the children of this view
+				childViews.addAll(getChildNodes((LinearLayout) child));
+			} else {
+				// Simply add the child
+				childViews.add(child);
 			}
-		});
+		}
+		return childViews;
+	}
 
-		parent.addView(layout);
+	public int countGroups () {
+		int amount = 0;
+		for (final TreeGroup group : childGroups) {
+			if (group != null) {
+				amount += 1;
+				amount += group.countGroups();
+			}
+		}
+		return amount;
+	}
+
+	@Override
+	public void onClick (final View view) {
+		isCollapsed = !isCollapsed;
+		((ImageView) view.findViewById(R.id.group_icon)).setImageResource(isCollapsed ? R.drawable.ic_collapsed : R.drawable.ic_expanded);
+
+		// Set the proper visibility
+		treeLayout.findViewById(R.id.inflatable_children).setVisibility(isCollapsed ? View.GONE : View.VISIBLE);
 	}
 }

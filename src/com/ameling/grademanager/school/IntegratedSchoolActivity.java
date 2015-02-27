@@ -10,7 +10,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,7 +69,6 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 
 	@Override
 	public void initialize () {
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (schoolCollection == null) {
 			schoolCollection = new ArrayList<>();
 
@@ -132,24 +130,6 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 		((EditText) searchView.findViewById(resource_edit_text)).addTextChangedListener(this);
 
 		return returnVal;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected (final MenuItem item) {
-		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				onBackPressed();
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	public void onBackPressed () {
-		setResult(RESULT_CANCELED);
-		finish();
 	}
 
 	@Override

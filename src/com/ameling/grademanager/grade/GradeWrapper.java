@@ -96,7 +96,7 @@ public class GradeWrapper extends Grade {
 
 	@Override
 	public Grade clone () {
-		final GradeWrapper wrapper = new GradeWrapper (this);
+		final GradeWrapper wrapper = new GradeWrapper(this);
 		wrapper.setSubGrades(calculator.clone());
 		return wrapper;
 	}

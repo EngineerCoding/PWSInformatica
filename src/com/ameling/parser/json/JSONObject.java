@@ -20,6 +20,7 @@ public class JSONObject extends JSON {
 
 	// All constants used within this class only
 	private static final String STRING_KEY = "key";
+
 	private static final String STRING_VALUE = "value";
 
 	/**

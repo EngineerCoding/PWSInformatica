@@ -10,15 +10,18 @@ import com.ameling.grademanager.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class TreeGroup implements View.OnClickListener{
+public final class TreeGroup implements View.OnClickListener {
 
 	private static final String TAG = TreeGroup.class.toString();
 
 	private final ITreeNode parentNode;
+
 	private final boolean isCollapsible;
+
 	protected boolean isCollapsed = true;
 
 	protected final ITreeNode[] childNodes;
+
 	protected final TreeGroup[] childGroups;
 
 	protected LinearLayout treeLayout = null;

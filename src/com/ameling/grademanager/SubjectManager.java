@@ -42,7 +42,8 @@ public class SubjectManager {
 
 		/**
 		 * Creates a Subject with a name and calculator
-		 * @param name The name of the subject
+		 *
+		 * @param name       The name of the subject
 		 * @param calculator The calculator which is used in this Subject
 		 */
 		public Subject (final String name, final CalculatorWrapper calculator) {

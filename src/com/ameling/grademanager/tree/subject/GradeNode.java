@@ -12,6 +12,7 @@ import java.util.List;
 public class GradeNode implements ITreeNode {
 
 	private final Grade grade;
+
 	private final ITreeNode[] childNodes;
 
 	protected GradeNode (final Grade grade) {

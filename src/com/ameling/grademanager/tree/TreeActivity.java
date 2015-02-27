@@ -75,7 +75,7 @@ public abstract class TreeActivity extends BaseActivity {
 		for (int i = 0; i < collapsedArray.length; i++)
 			collapsedArray[i] = collapsedList.get(i);
 		outState.putBooleanArray(STATE_EXPANDED, collapsedArray);
-}
+	}
 
 	@Override
 	protected void onRestoreInstanceState (final Bundle savedInstanceState) {

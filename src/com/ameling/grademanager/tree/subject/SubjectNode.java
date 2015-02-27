@@ -9,6 +9,7 @@ import com.ameling.grademanager.tree.ITreeNode;
 public class SubjectNode implements ITreeNode {
 
 	private final String name;
+
 	private final ITreeNode[] childNodes;
 
 	protected SubjectNode (final SubjectManager.Subject subject) {

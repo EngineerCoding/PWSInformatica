@@ -89,7 +89,8 @@ public class SubjectDialogActivity extends BaseActivity {
 							final CalculatorWrapper wrapper = level.getFormula(classLevelAdapter.getItem(position));
 
 							// send the result back
-							final Intent intent = new Intent().putExtra(KEY_SUBJECT, subject).putExtra(KEY_CLASSES, classLevel).putExtra(KEY_CALCULATOR, CalculatorWrapper.converter.convert(wrapper).toString());
+							final Intent intent = new Intent().putExtra(KEY_SUBJECT, subject).putExtra(KEY_CLASSES, classLevel)
+									.putExtra(KEY_CALCULATOR, CalculatorWrapper.converter.convert(wrapper).toString());
 							setResult(RESULT_OK, intent);
 							finish();
 						}

@@ -22,8 +22,11 @@ public class JSONWriter {
 
 	// All constants used within this class only
 	private static final char CHAR_TAB = '\t';
+
 	private static final String STRING_EMPTY = "";
+
 	private static final String STRING_SPACE = " ";
+
 	private static final String STRING_WRITER_NULL = "Writer is null";
 
 	private static final String STRING_lINE_SEPARATOR;

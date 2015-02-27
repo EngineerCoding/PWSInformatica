@@ -20,16 +20,25 @@ public abstract class Parser {
 
 	// All constants used within this class only
 	private static final char CHAR_DOT = '.';
+
 	private static final char CHAR_E_LOWER = 'e';
+
 	private static final char CHAR_E_UPPER = 'E';
+
 	private static final char CHAR_F = 'f';
+
 	private static final char CHAR_QUOTE_SINGLE = '\'';
+
 	private static final char CHAR_SLASH_BACK = '\\';
+
 	private static final char CHAR_SUBTRACT = '-';
+
 	private static final char CHAR_T = 't';
 
 	private static final String EXCEPTION_MULTIPLE_DOTS = "Multiple dots have been found";
+
 	private static final String EXCEPTION_UNFINISHED_STRING = "Unfinished string";
+
 	private static final String FORMAT_PARSE_BOOLEAN = "Tried to parse to '%s', got %s";
 
 

@@ -17,6 +17,7 @@ public class Calculator implements Cloneable {
 
 	// Constants which are used within this class only
 	private static final String FORMAT_INVALID_GRADE = "Invalid grade id '%s'";
+
 	private static final String STRING_UNKNOWN = "unknown";
 
 	/**

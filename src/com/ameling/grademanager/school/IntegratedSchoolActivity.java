@@ -37,9 +37,13 @@ import java.util.List;
 public class IntegratedSchoolActivity extends BaseActivity implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, TextWatcher {
 
 	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
+
 	private static final String REGEX_SPLIT = "\\s+";
+
 	private static final String[] COLUMN_SCHOOL = new String[]{ "_id", "school" };
+
 	public static final String KEY_INDEX = "index";
+
 	private static final int REQUEST_SUBJECT_CLASS = 0;
 
 	/**

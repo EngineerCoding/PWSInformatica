@@ -44,10 +44,12 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 
 	// The values for making new requests
 	private static final int REQUEST_INTEGRATED_FORMULA = 0;
+
 	private static final int REQUEST_SUB_FORMULA = 1;
 
 	// Keys for saving and loading a state
 	private static String STATE_FORMULA = "formulaInput";
+
 	private static String STATE_GRADE_INPUT = "gradeInputs";
 
 	//public static final String REQUEST_SUBJECT_NAME = "name";
@@ -173,6 +175,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	}
 
 	// Implementation of the OnFocusActionListener
+
 	/**
 	 * A variable to check if parsing is necessary
 	 */

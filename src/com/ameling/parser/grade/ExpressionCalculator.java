@@ -26,6 +26,7 @@ import static com.ameling.parser.Constants.FORMAT_EXPECTED_CHAR;
 public class ExpressionCalculator extends Calculator {
 
 	private static final Fraction FRACTION_1 = new Fraction(1, 1);
+
 	private static final String EXCEPTION_INVALID_EXPRESSION = "This is an invalid average expression!";
 
 	/**
@@ -38,11 +39,17 @@ public class ExpressionCalculator extends Calculator {
 
 		// All constants used within this class only
 		private static final char CHAR_BRACKET_CLOSE = ')';
+
 		private static final char CHAR_BRACKET_OPEN = '(';
+
 		private static final char CHAR_MULTIPLY = '*';
+
 		private static final char CHAR_SLASH_FORWARD = '/';
+
 		private static final String EXCEPTION_NEED_VARIABLE = "A variable is needed here!";
+
 		private static final String REGEX_VARIABLE_STARTING = "[a-zA-Z_]";
+
 		private static final String REGEX_VARIABLE_REST = "\\w";
 
 		/**

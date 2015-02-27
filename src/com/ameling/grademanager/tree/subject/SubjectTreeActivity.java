@@ -17,6 +17,7 @@ public class SubjectTreeActivity extends TreeActivity {
 	private static final String STATE_INPUT = "input";
 
 	private SubjectManager.Subject subject;
+
 	private SubjectNode subjectNode;
 
 	@Override
@@ -68,7 +69,7 @@ public class SubjectTreeActivity extends TreeActivity {
 		return input;
 	}
 
-	public void finishSubject(final View view) {
+	public void finishSubject (final View view) {
 		final Grade[] grades = subject.getSubGrades();
 		final String[] input = getInputs();
 		for (int i = 0; i < grades.length; i++)

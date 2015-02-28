@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.ameling.grademanager"
+          package="com.grademanager.app"
           android:versionCode="1"
           android:versionName="1.0">
 
@@ -11,7 +11,7 @@
                  android:allowBackup="true"
                  android:theme="@android:style/Theme.Holo"
                  android:icon="@drawable/ic_launcher">
-        <activity android:name=".MainActivity"
+        <activity android:name="com.grademanager.app.MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".grade.SetupActivity"
+        <activity android:name="com.grademanager.app.grade.SetupActivity"
                   android:label="@string/activity_new_subject"
                   android:windowSoftInputMode="adjustPan"/>
 
-        <activity android:name=".school.IntegratedSchoolActivity"
+        <activity android:name="com.grademanager.app.school.IntegratedSchoolActivity"
                   android:label="@string/activity_choose_formula">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
@@ -32,10 +32,10 @@
                        android:resource="@xml/school_searchable"/>
         </activity>
 
-        <activity android:name=".school.SchoolDialogActivity"
+        <activity android:name="com.grademanager.app.school.SchoolDialogActivity"
                   android:label="@string/activity_choose_subject"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
-        <activity android:name=".tree.subject.SubjectTreeActivity"
+        <activity android:name="com.grademanager.app.tree.subject.SubjectTreeActivity"
                   android:label="@string/activity_grade_list"
                   android:windowSoftInputMode="adjustPan"/>
     </application>

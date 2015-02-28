@@ -38,7 +38,7 @@
 
     <!-- Toasts -->
     <string name="toast_subject_required">De vaknaam is verplicht om te geven!</string>
-    <string name="toast_invalid_formula">De formule kon niet ge.. worden of heeft geen cijfers!</string>
+    <string name="toast_invalid_formula">De formule kon niet uitgelezen worden of heeft geen cijfers!</string>
     <string name="toast_invalid_subject">Het vak is al in gebruik!</string>
 
     <!-- Subjects used in IntegratedSchool.ClassLevel -->

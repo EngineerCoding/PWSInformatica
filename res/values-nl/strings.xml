@@ -12,6 +12,9 @@
     <string name="add_formula">Formule toevoegen</string>
     <string name="edit_formula">Formule bewerken</string>
     <string name="cancel">Annuleren</string>
+    <string name="predict_grade_value">Voorspel cijfer waarde</string>
+    <string name="wished_average">Gewenst gemiddelde:</string>
+    <string name="format_grade_value" formatted="false">De waarde van %s moet dan %s zijn!</string>
 
     <!-- Activity labels -->
     <string name="activity_new_subject">Nieuw vak</string>

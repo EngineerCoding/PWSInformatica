@@ -72,6 +72,44 @@ public class CalculatorWrapper extends Calculator implements Cloneable {
 		this(getGrades(expression), expression);
 	}
 
+	@Override
+	public double calculateGrade (final Grade gradeToCalculate, double average) {
+		// Check if the grade is in a wrapper
+		if (super.getGrade(gradeToCalculate.name) == null) {
+			// This grade is in a grade wrapper, lets find the grade
+			for (final Grade grade : grades) {
+				if (grade instanceof GradeWrapper) {
+					// Found the grade, calculate the average of this wrapper
+					final GradeWrapper wrapper = (GradeWrapper) grade;
+					if (wrapper.hasGrade(gradeToCalculate))
+						return wrapper.calculator.calculateGrade(gradeToCalculate, super.calculateGrade(wrapper, average));
+				}
+			}
+		}
+		// Simply let the super class do the work, since it is the default
+		return super.calculateGrade(gradeToCalculate, average);
+	}
+
+	@Override
+	public Grade getGrade (final String name) {
+		final Grade grade = super.getGrade(name);
+		if (grade != null)
+			return grade; // Just simply return it because it has been found
+
+		// Do a custom search on the wrappers, because the regular ones should have been found
+		for (final Grade subGrade : grades) {
+			if (subGrade instanceof GradeWrapper) {
+				final CalculatorWrapper subCalculator = ((GradeWrapper) subGrade).calculator;
+				if (subCalculator != null) {
+					final Grade foundGrade = subCalculator.getGrade(name);
+					if (foundGrade != null)
+						return foundGrade;
+				}
+			}
+		}
+		return grade;
+	}
+
 	/**
 	 * Creates the actual {@link ExpressionCalculator}
 	 *

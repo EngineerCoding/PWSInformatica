@@ -1,6 +1,9 @@
 package com.ameling.grademanager.tree.subject;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.ameling.grademanager.R;
 import com.ameling.grademanager.grade.GradeWrapper;
@@ -21,6 +24,12 @@ public class GradeNode implements ITreeNode {
 	private final Grade grade;
 
 	/**
+	 * The parent to update
+	 */
+	private final SubjectTreeActivity parent;
+
+
+	/**
 	 * The child nodes if the grade is an instance of {@link GradeWrapper}
 	 */
 	private final ITreeNode[] childNodes;
@@ -30,18 +39,19 @@ public class GradeNode implements ITreeNode {
 	 *
 	 * @param grade The grade to represent
 	 */
-	protected GradeNode (final Grade grade) {
+	protected GradeNode (final Grade grade, final SubjectTreeActivity parent) {
 		if (grade == null)
 			throw new NullPointerException();
 
 		this.grade = grade;
+		this.parent = parent;
 
 		// Set the child-nodes
 		if (grade instanceof GradeWrapper && ((GradeWrapper) grade).calculator != null) {
 			final List<Grade> grades = ((GradeWrapper) grade).calculator.grades;
 			childNodes = new ITreeNode[grades.size()];
 			for (int i = 0; i < childNodes.length; i++)
-				childNodes[i] = new GradeNode(grades.get(i));
+				childNodes[i] = new GradeNode(grades.get(i), parent);
 		} else {
 			childNodes = new ITreeNode[0];
 		}
@@ -70,6 +80,21 @@ public class GradeNode implements ITreeNode {
 		} else {
 			// instance of grade (so this is an item)
 			((TextView) view.findViewById(R.id.grade_name)).setText(grade.name);
+
+			// Set a text watcher to update the parent
+			final EditText gradeInput = (EditText) view.findViewById(R.id.grade_value);
+			gradeInput.addTextChangedListener(new TextWatcher() {
+				@Override
+				public void beforeTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
+
+				@Override
+				public void onTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
+
+				@Override
+				public void afterTextChanged (final Editable editable) {
+					parent.updateGrades();
+				}
+			});
 			if (grade.hasValue())
 				((TextView) view.findViewById(R.id.grade_value)).setText(String.valueOf(grade.getValue()));
 		}

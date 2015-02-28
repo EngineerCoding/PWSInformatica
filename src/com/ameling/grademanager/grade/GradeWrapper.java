@@ -62,11 +62,28 @@ public class GradeWrapper extends Grade {
 		}
 	}
 
+	/**
+	 * Checks if this is a parent wrapper
+	 *
+	 * @param grade The grade to check for
+	 * @return A boolean whether it exists or not
+	 */
+	public boolean hasGrade (final Grade grade) {
+		if (calculator != null) {
+			for (final Grade _grade : calculator.grades) {
+				if (grade instanceof GradeWrapper && ((GradeWrapper) _grade).hasGrade(grade))
+					return true;
+				else if (_grade.equals(grade))
+					return true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public double getValue () {
-		if (hasValue()) {
+		if (hasValue())
 			return calculator.calculateAverage();
-		}
 		return 0D;
 	}
 

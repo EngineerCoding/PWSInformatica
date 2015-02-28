@@ -69,7 +69,7 @@ public class Calculator implements Cloneable {
 
 			// Loop through all grades, add the grade when it is set to the list of setGrades and add the total weighting
 			for (final Grade _grade : grades) {
-				if (_grade.isSet) {
+				if (_grade.hasValue()) {
 					setGrades.add(_grade);
 					totalWeighting += _grade.weighting;
 				}
@@ -79,7 +79,7 @@ public class Calculator implements Cloneable {
 			average *= totalWeighting;
 			for (final Grade _grade : setGrades) {
 				// Now we subtract the total value with the total of a set grade (which is its value multiplied with its weighting)
-				average -= (_grade.weighting * _grade.value);
+				average -= (_grade.weighting * _grade.getValue());
 			}
 			// By dividing the leaving amount by its weighting, we get the value of the grade which it should be to achieve the average
 			return average / grade.weighting;

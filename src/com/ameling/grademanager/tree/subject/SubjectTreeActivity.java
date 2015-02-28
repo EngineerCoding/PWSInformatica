@@ -1,12 +1,17 @@
 package com.ameling.grademanager.tree.subject;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import com.ameling.grademanager.MainActivity;
 import com.ameling.grademanager.R;
 import com.ameling.grademanager.SubjectManager;
+import com.ameling.grademanager.grade.GradeWrapper;
 import com.ameling.grademanager.tree.ITreeNode;
 import com.ameling.grademanager.tree.TreeActivity;
 import com.ameling.parser.grade.Grade;
@@ -15,7 +20,7 @@ import com.ameling.parser.grade.Grade;
  * This activity is based on {@link TreeActivity} because this class shows a tree from a {@link SubjectManager.Subject}. This activity
  * is used to modify all grades and show it correctly again in the {@link com.ameling.grademanager.MainActivity}
  */
-public class SubjectTreeActivity extends TreeActivity {
+public class SubjectTreeActivity extends TreeActivity implements View.OnLongClickListener {
 
 	/**
 	 * A key to save the state with
@@ -39,7 +44,7 @@ public class SubjectTreeActivity extends TreeActivity {
 		if (intent.hasExtra(MainActivity.RESULT_SUBJECT)) {
 			// Retrieve the subject name
 			subject = SubjectManager.instance.getSubject(intent.getStringExtra(MainActivity.RESULT_SUBJECT));
-			subjectNode = new SubjectNode(subject);
+			subjectNode = new SubjectNode(subject, this);
 		} else {
 			finish();
 		}
@@ -71,18 +76,25 @@ public class SubjectTreeActivity extends TreeActivity {
 			((TextView) children[i].findViewById(R.id.grade_value)).setText(input[i]);
 	}
 
-	@Override
-	public void onBackPressed () {
-		// We are going back to the main screen, so save the inputs
+	/**
+	 * Updates all grades with the given input
+	 */
+	protected void updateGrades () {
 		// Set the grade values from the inputs
 		final Grade[] grades = subject.getSubGrades();
 		final String[] input = getInputs();
 		for (int i = 0; i < grades.length; i++)
 			if (!input[i].isEmpty())
 				grades[i].setValue(Double.valueOf(input[i]));
+	}
+
+	@Override
+	public void onBackPressed () {
+		// Set the values of the grade
+		updateGrades();
 
 		// Set the result and finish this activity
-		setResult(RESULT_OK, new Intent());
+		setResult(RESULT_OK);
 		finish();
 	}
 
@@ -100,5 +112,48 @@ public class SubjectTreeActivity extends TreeActivity {
 		for (int i = 0; i < children.length; i++)
 			input[i] = ((TextView) children[i].findViewById(R.id.grade_value)).getText().toString().trim();
 		return input;
+	}
+
+	@Override
+	public boolean onLongClick (final View view) {
+		final Grade grade = subject.calculator.getGrade(((TextView) view.findViewById(R.id.grade_name)).getText().toString());
+		if (!(grade instanceof GradeWrapper)) {
+			// Create a new dialog
+			final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+			builder.setTitle(getString(R.string.predict_grade_value));
+			builder.setNeutralButton("Ok", null);
+
+			// Create a custom view
+			final View inflatedView = LayoutInflater.from(this).inflate(R.layout.predict_dialog, null, false);
+			// Set default text
+			final TextView inputCalc = (TextView) inflatedView.findViewById(R.id.input_calc);
+			final String format = getString(R.string.format_grade_value);
+			inputCalc.setText(String.format(format, grade.name, "-"));
+			// When the text is changed the average calculation should appear
+			((TextView) inflatedView.findViewById(R.id.input_average)).addTextChangedListener(new TextWatcher() {
+				@Override
+				public void beforeTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
+
+				@Override
+				public void onTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
+
+				@Override
+				public void afterTextChanged (final Editable editable) {
+					String input = editable.toString().trim();
+					if (!input.isEmpty()) {
+						if (input.charAt(input.length() - 1) == '.')
+							input += "0";
+						inputCalc.setText(String.format(format, grade.name, subject.calculator.calculateGrade(grade, Double.valueOf(input))));
+					} else {
+						inputCalc.setText(String.format(format, grade.name, "-"));
+					}
+				}
+			});
+
+			// Add the custom view to the dialog
+			builder.setView(inflatedView);
+			builder.show();
+		}
+		return false;
 	}
 }

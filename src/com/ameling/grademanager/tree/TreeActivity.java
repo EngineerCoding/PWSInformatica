@@ -2,6 +2,7 @@ package com.ameling.grademanager.tree;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import com.ameling.grademanager.BaseActivity;
 import com.ameling.grademanager.R;
@@ -12,7 +13,8 @@ import java.util.List;
 
 /**
  * This is the base-activity of every activity that wants to show some kind of tree. For that too happen one has to only give a {@link ITreeNode}
- * which has child-nodes so acts like a parent-node.
+ * which has child-nodes so acts like a parent-node. When the sub class implements {@link View.OnLongClickListener}, it will set that to the child
+ * nodes which are not a group.
  */
 public abstract class TreeActivity extends BaseActivity {
 
@@ -49,7 +51,9 @@ public abstract class TreeActivity extends BaseActivity {
 
 		// Get the main layout everything attaches to and create TreeGroup node
 		mainLayout = (LinearLayout) findViewById(R.id.tree_list);
-		parentGroup = new TreeGroup(getParentNode(), false);
+		// Set the listener to the treegroup which sets it to the child nodes
+		final View.OnLongClickListener listener = (this instanceof View.OnLongClickListener ? (View.OnLongClickListener) this : null);
+		parentGroup = new TreeGroup(getParentNode(), listener, false);
 
 		// Create the layout
 		parentGroup.createLayout(LayoutInflater.from(this), mainLayout);

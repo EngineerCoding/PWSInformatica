@@ -74,9 +74,8 @@ public abstract class BaseActivity extends Activity {
 
 	@Override
 	public final void onActivityResult (final int requestCode, final int resultCode, final Intent data) {
-		if (resultCode == RESULT_OK && data != null) {
+		if (resultCode == RESULT_OK)
 			handleActivityResult(requestCode, data);
-		}
 	}
 
 	/**

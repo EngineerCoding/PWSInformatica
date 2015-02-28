@@ -27,11 +27,11 @@ public class SubjectNode implements ITreeNode {
 	 *
 	 * @param subject The subject to create a node from
 	 */
-	protected SubjectNode (final SubjectManager.Subject subject) {
+	protected SubjectNode (final SubjectManager.Subject subject, final SubjectTreeActivity parent) {
 		name = subject.name;
 		childNodes = new ITreeNode[subject.calculator.grades.size()];
 		for (int i = 0; i < childNodes.length; i++)
-			childNodes[i] = new GradeNode(subject.calculator.grades.get(i));
+			childNodes[i] = new GradeNode(subject.calculator.grades.get(i), parent);
 	}
 
 	@Override

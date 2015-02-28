@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:background="@android:color/white">
+             android:background="@android:color/white"
+             android:id="@+id/grade_item_tree">
     <TextView style="@style/medium_text"
               android:layout_gravity="left|center_vertical"
-              android:id="@+id/grade_name"
-            />
+              android:id="@+id/grade_name"/>
 
     <EditText style="@style/medium_text.edit"
               android:layout_gravity="right"

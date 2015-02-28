@@ -12,6 +12,9 @@
     <string name="add_formula">Add formula</string>
     <string name="edit_formula">Edit formula</string>
     <string name="cancel">Cancel</string>
+    <string name="predict_grade_value">Predict this grade value</string>
+    <string name="wished_average">Wished average:</string>
+    <string name="format_grade_value" formatted="false">The value of %s should be %s!</string>
 
     <!-- Activity labels -->
     <string name="activity_new_subject">New subject</string>

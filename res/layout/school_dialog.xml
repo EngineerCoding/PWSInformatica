@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:background="@android:color/white">
     <LinearLayout android:orientation="vertical"
                   android:padding="10dip"
@@ -19,13 +19,12 @@
                  android:id="@+id/classes"/>
 
         <ListView android:layout_width="wrap_content"
-                  android:layout_height="240dp"
+                  android:layout_height="150dp"
                   android:layout_gravity="center_horizontal"
                   android:padding="10dip"
                   android:background="@drawable/border_average_grade"
                   android:id="@+id/subjects"/>
     </LinearLayout>
-
 
     <LinearLayout style="?android:attr/buttonBarStyle"
                   android:orientation="vertical"

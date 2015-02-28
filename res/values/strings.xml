@@ -3,7 +3,8 @@
     <string name="app_name">Grade Manager</string>
     <string name="subject_name">Subject:</string>
     <string name="grade_name">Grade:</string>
-    <string name="grades">Grades:</string>
+    <string name="grades">Grades</string>
+    <string name="values">Values</string>
     <string name="formula">Formula:</string>
     <string name="select_integrated_school">Select formula from integrated school</string>
     <string name="finish_button">Finish</string>
@@ -11,6 +12,12 @@
     <string name="add_formula">Add formula</string>
     <string name="edit_formula">Edit formula</string>
     <string name="cancel">Cancel</string>
+
+    <!-- Activity labels -->
+    <string name="activity_new_subject">New subject</string>
+    <string name="activity_choose_formula">Choose a formula</string>
+    <string name="activity_choose_subject">Choose a subject</string>
+    <string name="activity_grade_list">Grade List</string>
 
     <!-- Hints -->
     <string name="hint_search_school">School/Country/City</string>

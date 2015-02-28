@@ -3,7 +3,8 @@
     <string name="app_name">Cijfer Manager</string>
     <string name="subject_name">Vak:</string>
     <string name="grade_name">Cijfer:</string>
-    <string name="grades">Cijfers:</string>
+    <string name="grades">Cijfers</string>
+    <string name="values">Waardes</string>
     <string name="formula">Formule:</string>
     <string name="select_integrated_school">Selecteer formule van een school</string>
     <string name="finish_button">Voltooien</string>
@@ -11,6 +12,12 @@
     <string name="add_formula">Formule toevoegen</string>
     <string name="edit_formula">Formule bewerken</string>
     <string name="cancel">Annuleren</string>
+
+    <!-- Activity labels -->
+    <string name="activity_new_subject">Nieuw vak</string>
+    <string name="activity_choose_formula">Kies een formule</string>
+    <string name="activity_choose_subject">Kies een vak</string>
+    <string name="activity_grade_list">Cijferlijst</string>
 
     <!-- Hints -->
     <string name="hint_search_school">School/Land/Stad</string>

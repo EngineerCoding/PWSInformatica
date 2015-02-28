@@ -118,7 +118,10 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			final EditText inputFieldName = (EditText) findViewById(R.id.new_subject_name);
 			inputFieldName.setText(intent.getStringExtra(KEY_NAME));
 			inputFieldName.setEnabled(false);
-			findViewById(R.id.select_integrated_school).setEnabled(false);
+
+			final View buttonIntegratedSchool = findViewById(R.id.select_integrated_school);
+			buttonIntegratedSchool.setEnabled(false);
+			buttonIntegratedSchool.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_disabled));
 
 			// If there is a formula present, then show it
 			if (intent.hasExtra(KEY_FORMULA)) {
@@ -137,6 +140,10 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				findViewById(R.id.new_subject_name).setEnabled(true);
 				editingSubject = intent.getStringExtra(KEY_NAME);
 				flagSubCalculator = false;
+
+				final View buttonIntegratedSchool = findViewById(R.id.select_integrated_school);
+				buttonIntegratedSchool.setEnabled(true);
+				buttonIntegratedSchool.setBackgroundDrawable(getResources().getDrawable(R.drawable.button));
 			}
 		}
 	}

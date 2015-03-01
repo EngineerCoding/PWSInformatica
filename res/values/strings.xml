@@ -38,8 +38,12 @@
 
     <!-- Toasts -->
     <string name="toast_subject_required">The subject id is a required field!</string>
-    <string name="toast_invalid_formula">The formula could not be parsed or doesn\'t have any grades!</string>
+    <string name="toast_no_grades">Not valid, since there are no grades!</string>
+    <string name="toast_invalid_formula">The formula could not be parsed!</string>
     <string name="toast_invalid_subject">Subject name already in use!</string>
+
+    <!-- Country names used in schools.json -->
+    <string name="country_holland">The Netherlands</string>
 
     <!-- Subjects used in IntegratedSchool.ClassLevel -->
     <string name="subject_geography">Geography</string>

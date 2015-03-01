@@ -11,7 +11,7 @@
                  android:allowBackup="true"
                  android:theme="@android:style/Theme.Holo"
                  android:icon="@drawable/ic_launcher">
-        <activity android:name="com.grademanager.app.MainActivity"
+        <activity android:name=".MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,11 +19,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.grademanager.app.grade.SetupActivity"
+        <activity android:name=".grade.SetupActivity"
                   android:label="@string/activity_new_subject"
                   android:windowSoftInputMode="adjustPan"/>
 
-        <activity android:name="com.grademanager.app.school.IntegratedSchoolActivity"
+        <activity android:name=".school.IntegratedSchoolActivity"
                   android:label="@string/activity_choose_formula">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
@@ -32,10 +32,10 @@
                        android:resource="@xml/school_searchable"/>
         </activity>
 
-        <activity android:name="com.grademanager.app.school.SchoolDialogActivity"
+        <activity android:name=".school.SchoolDialogActivity"
                   android:label="@string/activity_choose_subject"
                   android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
-        <activity android:name="com.grademanager.app.tree.subject.SubjectTreeActivity"
+        <activity android:name=".tree.subject.SubjectTreeActivity"
                   android:label="@string/activity_grade_list"
                   android:windowSoftInputMode="adjustPan"/>
     </application>

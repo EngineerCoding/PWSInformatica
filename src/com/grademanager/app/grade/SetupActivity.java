@@ -25,6 +25,7 @@ import com.grademanager.parser.grade.Grade;
 import com.grademanager.parser.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.grademanager.app.util.ConstantKeys.KEY_CALCULATOR;
 import static com.grademanager.app.util.ConstantKeys.KEY_CLASSES;
@@ -256,9 +257,9 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	/**
 	 * Replaces the appropriate grade object in the {@link #adapter} for the given {@link GradeWrapper}
 	 *
-	 * @param grade The wrapper to replace the grade object for
+	 * @param grade The grade to replace the grade object for
 	 */
-	private void replaceGrade (final GradeWrapper grade) {
+	private void replaceGrade (final Grade grade) {
 		for (int i = 0; i < adapter.getCount(); i++) {
 			final Grade toReplaceGrade = adapter.getItem(i);
 			if (toReplaceGrade.name.equals(grade.name)) {
@@ -388,15 +389,25 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			return;
 
 		try {
+			// Hard backup
+			final List<Grade> grades = new ArrayList<>();
+			for (int i = 0; i < adapter.getCount(); i++)
+				grades.add(adapter.getItem(i).clone());
+
 			final ExpressionCalculator calculator = new ExpressionCalculator(expression);
 			// Parsed correctly, set the data
 			adapter.clear();
 			if (calculator.grades.size() > 0) {
 				adapter.addAll(calculator.grades);
 				flagParsed = true;
+
+				// Restore the grades from the backup
+				if (grades.size() > 0)
+					for (final Grade grade : grades)
+						replaceGrade(grade);
 			} else {
 				flagParsed = false;
-				Toast.makeText(this, R.string.toast_invalid_formula, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, R.string.toast_no_grades, Toast.LENGTH_SHORT).show();
 			}
 		} catch (final SyntaxException e) {
 			adapter.clear();

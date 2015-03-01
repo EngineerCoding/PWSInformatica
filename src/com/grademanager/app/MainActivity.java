@@ -120,9 +120,8 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 				final Intent intent = new Intent(this, SetupActivity.class);
 				startActivityForResult(intent, REQUEST_CODE_SETUP);
 				return true;
-			default:
-				return super.onOptionsItemSelected(item);
 		}
+		return false;
 	}
 
 	@Override

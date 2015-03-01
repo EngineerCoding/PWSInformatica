@@ -38,8 +38,12 @@
 
     <!-- Toasts -->
     <string name="toast_subject_required">De vaknaam is verplicht om te geven!</string>
-    <string name="toast_invalid_formula">De formule kon niet uitgelezen worden of heeft geen cijfers!</string>
+    <string name="toast_no_grades">Niet valide, sinds er geen cijfers zijn!</string>
+    <string name="toast_invalid_formula">De formule kon niet uitgelezen worden!</string>
     <string name="toast_invalid_subject">Het vak is al in gebruik!</string>
+
+    <!-- Country names used in schools.json -->
+    <string name="country_holland">Nederland</string>
 
     <!-- Subjects used in IntegratedSchool.ClassLevel -->
     <string name="subject_geography">Aardrijksunde</string>

@@ -76,6 +76,13 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 			((TextView) children[i].findViewById(R.id.grade_value)).setText(input[i]);
 	}
 
+	@Override
+	protected void onPause () {
+		super.onPause();
+		// Also save the subjects here because changes could have been made
+		SubjectManager.instance.saveSubjects();
+	}
+
 	/**
 	 * Updates all grades with the given input
 	 */

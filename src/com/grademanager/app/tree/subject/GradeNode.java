@@ -83,6 +83,9 @@ public class GradeNode implements ITreeNode {
 
 			// Set a text watcher to update the parent
 			final EditText gradeInput = (EditText) view.findViewById(R.id.grade_value);
+			if (grade.hasValue())
+				gradeInput.setText(String.valueOf(grade.getValue()));
+
 			gradeInput.addTextChangedListener(new TextWatcher() {
 				@Override
 				public void beforeTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
@@ -95,8 +98,6 @@ public class GradeNode implements ITreeNode {
 					parent.updateGrades();
 				}
 			});
-			if (grade.hasValue())
-				((TextView) view.findViewById(R.id.grade_value)).setText(String.valueOf(grade.getValue()));
 		}
 	}
 }

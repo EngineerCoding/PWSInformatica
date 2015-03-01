@@ -67,12 +67,9 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 				subjects[i] = subject.getString(KEY_SUBJECT);
 
 				// Try to localize the subject name
-				try {
-					int id = R.string.class.getField(PREFIX_SUBJECT + subjects[i]).getInt(null);
-					subjects[i] = context.getString(id);
-				} catch (final NoSuchFieldException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
+				final String localisedSubject = localise(PREFIX_SUBJECT + subjects[i], context);
+				if (localisedSubject != null)
+					subjects[i] = localisedSubject;
 
 				// Check if the parentClassLevel has it, then try to grab it from the actual key
 				CalculatorWrapper formula = null;
@@ -136,6 +133,11 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 	}
 
 	/**
+	 * The prefix used to try to localise the country name
+	 */
+	private static final String PREFIX_COUNTY = "country_";
+
+	/**
 	 * All stored classNames, a corresponding ClassLevel can be found in {@link #classLevels} with the same index
 	 */
 	private final String[] classNames;
@@ -150,8 +152,8 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 	 *
 	 * @param object The json to read from
 	 */
-	private JsonIntegratedSchool (final JSONObject object) {
-		super(object.getString(KEY_NAME), object.getString(KEY_COUNTRY), object.getString(KEY_CITY));
+	private JsonIntegratedSchool (final JSONObject object, final Context context) {
+		super(object.getString(KEY_NAME), localise(PREFIX_COUNTY + object.getString(KEY_COUNTRY), context), object.getString(KEY_CITY));
 		classNames = new String[object.getJSONArray(KEY_CLASSES).getSize()];
 		classLevels = new JsonClassLevel[classNames.length];
 	}
@@ -193,10 +195,26 @@ public class JsonIntegratedSchool extends IntegratedSchool {
 	 * @return A functional {@link JsonIntegratedSchool}
 	 */
 	public static JsonIntegratedSchool create (final JSONObject object, final Context context) {
-		final JsonIntegratedSchool parent = new JsonIntegratedSchool(object);
+		final JsonIntegratedSchool parent = new JsonIntegratedSchool(object, context);
 		final JSONArray arrayClasses = object.getJSONArray(KEY_CLASSES);
 		for (int j = 0; j < arrayClasses.getSize(); j++)
 			new JsonIntegratedSchool.JsonClassLevel(arrayClasses.getJSONObject(j), parent, context);
 		return parent;
+	}
+
+	/**
+	 * Tries to localise the given resource name (if it exists)
+	 *
+	 * @param resource The resource name
+	 * @param context  The context to translate the id with
+	 * @return Localised string or null
+	 */
+	private static String localise(final String resource, final Context context) {
+		try {
+			final int id = R.string.class.getField(resource).getInt(null);
+			return context.getString(id);
+		} catch (final NoSuchFieldException | IllegalAccessException e) {
+			return null;
+		}
 	}
 }

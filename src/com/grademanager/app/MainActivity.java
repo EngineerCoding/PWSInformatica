@@ -59,13 +59,16 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	}
 
 	@Override
+	public boolean isSubActivity () {
+		// Override because this is the main activity
+		return false;
+	}
+
+	@Override
 	public void initialize () {
 		// If the subjectManager doesn't exist, create one
 		if (SubjectManager.instance == null)
 			SubjectManager.instance = new SubjectManager(this);
-
-		// The default is true, but this the main activity so it is false
-		getActionBar().setDisplayHomeAsUpEnabled(false);
 
 		// Set the adapter for the listview so it shows the current subjects
 		final ListView subjectList = (ListView) findViewById(R.id.subject_list);
@@ -146,7 +149,6 @@ public class MainActivity extends BaseActivity implements AdapterView.OnItemClic
 	@Override
 	public boolean onContextItemSelected (final MenuItem item) {
 		// Called when an option has been selected
-
 		// Get the subject in question
 		final SubjectManager.Subject subject = adapter.getItem(((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position);
 

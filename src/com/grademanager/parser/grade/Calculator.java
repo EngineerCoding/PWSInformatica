@@ -54,37 +54,34 @@ public class Calculator implements Cloneable {
 	 * Calculates the grade object's value to get the given average. Takes into account for other
 	 * set grades.
 	 *
-	 * @param grade   The grade to calculate the value of
-	 * @param average The average to achieve
+	 * @param gradeToCalculate The grade to calculate the value of
+	 * @param average          The average to achieve
 	 * @return the grade's value
 	 * @throws SyntaxException when grade is null
 	 * @see com.grademanager.parser.grade.Grade#setValue(double)
 	 * @see com.grademanager.parser.grade.Grade#reset()
 	 */
-	public double calculateGrade (final Grade grade, double average) {
-		if (grade != null) {
+	public double calculateGrade (final Grade gradeToCalculate, double average) {
+		if (gradeToCalculate != null) {
 			// Firstly we want to collect all grades which have a value set, along with their weighting in the average grade
-			final List<Grade> setGrades = new ArrayList<>();
-			int totalWeighting = grade.weighting;
+			final List<Grade> collectedGrades = new ArrayList<>();
 
 			// Loop through all grades, add the grade when it is set to the list of setGrades and add the total weighting
-			for (final Grade _grade : grades) {
-				if (_grade.hasValue()) {
-					setGrades.add(_grade);
-					totalWeighting += _grade.weighting;
+			int totalWeighting = gradeToCalculate.weighting;
+			for (final Grade grade : grades) {
+				if (grade.hasValue() && grade != gradeToCalculate) {
+					totalWeighting += grade.weighting;
+					collectedGrades.add(grade);
 				}
 			}
 
 			// multiply the average we want, with the total weighting of set numbers
 			average *= totalWeighting;
-			for (final Grade _grade : setGrades) {
-				// Now we subtract the total value with the total of a set grade (which is its value multiplied with its weighting)
-				average -= (_grade.weighting * _grade.getValue());
-			}
-			// By dividing the leaving amount by its weighting, we get the value of the grade which it should be to achieve the average
-			return average / grade.weighting;
+			for (final Grade grade : collectedGrades)
+				average -= (grade.getValue() * grade.weighting); // Now we subtract the total value with the total of a set grade (which is its value multiplied with its weighting)
+			return average / gradeToCalculate.weighting;
 		}
-
+		// By dividing the leaving amount by its weighting, we get the value of the grade which it should be to achieve the average
 		throw new SyntaxException(FORMAT_INVALID_GRADE, STRING_UNKNOWN);
 	}
 

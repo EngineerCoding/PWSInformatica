@@ -46,7 +46,7 @@
     <string name="country_holland">Nederland</string>
 
     <!-- Subjects used in IntegratedSchool.ClassLevel -->
-    <string name="subject_geography">Aardrijksunde</string>
+    <string name="subject_geography">Aardrijkskunde</string>
     <string name="subject_natural_sciences">Algemene Natuurwetenschappen</string>
     <string name="subject_sports">BSM</string>
     <string name="subject_biology">Biologie</string>

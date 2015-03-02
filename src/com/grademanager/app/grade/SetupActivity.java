@@ -260,15 +260,26 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 * @param grade The grade to replace the grade object for
 	 */
 	private void replaceGrade (final Grade grade) {
-		for (int i = 0; i < adapter.getCount(); i++) {
-			final Grade toReplaceGrade = adapter.getItem(i);
-			if (toReplaceGrade.name.equals(grade.name)) {
-				// Remove the original object and insert our wrapper
-				adapter.remove(toReplaceGrade);
-				adapter.insert(grade, i);
-				break;
+		if (grade != null) {
+			final int index = getIndex(grade.name);
+			if (index > -1) {
+				adapter.remove(adapter.getItem(index));
+				adapter.insert(grade, index);
 			}
 		}
+	}
+
+	/**
+	 * Gets the index from the given grade name from the {@link #adapter}
+	 *
+	 * @param grade The name of the grade to search for
+	 */
+	private int getIndex (final String grade) {
+		if (grade != null && !grade.trim().isEmpty())
+			for (int i = 0; i < adapter.getCount(); i++)
+			if (adapter.getItem(i).name.equals(grade))
+				return i;
+		return -1;
 	}
 
 	/**
@@ -402,9 +413,37 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				flagParsed = true;
 
 				// Restore the grades from the backup
-				if (grades.size() > 0)
-					for (final Grade grade : grades)
-						replaceGrade(grade);
+				// Not using replaceGrade because the weighting could be changed
+				if (grades.size() > 0) {
+					for (final Grade grade : grades) {
+						final int index = getIndex(grade.name);
+
+						if (index > -1) {
+							final Grade item = adapter.getItem(index);
+							adapter.remove(item);
+
+							if (item.weighting != grade.weighting) {
+								// Recreate objects with the correct weightings
+								if (grade instanceof GradeWrapper) {
+									// This always needs to be done because a sub-calculator is available
+									final GradeWrapper wrapper = (GradeWrapper) grade;
+
+									final GradeWrapper replacement = new GradeWrapper(grade.name, item.weighting);
+									replacement.setSubGrades(wrapper.calculator);
+									adapter.insert(replacement, index);
+								} else if (grade.hasValue()) {
+									// This is only useful when the grade has a value
+									final Grade replacement = new Grade(grade.name, item.weighting);
+									replacement.setValue(grade.getValue());
+									adapter.insert(replacement, index);
+								}
+							} else {
+								// Just insert the grade
+								adapter.insert(grade, index);
+							}
+						}
+					}
+				}
 			} else {
 				flagParsed = false;
 				Toast.makeText(this, R.string.toast_no_grades, Toast.LENGTH_SHORT).show();

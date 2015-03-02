@@ -73,7 +73,7 @@ public class CalculatorWrapper extends Calculator implements Cloneable {
 	}
 
 	@Override
-	public double calculateGrade (final Grade gradeToCalculate, double average) {
+	public double calculateGrade (final Grade gradeToCalculate, final double average) {
 		// Check if the grade is in a wrapper
 		if (super.getGrade(gradeToCalculate.name) == null) {
 			// This grade is in a grade wrapper, lets find the grade

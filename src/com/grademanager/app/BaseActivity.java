@@ -18,9 +18,11 @@ public abstract class BaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(getMainLayout());
 
-		final ActionBar bar = getActionBar();
-		if (bar != null)
-			bar.setDisplayHomeAsUpEnabled(true);
+		if (isSubActivity()) {
+			final ActionBar bar = getActionBar();
+			if (bar != null)
+				bar.setDisplayHomeAsUpEnabled(true);
+		}
 
 		initialize();
 	}
@@ -64,6 +66,15 @@ public abstract class BaseActivity extends Activity {
 	 * @return the resource ID
 	 */
 	public abstract int getMainLayout ();
+
+	/**
+	 * A boolean to indicate whether this activity is a child activity (true) or the main activity
+	 *
+	 * @return Whether this activity is a child activity or not
+	 */
+	public boolean isSubActivity() {
+		return true;
+	}
 
 	/**
 	 * Initialize this activity. Called in {@link Activity#onCreate(Bundle)}

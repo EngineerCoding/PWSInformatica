@@ -34,7 +34,7 @@ public class SubjectConverter extends ObjectAdapter.ViewConverter<SubjectManager
 		// Round the number properly (the value for BigDecimal must be a String to be working properly)
 		final String average = new BigDecimal(String.valueOf(from.calculator.calculateAverage())).setScale(1, BigDecimal.ROUND_HALF_UP).toPlainString();
 		// Set the average grade
-		final TextView averageGrade = (TextView) view.findViewById(R.id.averageGrade);
+		final TextView averageGrade = (TextView) view.findViewById(R.id.average_grade);
 		averageGrade.setText(average);
 		// Set the subject name
 		final TextView subjectName = (TextView) view.findViewById(R.id.subject_name);

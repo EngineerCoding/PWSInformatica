@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.os.AsyncTask;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -21,6 +20,7 @@ import android.widget.SearchView;
 import com.grademanager.app.BaseActivity;
 import com.grademanager.app.R;
 import com.grademanager.app.converter.ObjectAdapter;
+import com.grademanager.app.util.TextWatcherProxy;
 import com.grademanager.parser.json.JSONArray;
 import com.grademanager.parser.json.JSONObject;
 
@@ -34,7 +34,8 @@ import java.util.List;
  * This activity is the main activity which takes cares of {@link IntegratedSchool} objects. For now it simply loads it from the assets folder but in the future and a server is
  * available this will also connect with that and build a cache of it. It is available to search for a school, city our even a country.
  */
-public class IntegratedSchoolActivity extends BaseActivity implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener, TextWatcher {
+public class IntegratedSchoolActivity extends BaseActivity implements AdapterView.OnItemClickListener, SearchView.OnQueryTextListener, SearchView.OnCloseListener,
+																			TextWatcherProxy.ITextWatcher {
 
 	// Some static values used in this class
 	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
@@ -138,7 +139,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 
 		// Get the edit text of the search field to add a TextChangedListener
 		final int resource_edit_text = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-		((EditText) searchView.findViewById(resource_edit_text)).addTextChangedListener(this);
+		((EditText) searchView.findViewById(resource_edit_text)).addTextChangedListener(new TextWatcherProxy(this));
 
 		return returnVal;
 	}
@@ -171,12 +172,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 		showIntegratedSchool(schoolArrayAdapter.getItem(position));
 	}
 
-	// Implementation of TextWatcher, used to have a proper onQueryTextChange (it doesn't update when the last character is removed)
-	@Override
-	public void beforeTextChanged (final CharSequence charSequence, final int start, final int count, final int after) {}
-
-	@Override
-	public void onTextChanged (final CharSequence charSequence, final int start, final int before, final int after) {}
+	// Implementation of ITextWatcher, used to have a proper onQueryTextChange (it doesn't update when the last character is removed)
 
 	@Override
 	public void afterTextChanged (final Editable editable) {

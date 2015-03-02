@@ -1,13 +1,13 @@
 package com.grademanager.app.tree.subject;
 
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.grademanager.app.R;
 import com.grademanager.app.grade.GradeWrapper;
 import com.grademanager.app.tree.ITreeNode;
+import com.grademanager.app.util.TextWatcherProxy;
 import com.grademanager.parser.grade.Grade;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * This class is an {@link ITreeNode} which represents a {@link Grade} or {@link GradeWrapper} object. This is not done directly because
  * the parser is considered a library for this app, so it cannot be modified.
  */
-public class GradeNode implements ITreeNode {
+public class GradeNode implements ITreeNode, TextWatcherProxy.ITextWatcher {
 
 	/**
 	 * The grade to represent
@@ -86,18 +86,12 @@ public class GradeNode implements ITreeNode {
 			if (grade.hasValue())
 				gradeInput.setText(String.valueOf(grade.getValue()));
 
-			gradeInput.addTextChangedListener(new TextWatcher() {
-				@Override
-				public void beforeTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
-
-				@Override
-				public void onTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
-
-				@Override
-				public void afterTextChanged (final Editable editable) {
-					parent.updateGrades();
-				}
-			});
+			gradeInput.addTextChangedListener(new TextWatcherProxy(this));
 		}
+	}
+
+	@Override
+	public void afterTextChanged (final Editable editable) {
+		parent.updateGrades();
 	}
 }

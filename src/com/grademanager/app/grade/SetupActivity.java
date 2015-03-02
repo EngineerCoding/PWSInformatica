@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ import static com.grademanager.app.util.ConstantKeys.KEY_WEIGHTING;
  * This activity handles everything which contains input. The input stuff is formulas, grade values, sub formulas and pre-defined formulas. This is also used to edit already
  * existing formulas because this is the most simple solution for that.
  */
-public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener {
+public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener, ViewTreeObserver.OnGlobalLayoutListener {
 
 	// The key which is used with recursive formulas
 	private static final String RESULT_GRADEWRAPPER = "gradewrapper";
@@ -86,6 +87,11 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 */
 	private String editingSubject;
 
+	/**
+	 * The EditText field of the formula input
+	 */
+	private EditText inputFormula;
+
 	@Override
 	public int getMainLayout () {
 		return R.layout.setup;
@@ -99,9 +105,12 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	@Override
 	public void initialize () {
 		// Add listeners
-		final EditText editText = (EditText) findViewById(R.id.subject_formula);
-		editText.setOnFocusChangeListener(this);
-		editText.setOnEditorActionListener(this);
+		inputFormula = (EditText) findViewById(R.id.subject_formula);
+		inputFormula.setOnFocusChangeListener(this);
+		inputFormula.setOnEditorActionListener(this);
+
+		// Set a listener to know when the keyboard is down
+		inputFormula.getRootView().getViewTreeObserver().addOnGlobalLayoutListener(this);
 
 		// Add the adapter to the listview
 		adapter = GradeConverter.instance.createAdapter(this, new ArrayList<Grade>());
@@ -127,7 +136,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			// If there is a formula present, then show it
 			if (intent.hasExtra(KEY_FORMULA)) {
 				final GradeWrapper wrapper = (GradeWrapper) GradeConverter.instance.convert(new JSONObject(intent.getStringExtra(KEY_FORMULA)));
-				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.calculator.expression);
+				inputFormula.setText(wrapper.calculator.expression);
 				adapter.addAll(wrapper.calculator.grades);
 				flagParsed = true;
 			}
@@ -154,7 +163,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		super.onSaveInstanceState(outState);
 		if (flagParsed) {
 			// Store the formula
-			outState.putString(STATE_FORMULA, ((EditText) findViewById(R.id.subject_formula)).getText().toString());
+			outState.putString(STATE_FORMULA, inputFormula.getText().toString());
 
 			// Store the grade inputs
 			final String[] inputStrings = new String[adapter.getCount()];
@@ -168,7 +177,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	protected void onRestoreInstanceState (final Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		// Set the formula
-		((EditText) findViewById(R.id.subject_formula)).setText(savedInstanceState.getString(STATE_FORMULA));
+		inputFormula.setText(savedInstanceState.getString(STATE_FORMULA));
 
 		// Load into the adapter
 		final String[] inputStrings = savedInstanceState.getStringArray(STATE_GRADE_INPUT);
@@ -176,7 +185,6 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			for (final String grade : inputStrings)
 				adapter.add(GradeConverter.instance.convert(new JSONObject(grade)));
 	}
-
 	// Implementation of the OnFocusActionListener
 
 	/**
@@ -198,6 +206,20 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		}
 	}
 
+	// Implementation of the OnGobalLayoutListener
+	@Override
+	public void onGlobalLayout () {
+		final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		if (manager.isWatchingCursor(inputFormula)) {
+			final String formula = inputFormula.getText().toString();
+			if (lastExpression != null && !lastExpression.equals(formula)) {
+				parseFromExpression(formula);
+				lastExpression = formula;
+				inputFormula.clearFocus();
+			}
+		}
+	}
+
 	// Implementation of the OnEditorActionListener
 	@Override
 	public boolean onEditorAction (final TextView textView, final int action, final KeyEvent keyEvent) {
@@ -211,6 +233,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			if (!lastExpression.equals(newText)) {
 				// Text changed, try to parse the expression
 				parseFromExpression(newText);
+				lastExpression = newText;
 			}
 			return true;
 		}
@@ -226,13 +249,13 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 				final CalculatorWrapper wrapper = CalculatorWrapper.converter.convert(new JSONObject(data.getStringExtra(KEY_CALCULATOR)));
 
 				// Set the expression text and parse it
-				((EditText) findViewById(R.id.subject_formula)).setText(wrapper.expression);
+				inputFormula.setText(wrapper.expression);
 				parseFromExpression(wrapper.expression);
 
 				// Replace the grades if they have a GradeWrapper
 				for (final Grade grade : wrapper.grades)
 					if (grade instanceof GradeWrapper)
-						replaceGrade((GradeWrapper) grade);
+						replaceGrade(grade);
 
 				// Set the subject name
 				final TextView view = (TextView) findViewById(R.id.new_subject_name);
@@ -324,11 +347,11 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	 * @param view The Button which got clicked
 	 */
 	public void finishSetup (final View view) {
-		if (!flagParsed) {
+		if (!flagParsed || (lastExpression != null && !lastExpression.equals(inputFormula.getText().toString()))) {
 			// Not parsed, try to parse the current input
 			final InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 			manager.hideSoftInputFromInputMethod(view.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
-			parseFromExpression(((EditText) findViewById(R.id.subject_formula)).getText().toString());
+			parseFromExpression(inputFormula.getText().toString());
 
 			// If still not parsed, exit
 			if (!flagParsed) {
@@ -387,7 +410,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		final Grade[] grades = new Grade[adapter.getCount()];
 		for (int i = 0; i < grades.length; i++)
 			grades[i] = adapter.getItem(i);
-		return new CalculatorWrapper(grades, ((EditText) findViewById(R.id.subject_formula)).getText().toString());
+		return new CalculatorWrapper(grades, inputFormula.getText().toString());
 	}
 
 	/**

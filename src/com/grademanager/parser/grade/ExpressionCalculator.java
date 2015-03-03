@@ -117,7 +117,7 @@ public class ExpressionCalculator extends Calculator {
 
 			// Try to parse multipliers again
 			final Object[] multiplyObject = parseMultipliers();
-			if ((Boolean) multiplyObject[0]) {
+			if (((Boolean) multiplyObject[0])) {
 				if (multiplier != null) {
 					multiplier *= (Double) multiplyObject[1];
 				} else {

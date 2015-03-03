@@ -50,7 +50,6 @@ public final class Fraction implements Cloneable {
 	 */
 	public void multiply (final int n) {
 		numerator *= n;
-		makeSmallest();
 	}
 
 	/**
@@ -63,7 +62,6 @@ public final class Fraction implements Cloneable {
 		if (n == 0)
 			throw new ArithmeticException("Cannot divide by 0");
 		denominator *= n;
-		makeSmallest();
 	}
 
 	/**

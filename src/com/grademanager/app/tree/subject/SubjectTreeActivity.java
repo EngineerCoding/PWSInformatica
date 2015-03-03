@@ -4,16 +4,17 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import com.grademanager.app.MainActivity;
 import com.grademanager.app.R;
+import com.grademanager.app.SubjectConverter;
 import com.grademanager.app.SubjectManager;
 import com.grademanager.app.grade.GradeWrapper;
 import com.grademanager.app.tree.ITreeNode;
 import com.grademanager.app.tree.TreeActivity;
+import com.grademanager.app.util.TextWatcherProxy;
 import com.grademanager.parser.grade.Grade;
 
 /**
@@ -137,25 +138,17 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 			final String format = getString(R.string.format_grade_value);
 			inputCalc.setText(String.format(format, grade.name, "-"));
 			// When the text is changed the average calculation should appear
-			((TextView) inflatedView.findViewById(R.id.input_average)).addTextChangedListener(new TextWatcher() {
-				@Override
-				public void beforeTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
-
-				@Override
-				public void onTextChanged (CharSequence charSequence, int i, int i1, int i2) {}
-
+			((TextView) inflatedView.findViewById(R.id.input_average)).addTextChangedListener(new TextWatcherProxy(new TextWatcherProxy.ITextWatcher() {
 				@Override
 				public void afterTextChanged (final Editable editable) {
 					String input = editable.toString().trim();
 					if (!input.isEmpty()) {
-						if (input.charAt(input.length() - 1) == '.')
-							input += "0";
-						inputCalc.setText(String.format(format, grade.name, subject.calculator.calculateGrade(grade, Double.valueOf(input))));
+						inputCalc.setText(String.format(format, grade.name, SubjectConverter.formatAverage(subject.calculator.calculateGrade(grade, Double.valueOf(input)))));
 					} else {
 						inputCalc.setText(String.format(format, grade.name, "-"));
 					}
 				}
-			});
+			}));
 
 			// Add the custom view to the dialog
 			builder.setView(inflatedView);

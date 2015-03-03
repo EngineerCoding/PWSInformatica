@@ -1,79 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:padding="10dip"
+              android:background="@android:color/white">
     <LinearLayout android:orientation="vertical"
-                  android:layout_height="wrap_content"
                   android:layout_width="match_parent"
-                  android:padding="10dip"
-                  android:background="@android:color/white">
-
-        <LinearLayout android:orientation="vertical"
+                  android:layout_height="wrap_content"
+                  android:padding="10dip">
+        <LinearLayout android:orientation="horizontal"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:padding="10dip">
-            <LinearLayout android:orientation="horizontal"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content">
-                <TextView style="@style/medium_text"
-                          android:paddingRight="10dip"
-                          android:id="@+id/input_name"
-                          android:text="@string/subject_name"/>
-                <EditText style="@style/medium_text.edit"
-                          android:cursorVisible="true"
-                          android:layout_width="fill_parent"
-                          android:singleLine="true"
-                          android:inputType="text"
-                          android:id="@+id/new_subject_name"/>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:layout_width="match_parent"
-                          android:layout_height="wrap_content">
-                <TextView style="@style/medium_text"
-                          android:paddingRight="10dip"
-                          android:text="@string/formula"/>
-                <EditText style="@style/medium_text.edit"
-                          android:layout_width="fill_parent"
-                          android:singleLine="true"
-                          android:inputType="text|textNoSuggestions|textVisiblePassword"
-                          android:imeOptions="actionSend"
-                          android:id="@+id/subject_formula"/>
-            </LinearLayout>
-            <Button style="@style/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:id="@+id/select_integrated_school"
-                    android:text="@string/select_integrated_school"
-                    android:onClick="selectFromIntegratedSchool"/>
-        </LinearLayout>
-        <LinearLayout android:orientation="vertical"
+                      android:layout_height="wrap_content">
+            <TextView style="@style/medium_text"
+                      android:paddingRight="10dip"
+                      android:id="@+id/input_name"
+                      android:text="@string/subject_name"/>
+            <EditText style="@style/medium_text.edit"
+                      android:cursorVisible="true"
                       android:layout_width="fill_parent"
-                      android:layout_height="match_parent"
-                      android:padding="10dip"
-                      android:background="@drawable/border_average_grade"
-                      android:layout_marginTop="5dip">
-            <FrameLayout android:layout_width="fill_parent"
-                         android:layout_height="wrap_content">
-                <TextView style="@style/medium_text"
-                          android:text="@string/grades"
-                          android:layout_gravity="left"/>
-                <TextView style="@style/medium_text"
-                          android:text="@string/values"
-                          android:paddingRight="3dip"
-                          android:layout_gravity="right"/>
-            </FrameLayout>
+                      android:singleLine="true"
+                      android:inputType="text"
+                      android:id="@+id/new_subject_name"/>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+            <TextView style="@style/medium_text"
+                      android:paddingRight="10dip"
+                      android:text="@string/formula"/>
+            <EditText style="@style/medium_text.edit"
+                      android:layout_width="fill_parent"
+                      android:singleLine="true"
+                      android:inputType="text|textNoSuggestions|textVisiblePassword"
+                      android:imeOptions="actionSend"
+                      android:id="@+id/subject_formula"/>
+        </LinearLayout>
+        <Button style="@style/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/select_integrated_school"
+                android:text="@string/select_integrated_school"
+                android:onClick="selectFromIntegratedSchool"/>
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="fill_parent"
+                  android:padding="10dip"
+                  android:background="@drawable/border_average_grade"
+                  android:layout_marginTop="5dip">
+
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content">
+            <TextView style="@style/medium_text"
+                      android:text="@string/grades"
+                      android:layout_gravity="left"/>
+            <TextView style="@style/medium_text"
+                      android:text="@string/values"
+                      android:paddingRight="3dip"
+                      android:layout_gravity="right"/>
+        </FrameLayout>
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="fill_parent">
             <ListView android:layout_width="match_parent"
-                      android:layout_height="300dip"
-                      android:layout_gravity="top"
+                      android:layout_height="fill_parent"
+                      android:layout_marginBottom="50dip"
                       android:transcriptMode="alwaysScroll"
                       android:id="@+id/grade_list"/>
             <Button style="@style/button"
                     android:layout_gravity="center_horizontal|bottom"
                     android:onClick="finishSetup"
-                    android:layout_marginTop="10dip"
-                    android:text="@string/finish_button"
-                    />
-        </LinearLayout>
+                    android:text="@string/finish_button"/>
+        </FrameLayout>
     </LinearLayout>
-</ScrollView>
+</LinearLayout>

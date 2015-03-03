@@ -226,7 +226,7 @@
           },
           {
             "subject": "dutch",
-            "formula": "(SE1+SE2+3SE3+5E4)/10"
+            "formula": "(SE1+SE2+3SE3+5SE4)/10"
           },
           {
             "subject": "chemistry",

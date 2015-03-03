@@ -161,16 +161,14 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	@Override
 	protected void onSaveInstanceState (final Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (flagParsed) {
-			// Store the formula
-			outState.putString(STATE_FORMULA, inputFormula.getText().toString());
+		// Store the formula
+		outState.putString(STATE_FORMULA, inputFormula.getText().toString());
 
-			// Store the grade inputs
-			final String[] inputStrings = new String[adapter.getCount()];
-			for (int i = 0; i < inputStrings.length; i++)
-				inputStrings[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString();
-			outState.putStringArray(STATE_GRADE_INPUT, inputStrings);
-		}
+		// Store the grade inputs
+		final String[] inputStrings = new String[adapter.getCount()];
+		for (int i = 0; i < inputStrings.length; i++)
+			inputStrings[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString();
+		outState.putStringArray(STATE_GRADE_INPUT, inputStrings);
 	}
 
 	@Override
@@ -178,6 +176,7 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		super.onRestoreInstanceState(savedInstanceState);
 		// Set the formula
 		inputFormula.setText(savedInstanceState.getString(STATE_FORMULA));
+		parseFromExpression(inputFormula.getText().toString());
 
 		// Load into the adapter
 		final String[] inputStrings = savedInstanceState.getStringArray(STATE_GRADE_INPUT);

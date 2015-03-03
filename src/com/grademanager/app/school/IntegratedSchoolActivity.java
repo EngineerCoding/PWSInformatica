@@ -83,6 +83,7 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 			// and store them into a cache for later use, so it also check there for integrated schools. This is a feature that can be implemented, but
 			// since no server is available to us we cannot do that (yet)
 			new AsyncTask<Void, Void, Void>() {
+
 				@Override
 				protected void onPreExecute () {
 					findViewById(R.id.loading_schools).setVisibility(View.VISIBLE);

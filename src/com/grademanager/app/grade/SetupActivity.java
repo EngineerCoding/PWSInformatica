@@ -162,13 +162,30 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 	protected void onSaveInstanceState (final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		// Store the formula
-		outState.putString(STATE_FORMULA, inputFormula.getText().toString());
+		if (flagParsed) {
+			outState.putString(STATE_FORMULA, inputFormula.getText().toString());
 
-		// Store the grade inputs
-		final String[] inputStrings = new String[adapter.getCount()];
-		for (int i = 0; i < inputStrings.length; i++)
-			inputStrings[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString();
-		outState.putStringArray(STATE_GRADE_INPUT, inputStrings);
+			// Store the grade inputs
+			final String[] grades = new String[adapter.getCount()];
+			for (int i = 0; i < grades.length; i++) {
+				// Set the value
+				final View parentView = gradeList.getChildAt(i);
+				// Check if this view is gone, if not, this input valid
+				final EditText textInput = (EditText) parentView.findViewById(R.id.grade_value);
+				if (textInput.getVisibility() == View.VISIBLE) {
+					final String value = textInput.getText().toString().trim();
+					if (!value.isEmpty()) {
+						final Grade grade = adapter.getItem(i);
+						grade.setValue(Double.valueOf(value));
+					}
+				}
+
+				// Add to the input
+				grades[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString();
+			}
+
+			outState.putStringArray(STATE_GRADE_INPUT, grades);
+		}
 	}
 
 	@Override
@@ -179,10 +196,10 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		parseFromExpression(inputFormula.getText().toString());
 
 		// Load into the adapter
-		final String[] inputStrings = savedInstanceState.getStringArray(STATE_GRADE_INPUT);
-		if (inputStrings != null)
-			for (final String grade : inputStrings)
-				adapter.add(GradeConverter.instance.convert(new JSONObject(grade)));
+		final String[] grades = savedInstanceState.getStringArray(STATE_GRADE_INPUT);
+		if (grades != null)
+			for (final String grade : grades)
+				replaceGrade(GradeConverter.instance.convert(new JSONObject(grade)));
 	}
 	// Implementation of the OnFocusActionListener
 

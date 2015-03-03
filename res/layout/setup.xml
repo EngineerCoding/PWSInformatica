@@ -36,13 +36,21 @@
                       android:imeOptions="actionSend"
                       android:id="@+id/subject_formula"/>
         </LinearLayout>
-        <Button style="@style/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:id="@+id/select_integrated_school"
-                android:text="@string/select_integrated_school"
-                android:onClick="selectFromIntegratedSchool"/>
+        <FrameLayout android:layout_width="match_parent"
+                     android:layout_height="wrap_content">
+            <Button style="@style/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:id="@+id/select_integrated_school"
+                    android:text="@string/select_formula"
+                    android:onClick="selectFromIntegratedSchool"/>
+
+            <Button style="@style/button"
+                    android:layout_gravity="left"
+                    android:onClick="finishSetup"
+                    android:text="@string/finish_button"/>
+        </FrameLayout>
     </LinearLayout>
     <LinearLayout android:orientation="vertical"
                   android:layout_width="match_parent"
@@ -61,17 +69,9 @@
                       android:paddingRight="3dip"
                       android:layout_gravity="right"/>
         </FrameLayout>
-        <FrameLayout android:layout_width="match_parent"
-                     android:layout_height="fill_parent">
-            <ListView android:layout_width="match_parent"
-                      android:layout_height="fill_parent"
-                      android:layout_marginBottom="50dip"
-                      android:transcriptMode="alwaysScroll"
-                      android:id="@+id/grade_list"/>
-            <Button style="@style/button"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:onClick="finishSetup"
-                    android:text="@string/finish_button"/>
-        </FrameLayout>
+        <ListView android:layout_width="match_parent"
+                  android:layout_height="fill_parent"
+                  android:transcriptMode="alwaysScroll"
+                  android:id="@+id/grade_list"/>
     </LinearLayout>
 </LinearLayout>

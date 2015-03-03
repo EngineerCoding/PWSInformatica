@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,12 +21,7 @@ import com.grademanager.app.BaseActivity;
 import com.grademanager.app.R;
 import com.grademanager.app.converter.ObjectAdapter;
 import com.grademanager.app.util.TextWatcherProxy;
-import com.grademanager.parser.json.JSONArray;
-import com.grademanager.parser.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +33,6 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 																			TextWatcherProxy.ITextWatcher {
 
 	// Some static values used in this class
-	private static final String FILE_DEFAULT_SCHOOLS = "schools.json";
 	private static final String REGEX_SPLIT = "\\s+";
 	private static final String[] COLUMN_SCHOOL = new String[]{ "_id", "school" };
 
@@ -75,56 +69,27 @@ public class IntegratedSchoolActivity extends BaseActivity implements AdapterVie
 
 	@Override
 	public void initialize () {
-		if (schoolCollection == null) {
-			schoolCollection = new ArrayList<>();
-
-			// This task which loads and parses the JSON from the assets folder is asynchronous, otherwise the the ui-thread will do too much work
-			// Currently it onl loads schools from the assets, but this could be expanded to a server. This task will read the objects from the server
-			// and store them into a cache for later use, so it also check there for integrated schools. This is a feature that can be implemented, but
-			// since no server is available to us we cannot do that (yet)
-			new AsyncTask<Void, Void, Void>() {
-
-				@Override
-				protected void onPreExecute () {
-					findViewById(R.id.loading_schools).setVisibility(View.VISIBLE);
-				}
-
-				@Override
-				protected Void doInBackground (final Void... voids) {
-					// Load the array from the assets
-					JSONArray mainArray = null;
-					try {
-						final Reader reader = new InputStreamReader(getResources().getAssets().open(FILE_DEFAULT_SCHOOLS));
-						mainArray = new JSONArray(reader);
-					} catch (final IOException e) {
-						e.printStackTrace();
-					}
-
-					// Add the values to the collection
-					if (mainArray != null) {
-						for (int i = 0; i < mainArray.getSize(); i++) {
-							final JSONObject parentJson = mainArray.getJSONObject(i);
-							schoolCollection.add(JsonIntegratedSchool.create(parentJson, IntegratedSchoolActivity.this));
-						}
-					}
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute (final Void aVoid) {
-					schoolAdapter.addAll(schoolCollection);
-					findViewById(R.id.loading_schools).setVisibility(View.GONE);
-				}
-			}.execute();
-		}
-
 		// Set the adapter to the listview and all available schools to it
 		final ListView schoolList = (ListView) findViewById(R.id.school_list);
 		schoolAdapter = IntegratedSchoolConverter.instance.createAdapter(this, new ArrayList<IntegratedSchool>());
+
+		if (schoolCollection == null) {
+			schoolCollection = new ArrayList<>();
+			// Load assets
+			AsyncAssetLoad.runTask(this, schoolAdapter);
+		}
+
 		schoolAdapter.addAll(schoolCollection);
 
 		schoolList.setAdapter(schoolAdapter);
 		schoolList.setOnItemClickListener(this);
+	}
+
+	@Override
+	protected void onRestoreInstanceState (Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		if (AsyncAssetLoad.flagLoading)
+			findViewById(R.id.loading_schools).setVisibility(View.VISIBLE);
 	}
 
 	@Override

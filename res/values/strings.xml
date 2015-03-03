@@ -6,7 +6,7 @@
     <string name="grades">Grades</string>
     <string name="values">Values</string>
     <string name="formula">Formula:</string>
-    <string name="select_integrated_school">Select formula from integrated school</string>
+    <string name="select_formula">Select formula</string>
     <string name="finish_button">Finish</string>
     <string name="choose_subject">Choose subject</string>
     <string name="add_formula">Add formula</string>

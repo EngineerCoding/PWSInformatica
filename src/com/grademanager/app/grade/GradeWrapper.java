@@ -102,6 +102,11 @@ public class GradeWrapper extends Grade {
 		return false;
 	}
 
+	@Override
+	public void reset () {
+		calculator = null;
+	}
+
 	/**
 	 * Retrieves all {@link Grade} objects from the {@link #calculator}
 	 *

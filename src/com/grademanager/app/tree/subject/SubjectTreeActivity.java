@@ -91,9 +91,12 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 		// Set the grade values from the inputs
 		final Grade[] grades = subject.getSubGrades();
 		final String[] input = getInputs();
-		for (int i = 0; i < grades.length; i++)
+		for (int i = 0; i < grades.length; i++) {
 			if (!input[i].isEmpty())
 				grades[i].setValue(Double.valueOf(input[i]));
+			else if(grades[i].hasValue())
+				grades[i].reset();
+		}
 	}
 
 	@Override

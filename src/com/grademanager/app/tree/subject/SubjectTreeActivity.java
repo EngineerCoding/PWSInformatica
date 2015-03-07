@@ -11,7 +11,6 @@ import com.grademanager.app.MainActivity;
 import com.grademanager.app.R;
 import com.grademanager.app.SubjectConverter;
 import com.grademanager.app.SubjectManager;
-import com.grademanager.app.grade.GradeWrapper;
 import com.grademanager.app.tree.ITreeNode;
 import com.grademanager.app.tree.TreeActivity;
 import com.grademanager.app.util.TextWatcherProxy;
@@ -80,14 +79,23 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 	@Override
 	protected void onPause () {
 		super.onPause();
+		// Save the inputs
+		updateGrades();
 		// Also save the subjects here because changes could have been made
 		SubjectManager.instance.saveSubjects();
+	}
+
+	@Override
+	public void onBackPressed () {
+		// Set the result and finish this activity
+		setResult(RESULT_OK);
+		finish();
 	}
 
 	/**
 	 * Updates all grades with the given input
 	 */
-	protected void updateGrades () {
+	private void updateGrades () {
 		// Set the grade values from the inputs
 		final Grade[] grades = subject.getSubGrades();
 		final String[] input = getInputs();
@@ -97,16 +105,6 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 			else if(grades[i].hasValue())
 				grades[i].reset();
 		}
-	}
-
-	@Override
-	public void onBackPressed () {
-		// Set the values of the grade
-		updateGrades();
-
-		// Set the result and finish this activity
-		setResult(RESULT_OK);
-		finish();
 	}
 
 	/**
@@ -127,36 +125,42 @@ public class SubjectTreeActivity extends TreeActivity implements View.OnLongClic
 
 	@Override
 	public boolean onLongClick (final View view) {
-		final Grade grade = subject.calculator.getGrade(((TextView) view.findViewById(R.id.grade_name)).getText().toString());
-		if (!(grade instanceof GradeWrapper)) {
-			// Create a new dialog
-			final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
-			builder.setTitle(getString(R.string.predict_grade_value));
-			builder.setNeutralButton("Ok", null);
+		// Update the states of all grades (it might not have saved so this a double check) for a more accurate value
+		updateGrades();
 
-			// Create a custom view
-			final View inflatedView = LayoutInflater.from(this).inflate(R.layout.predict_dialog, null, false);
-			// Set default text
-			final TextView inputCalc = (TextView) inflatedView.findViewById(R.id.input_calc);
-			final String format = getString(R.string.format_grade_value);
-			inputCalc.setText(String.format(format, grade.name, "-"));
-			// When the text is changed the average calculation should appear
-			((TextView) inflatedView.findViewById(R.id.input_average)).addTextChangedListener(new TextWatcherProxy(new TextWatcherProxy.ITextWatcher() {
-				@Override
-				public void afterTextChanged (final Editable editable) {
-					String input = editable.toString().trim();
-					if (!input.isEmpty()) {
-						inputCalc.setText(String.format(format, grade.name, SubjectConverter.formatAverage(subject.calculator.calculateGrade(grade, Double.valueOf(input)))));
-					} else {
-						inputCalc.setText(String.format(format, grade.name, "-"));
-					}
+		// Get the proper textview (from R.layout.text_item_list or R.layout.grade_item_tree)
+		TextView textView = (TextView) view.findViewById(R.id.grade_name);
+		if (textView == null)
+			textView = (TextView) view.findViewById(android.R.id.text1);
+
+		final Grade grade = subject.calculator.getGrade(textView.getText().toString());
+		// Create a new dialog
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+		builder.setTitle(getString(R.string.predict_grade_value));
+		builder.setNeutralButton("Ok", null);
+
+		// Create a custom view
+		final View inflatedView = LayoutInflater.from(this).inflate(R.layout.predict_dialog, null, false);
+		// Set default text
+		final TextView inputCalc = (TextView) inflatedView.findViewById(R.id.input_calc);
+		final String format = getString(R.string.format_grade_value);
+		inputCalc.setText(String.format(format, grade.name, "-"));
+		// When the text is changed the average calculation should appear
+		((TextView) inflatedView.findViewById(R.id.input_average)).addTextChangedListener(new TextWatcherProxy(new TextWatcherProxy.ITextWatcher() {
+			@Override
+			public void afterTextChanged (final Editable editable) {
+				final String input = editable.toString().trim();
+				if (!input.isEmpty()) {
+					inputCalc.setText(String.format(format, grade.name, SubjectConverter.formatAverage(subject.calculator.calculateGrade(grade, Double.valueOf(input)))));
+				} else {
+					inputCalc.setText(String.format(format, grade.name, "-"));
 				}
-			}));
+			}
+		}));
 
-			// Add the custom view to the dialog
-			builder.setView(inflatedView);
-			builder.show();
-		}
+		// Add the custom view to the dialog
+		builder.setView(inflatedView);
+		builder.show();
 		return false;
 	}
 }

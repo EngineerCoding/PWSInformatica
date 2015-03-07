@@ -52,8 +52,7 @@ public abstract class TreeActivity extends BaseActivity {
 		// Get the main layout everything attaches to and create TreeGroup node
 		mainLayout = (LinearLayout) findViewById(R.id.tree_list);
 		// Set the listener to the treegroup which sets it to the child nodes
-		final View.OnLongClickListener listener = (this instanceof View.OnLongClickListener ? (View.OnLongClickListener) this : null);
-		parentGroup = new TreeGroup(getParentNode(), listener, false);
+		parentGroup = new TreeGroup(getParentNode(), false);
 
 		// Create the layout
 		parentGroup.createLayout(LayoutInflater.from(this), mainLayout);

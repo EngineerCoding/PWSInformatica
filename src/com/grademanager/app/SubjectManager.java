@@ -95,6 +95,11 @@ public class SubjectManager {
 	protected final List<Subject> subjects;
 
 	/**
+	 * The latest array for comparing purposes
+	 */
+	private JSONArray latestSavedArray;
+
+	/**
 	 * Creates the manager which uses the Context to load the internal storage
 	 *
 	 * @param context The activity's Context
@@ -119,7 +124,7 @@ public class SubjectManager {
 			final JSONArray subjectArray = new JSONArray(new InputStreamReader(context.openFileInput(FILE_NAME)));
 			for (int i = 0; i < subjectArray.getSize(); i++)
 				subjects.add(SubjectConverter.instance.convert(subjectArray.getJSONObject(i)));
-
+			latestSavedArray = subjectArray; // it succeeded
 			return subjects;
 		} catch (final FileNotFoundException | JSONException e) {
 			e.printStackTrace();
@@ -140,13 +145,18 @@ public class SubjectManager {
 			for (final Subject subject : subjects)
 				subjectArray.add(SubjectConverter.instance.convert(subject));
 
-			try {
-				// Write the JSON to the file
-				final JSONWriter writer = new JSONWriter(new OutputStreamWriter(context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)), false);
-				writer.append(subjectArray);
-				writer.close();
-			} catch (final IOException e) {
-				e.printStackTrace();
+			// Minimize writes to the file
+			if (!subjectArray.equals(latestSavedArray)) {
+				try {
+					// Write the JSON to the file
+					final JSONWriter writer = new JSONWriter(new OutputStreamWriter(context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE)), false);
+					writer.append(subjectArray);
+					writer.close();
+					// Only save the array when it has been written to the file
+					latestSavedArray = subjectArray;
+				} catch (final IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

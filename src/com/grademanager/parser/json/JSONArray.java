@@ -559,4 +559,20 @@ public class JSONArray extends JSON {
 		if (has(key))
 			storage.remove(key);
 	}
+
+	@Override
+	public boolean equals(final Object object) {
+		if (!(object instanceof JSONArray))
+			return false;
+		final JSONArray array = (JSONArray) object;
+		if (array.getSize() != getSize())
+			return false;
+
+		for (int i = 0; i < array.getSize(); i++) {
+			final Object obj = array.get(i);
+			if (!obj.equals(get(i)))
+				return false;
+		}
+		return true;
+	}
 }

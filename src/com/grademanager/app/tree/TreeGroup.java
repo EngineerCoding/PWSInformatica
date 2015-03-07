@@ -47,10 +47,7 @@ public final class TreeGroup implements View.OnClickListener {
 	 */
 	protected final TreeGroup[] childGroups;
 
-	/**
-	 * A listener for the child items (not group, just regular nodes)
-	 */
-	private final View.OnLongClickListener childLongClickListener;
+
 
 	/**
 	 * The latest layout that got created in {@link #createLayout(LayoutInflater, ViewGroup)}
@@ -61,12 +58,10 @@ public final class TreeGroup implements View.OnClickListener {
 	 * Creates a group from the parent node
 	 *
 	 * @param parentNode             The parent node to create the group from
-	 * @param childLongClickListener This listener is used on child nodes, can be null
 	 * @param isCollapsible          Sets the {@link #isCollapsible} flag
 	 */
-	protected TreeGroup (final ITreeNode parentNode, final View.OnLongClickListener childLongClickListener, boolean isCollapsible) {
+	protected TreeGroup (final ITreeNode parentNode, boolean isCollapsible) {
 		this.parentNode = parentNode;
-		this.childLongClickListener = childLongClickListener;
 		this.isCollapsible = isCollapsible;
 
 		// Get the child nodes
@@ -77,7 +72,7 @@ public final class TreeGroup implements View.OnClickListener {
 		childGroups = new TreeGroup[subNodes.length];
 		for (int i = 0; i < subNodes.length; i++) {
 			if (subNodes[i].hasChildNodes()) {
-				childGroups[i] = new TreeGroup(subNodes[i], childLongClickListener);
+				childGroups[i] = new TreeGroup(subNodes[i]);
 			} else {
 				childNodes[i] = subNodes[i];
 			}
@@ -88,10 +83,9 @@ public final class TreeGroup implements View.OnClickListener {
 	 * Creates a new group from the parent node, but the {@link #isCollapsible} flag is always set to true
 	 *
 	 * @param parentNode             The parent node to create the group from
-	 * @param childLongClickListener This listener is used on child nodes, can be null
 	 */
-	protected TreeGroup (final ITreeNode parentNode, final View.OnLongClickListener childLongClickListener) {
-		this(parentNode, childLongClickListener, true);
+	protected TreeGroup (final ITreeNode parentNode) {
+		this(parentNode, true);
 	}
 
 	/**
@@ -126,9 +120,6 @@ public final class TreeGroup implements View.OnClickListener {
 				childNode.populateView(view);
 				view.setPadding(view.getPaddingLeft() + TreeActivity.width + 20, view.getPaddingTop(), view.getPaddingBottom(), view.getPaddingRight());
 				childrenList.addView(view);
-
-				if (childLongClickListener != null)
-					view.setOnLongClickListener(childLongClickListener);
 			} else {
 				childGroups[i].createLayout(inflater, childrenList);
 			}

@@ -1,13 +1,11 @@
 package com.grademanager.app.tree.subject;
 
-import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.grademanager.app.R;
 import com.grademanager.app.grade.GradeWrapper;
 import com.grademanager.app.tree.ITreeNode;
-import com.grademanager.app.util.TextWatcherProxy;
 import com.grademanager.parser.grade.Grade;
 
 import java.util.List;
@@ -16,7 +14,7 @@ import java.util.List;
  * This class is an {@link ITreeNode} which represents a {@link Grade} or {@link GradeWrapper} object. This is not done directly because
  * the parser is considered a library for this app, so it cannot be modified.
  */
-public class GradeNode implements ITreeNode, TextWatcherProxy.ITextWatcher {
+public class GradeNode implements ITreeNode {
 
 	/**
 	 * The grade to represent
@@ -24,34 +22,33 @@ public class GradeNode implements ITreeNode, TextWatcherProxy.ITextWatcher {
 	private final Grade grade;
 
 	/**
-	 * The parent to update
-	 */
-	private final SubjectTreeActivity parent;
-
-
-	/**
 	 * The child nodes if the grade is an instance of {@link GradeWrapper}
 	 */
 	private final ITreeNode[] childNodes;
 
 	/**
+	 * The listener to use on objects
+	 */
+	private final View.OnLongClickListener longClickListener;
+
+	/**
 	 * Creates a node for the given {@link Grade}. If the grade is instance of {@link GradeWrapper}, then it will retrieve the child nodes.
 	 *
-	 * @param grade The grade to represent
+	 * @param grade 			The grade to represent
+	 * @param longClickListener The listener to add to the view
 	 */
-	protected GradeNode (final Grade grade, final SubjectTreeActivity parent) {
+	protected GradeNode (final Grade grade, final View.OnLongClickListener longClickListener) {
 		if (grade == null)
 			throw new NullPointerException();
-
 		this.grade = grade;
-		this.parent = parent;
+		this.longClickListener = longClickListener;
 
 		// Set the child-nodes
 		if (grade instanceof GradeWrapper && ((GradeWrapper) grade).calculator != null) {
 			final List<Grade> grades = ((GradeWrapper) grade).calculator.grades;
 			childNodes = new ITreeNode[grades.size()];
 			for (int i = 0; i < childNodes.length; i++)
-				childNodes[i] = new GradeNode(grades.get(i), parent);
+				childNodes[i] = new GradeNode(grades.get(i), longClickListener);
 		} else {
 			childNodes = new ITreeNode[0];
 		}
@@ -85,13 +82,7 @@ public class GradeNode implements ITreeNode, TextWatcherProxy.ITextWatcher {
 			final EditText gradeInput = (EditText) view.findViewById(R.id.grade_value);
 			if (grade.hasValue())
 				gradeInput.setText(String.valueOf(grade.getValue()));
-
-			gradeInput.addTextChangedListener(new TextWatcherProxy(this));
 		}
-	}
-
-	@Override
-	public void afterTextChanged (final Editable editable) {
-		parent.updateGrades();
+		view.setOnLongClickListener(longClickListener);
 	}
 }

@@ -64,11 +64,11 @@ public class ObjectAdapter<T> extends ArrayAdapter<T> {
 
 	@Override
 	public View getView (final int position, View convertView, final ViewGroup parent) {
-		if (convertView == null) {
+		//if (convertView == null) {
 			// Inflate the view from the converter
 			final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 			convertView = layoutInflater.inflate(converter.getLayout(), parent, false);
-		}
+		//}
 		// Populate the view from the converter
 		converter.populateInflatedView(convertView, getItem(position));
 		return convertView;

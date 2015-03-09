@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -39,7 +40,8 @@ import static com.grademanager.app.util.ConstantKeys.KEY_WEIGHTING;
  * This activity handles everything which contains input. The input stuff is formulas, grade values, sub formulas and pre-defined formulas. This is also used to edit already
  * existing formulas because this is the most simple solution for that.
  */
-public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class SetupActivity extends BaseActivity implements View.OnFocusChangeListener, TextView.OnEditorActionListener, ViewTreeObserver.OnGlobalLayoutListener, AbsListView
+		.OnScrollListener {
 
 	// The key which is used with recursive formulas
 	private static final String RESULT_GRADEWRAPPER = "gradewrapper";
@@ -117,6 +119,8 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		gradeList = ((ListView) findViewById(R.id.grade_list));
 		gradeList.setAdapter(adapter);
 
+		gradeList.setOnScrollListener(this);
+
 		// Check if the intent is for recursive sub formula
 		final Intent intent = getIntent();
 		if (intent.hasExtra(KEY_NAME)) {
@@ -164,25 +168,13 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 		// Store the formula
 		if (flagParsed) {
 			outState.putString(STATE_FORMULA, inputFormula.getText().toString());
+			// Update the currently shown views
+			updateCurrentlyShown();
 
 			// Store the grade inputs
 			final String[] grades = new String[adapter.getCount()];
-			for (int i = 0; i < grades.length; i++) {
-				// Set the value
-				final View parentView = gradeList.getChildAt(i);
-				// Check if this view is gone, if not, this input valid
-				final EditText textInput = (EditText) parentView.findViewById(R.id.grade_value);
-				if (textInput.getVisibility() == View.VISIBLE) {
-					final String value = textInput.getText().toString().trim();
-					if (!value.isEmpty()) {
-						final Grade grade = adapter.getItem(i);
-						grade.setValue(Double.valueOf(value));
-					}
-				}
-
-				// Add to the input
-				grades[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString();
-			}
+			for (int i = 0; i < grades.length; i++)
+				grades[i] = GradeConverter.instance.convert(adapter.getItem(i)).toString(); // Add to the input
 
 			outState.putStringArray(STATE_GRADE_INPUT, grades);
 		}
@@ -201,6 +193,40 @@ public class SetupActivity extends BaseActivity implements View.OnFocusChangeLis
 			for (final String grade : grades)
 				replaceGrade(GradeConverter.instance.convert(new JSONObject(grade)));
 	}
+
+	// Implementation of the OnScrollListener (updates the grades)
+
+	@Override
+	public void onScrollStateChanged (final AbsListView absListView, final int scrollState) {
+		if (scrollState != SCROLL_STATE_IDLE)
+			updateCurrentlyShown();
+	}
+
+	@Override
+	public void onScroll (final AbsListView absListView, final int firstVisibleItem, final int visibleItemCount, final int totalItemCount) {
+		// Stub
+	}
+
+	/**
+	 * Updates the currently shown child objects in {@link #gradeList}
+	 */
+	private void updateCurrentlyShown () {
+		final int firstPosition = gradeList.getFirstVisiblePosition();
+
+		for (int i = firstPosition; i <= gradeList.getLastVisiblePosition(); i++) {
+			final EditText textInput = (EditText) gradeList.getChildAt(i - firstPosition).findViewById(R.id.grade_value);
+			if (textInput != null && textInput.getVisibility() == View.VISIBLE) {
+				final String value = textInput.getText().toString().trim();
+				final Grade grade = adapter.getItem(i);
+				if (!value.isEmpty()) {
+					grade.setValue(Double.valueOf(value));
+				} else {
+					grade.reset();
+				}
+			}
+		}
+	}
+
 	// Implementation of the OnFocusActionListener
 
 	/**
